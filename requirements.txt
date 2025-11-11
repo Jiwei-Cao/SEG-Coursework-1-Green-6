@@ -1,0 +1,9 @@
+asgiref==3.10.0
+coverage==7.10.7
+cssselect==1.3.0
+Django==5.2.7
+django-widget-tweaks==1.5.0
+django-with-asserts==0.0.1
+libgravatar==1.0.4
+lxml==6.0.2
+sqlparse==0.5.3
