@@ -6,7 +6,7 @@ The members of the team are:
 - *Hafsa Bhudye*
 - *Hiu Wai Ho*
 - *Reuben Weibel*
-- *enter full name 5 here (or delete if not applicable)*
+- *Hosannah Kibreab*
 
 ## Project structure
 The project is called `recipify`.  It currently consists of a single app `recipes`.
