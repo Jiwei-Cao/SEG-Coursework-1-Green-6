@@ -1,10 +1,36 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<div class="container">
-  <div class="row">
+<div class="container py-5">
+  <div class="row text-center mb-5">
     <div class="col-12">
       <h1>Welcome to your dashboard {{ user.username }}</h1>
+      <p class = "lead my-3 hero-text">Feel free to create your own recipe and find the perfect one based on your preferences</p>
     </div>
   </div>
+    <div class = "row justify-content-center g-4">
+      <div class = "col-md-4 text-align-center">
+        <div class = "feature-item text-center p-4">
+        <h2 class = "h4 mb-3">Recipes</h2>
+        <p>Find the perfect recipe based on your preferences, e.g. ingrdients available, cooking time</p>
+        <button>Go here</button>
+      </div>
+      </div>
+      <div class = "col-md-4 text-align-center">
+        <div class = "feature-item text-center p-4">
+        <h2 class = "h4 mb-3">Create Recipe</h2>
+        <p>Create and store your own recipe</p>
+        <button>Go here</button>
+      </div>
+      </div>
+      <div class = "col-md-4 text-align-center">
+        <div class = "feature-item text-center p-4">
+        <h2 class = "h4 mb-3">Your Profile</h2>
+        <p>Have a look at what recipes you have created!!</p>
+        <button>Go here</button>
+      </div>
+      </div>
+    </div>
 </div>
 {% endblock %}
+
+
