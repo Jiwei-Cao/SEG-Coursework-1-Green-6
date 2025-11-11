@@ -4,7 +4,7 @@
 The members of the team are:
 - *Jiwei Cao*
 - *enter full name 2 here*
-- *enter full name 3 here*
+- Reuben Weibel
 - *Hiu Wai Ho*
 - *enter full name 5 here (or delete if not applicable)*
 
