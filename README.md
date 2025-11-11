@@ -1,4 +1,4 @@
-# Team *enter team name here* Small Group project
+# Team *Green-6* Small Group project
 
 ## Team members
 The members of the team are:
