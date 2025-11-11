@@ -2,7 +2,7 @@
 
 ## Team members
 The members of the team are:
-- *enter full name 1 here*
+- *Jiwei Cao*
 - *enter full name 2 here*
 - *enter full name 3 here*
 - *enter full name 4 here*
