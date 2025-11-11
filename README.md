@@ -4,7 +4,7 @@
 The members of the team are:
 - *enter full name 1 here*
 - *enter full name 2 here*
-- *enter full name 3 here*
+- *Reuben Weibel
 - *enter full name 4 here*
 - *enter full name 5 here (or delete if not applicable)*
 
