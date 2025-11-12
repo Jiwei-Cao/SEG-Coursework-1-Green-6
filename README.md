@@ -1,13 +1,12 @@
-# Team *enter team name here* Small Group project
+# Team *Green-6* Small Group project
 
 ## Team members
 The members of the team are:
 - *Jiwei Cao*
-- *enter full name 2 here*
+- *Hafsa Bhudye*
 - *Hiu Wai Ho*
 - *Reuben Weibel*
-- Hiu Wai Ho
-- *enter full name 5 here (or delete if not applicable)*
+- *Hosannah Kibreab*
 
 ## Project structure
 The project is called `recipify`.  It currently consists of a single app `recipes`.
