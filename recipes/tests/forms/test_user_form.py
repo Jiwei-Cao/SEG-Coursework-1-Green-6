@@ -17,6 +17,7 @@ class UserFormTestCase(TestCase):
             'last_name': 'Doe',
             'username': '@janedoe',
             'email': 'janedoe@example.org',
+            'bio': 'Hello, my name is Jane'
         }
 
     def test_form_has_necessary_fields(self):
@@ -27,6 +28,7 @@ class UserFormTestCase(TestCase):
         self.assertIn('email', form.fields)
         email_field = form.fields['email']
         self.assertTrue(isinstance(email_field, forms.EmailField))
+        self.assertIn('bio', form.fields)
 
     def test_valid_user_form(self):
         form = UserForm(data=self.form_input)
@@ -48,3 +50,9 @@ class UserFormTestCase(TestCase):
         self.assertEqual(user.first_name, 'Jane')
         self.assertEqual(user.last_name, 'Doe')
         self.assertEqual(user.email, 'janedoe@example.org')
+        self.assertEqual(user.bio, 'Hello, my name is Jane')
+
+    def test_blank_bio_field_valid(self):
+        self.form_input['bio'] = ''
+        form = UserForm(data=self.form_input)
+        self.assertTrue(form.is_valid())

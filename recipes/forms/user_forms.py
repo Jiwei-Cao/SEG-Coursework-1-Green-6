@@ -8,7 +8,7 @@ class UserForm(forms.ModelForm):
     Form to update user profile information.
 
     This form allows authenticated users to update their basic profile
-    details such as first name, last name, username, and email address.
+    details such as first name, last name, username, bio and email address.
     It is typically used in a profile settings or account management page.
     """
 
@@ -16,7 +16,7 @@ class UserForm(forms.ModelForm):
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ['first_name', 'last_name', 'username', 'email', 'bio']
 
 class NewPasswordMixin(forms.Form):
     """
