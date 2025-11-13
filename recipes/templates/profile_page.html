@@ -8,7 +8,7 @@
     }
 </style>
 <div class="container">
-    <section class="mb-4">
+    <section class="mb-4 border-bottom border-1 border-dark">
         <div class="row align-items-center">
             <div class="col-auto">
                 <img src="{{ user.gravatar }}" class="pfp"/>
@@ -32,7 +32,7 @@
             <p>{{ user.bio }}</p>
         </div>
     </section>
-    <section>
+    <section class="mb-5">
         <p>{{recipes|length}} recipes</p>
         <div class="row g-3">
             {% for recipe in recipes %}

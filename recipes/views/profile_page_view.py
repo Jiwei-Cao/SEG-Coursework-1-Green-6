@@ -18,6 +18,16 @@ recipes = [
         'description': 'This Taiwanese-style chow mein uses a combination of stir-frying and steaming, so theres less oil involved. Pork would also work well instead of chicken',
         'img':'https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Chicken-chow-mein-7aeec1d.png?quality=90&resize=556,505'
     },
+    {
+        'title': 'Chicken Chow Mein',
+        'description': 'This Taiwanese-style chow mein uses a combination of stir-frying and steaming, so theres less oil involved. Pork would also work well instead of chicken',
+        'img':'https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Chicken-chow-mein-7aeec1d.png?quality=90&resize=556,505'
+    },
+    {
+        'title': 'Chicken Chow Mein',
+        'description': 'This Taiwanese-style chow mein uses a combination of stir-frying and steaming, so theres less oil involved. Pork would also work well instead of chicken',
+        'img':'https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Chicken-chow-mein-7aeec1d.png?quality=90&resize=556,505'
+    },
 ]
 
 @login_required
