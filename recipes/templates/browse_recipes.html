@@ -6,5 +6,33 @@
       <h1>Browse Recipes</h1>
     </div>
   </div>
+
+  <div class="row">
+    <form action="{% url 'browse_recipes' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+          {% include 'partials/bootstrap_form.html' with form=form %}
+          <input type="text" name="search_field" placeholder="Enter your search here...">
+          <input type="submit" value="Search" class="btn btn-primary">
+      </form>
+  </div>
+
+  <div class="row">
+    
+    {% for recipe in recipe_list %}
+
+      <div class="card" style="width: 18rem;">
+        <img src="..." class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{recipe}}</h5>
+            <!--h5 class="card-title">{{recipe.title}}</h5-->
+            <!--p class="card-text">{{recipe.description}}</p-->
+            <a href="" class="btn btn-primary">See More</a>
+        </div>
+      </div>
+
+    {% endfor %}
+
+  </div>
 </div>
 {% endblock %}
