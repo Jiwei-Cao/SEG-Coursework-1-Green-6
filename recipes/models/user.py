@@ -1,4 +1,4 @@
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
@@ -17,6 +17,20 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
+    bio = models.CharField(max_length=255, default="", blank=True)
+    rating = models.FloatField(
+        default=0.0,
+        validators=[
+            MinValueValidator(
+                limit_value=0.0,
+                message='Rating must be greater than or equal to 0.0'
+            ),
+            MaxValueValidator(
+                limit_value=5.0,
+                message='Rating must be less than or equal to 5.0'
+            )
+        ]
+    )
 
 
     class Meta:

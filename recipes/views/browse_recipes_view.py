@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 from recipes.forms import SearchRecipesForm
+from recipes.models import Recipe
 
 
 @login_required
@@ -33,11 +34,11 @@ def browse_recipes(request):
     else:  
         search_val = request.GET.get('search_val', '')
         if search_val != '':
-            recipe_list = (6,7,8)
-            #recipe_list = Recipe.objects.filter(title__contains=search_val)
+            #recipe_list = (6,7,8)
+            recipe_list = Recipe.objects.filter(title__contains=search_val)
         else:
-            recipe_list = (1,2,3)
-            #recipe_list = Recipe.objects.all()
+            #recipe_list = (1,2,3)
+            recipe_list = Recipe.objects.all()
         
 
     
