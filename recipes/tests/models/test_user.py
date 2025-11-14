@@ -143,6 +143,44 @@ class UserModelTestCase(TestCase):
         expected_gravatar_url = self._gravatar_url(size=60)
         self.assertEqual(actual_gravatar_url, expected_gravatar_url)
 
+    def test_bio_can_be_blank(self):
+        self.user.bio = ""
+        self._assert_user_is_valid()
+    
+    def test_bio_need_not_be_unique(self):
+        second_user = User.objects.get(username='@janedoe')
+        self.user.bio = second_user.bio
+        self._assert_user_is_valid()
+    
+    def test_bio_may_contain_255_characters(self):
+        self.user.bio = 'x' * 255
+        self._assert_user_is_valid()
+    
+    def test_bio_must_not_contain_more_than_255_characters(self):
+        self.user.bio = 'x' * 256
+        self._assert_user_is_invalid()
+    
+    def test_rating_can_be_5(self):
+        self.user.rating = 5.0
+        self._assert_user_is_valid()
+
+    def test_rating_must_not_be_greater_than_5(self):
+        self.user.rating = 5.1
+        self._assert_user_is_invalid()
+    
+    def test_rating_can_be_0(self):
+        self.user.rating = 0.0
+        self._assert_user_is_valid()
+
+    def test_rating_must_not_be_less_than_0(self):
+        self.user.rating = -0.1
+        self._assert_user_is_invalid()
+
+    def test_rating_need_not_be_unique(self):
+        second_user = User.objects.get(username='@janedoe')
+        self.user.rating = second_user.rating
+        self._assert_user_is_valid()
+
     def _gravatar_url(self, size):
         gravatar_url = f"{UserModelTestCase.GRAVATAR_URL}?size={size}&default=mp"
         return gravatar_url

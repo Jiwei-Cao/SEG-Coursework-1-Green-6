@@ -34,5 +34,31 @@
       "password": "pbkdf2_sha256$260000$4BNvFuAWoTT1XVU8D6hCay$KqDCG+bHl8TwYcvA60SGhOMluAheVOnF1PMz0wClilc=",
       "is_active": true
     }
+  },
+  {
+    "model": "recipes.user",
+    "pk": 5,
+    "fields": {
+      "first_name": "Pickle",
+      "last_name": "Peters",
+      "username": "@picklepeters",
+      "email": "picklepeters@example.org",
+      "bio": "",
+      "password": "pbkdf2_sha256$260000$4BNvFuAWoTT1XVU8D6hCay$KqDCG+bHl8TwYcvA60SGhOMluAheVOnF1PMz0wClilc=",
+      "is_active": true
+    }
+  },
+  {
+    "model": "recipes.user",
+    "pk": 6,
+    "fields": {
+      "first_name": "John",
+      "last_name": "James",
+      "username": "@johnjames",
+      "email": "johnjames@example.org",
+      "bio": "Hi, my name is John",
+      "password": "pbkdf2_sha256$260000$4BNvFuAWoTT1XVU8D6hCay$KqDCG+bHl8TwYcvA60SGhOMluAheVOnF1PMz0wClilc=",
+      "is_active": true
+    }
   }
 ]

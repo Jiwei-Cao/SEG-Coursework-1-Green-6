@@ -1,0 +1,46 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<style>
+    .pfp {
+        border-radius: 50%;
+        width: 150px;
+        height:150px;
+    }
+</style>
+<div class="container">
+    <section class="mb-4 border-bottom border-1 border-dark">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <img src="{{ user.gravatar }}" class="pfp"/>
+            </div>
+            <div class="col">
+                <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
+                <p>
+                    {% for _ in full_stars %}
+                    <i class="bi bi-star-fill"></i>
+                    {% endfor %}
+                    {% if half_star %}
+                    <i class="bi bi-star-half"></i>
+                    {% endif %}
+                    {% for _ in empty_stars %}
+                    <i class="bi bi-star"></i>
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <p>{{ user.bio }}</p>
+        </div>
+    </section>
+    <section class="mb-5">
+        <p>{{recipes|length}} recipes</p>
+        <div class="row g-3">
+            {% for recipe in recipes %}
+                <div class="col-4">
+                    {% include "partials/recipe_card.html" with recipe=recipe %}
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
