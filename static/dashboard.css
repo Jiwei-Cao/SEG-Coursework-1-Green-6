@@ -1,0 +1,53 @@
+/*
+* Recipe card styling
+*/
+.recipe-card {
+  max-width: 320px;
+  margin: 5px auto;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(145deg, #fff4d7, #f2e2b6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.recipe-card .card-body {
+  padding: 1.5rem;
+}
+
+/*
+* Button styling
+*/
+.link-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.link-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/*
+* Functionality cards styling
+*/
+.feature-item {
+  background: linear-gradient(215deg, #bdcb90, #fbfcfa);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-item:hover {
+  transform: translateX(5px); 
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
