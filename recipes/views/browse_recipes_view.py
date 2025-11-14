@@ -30,7 +30,7 @@ def browse_recipes(request):
             path = reverse('browse_recipes') 
             return HttpResponseRedirect(path)
 
-    else:         
+    else:  
         search_val = request.GET.get('search_val', '')
         if search_val != '':
             recipe_list = (6,7,8)
