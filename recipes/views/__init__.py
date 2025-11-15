@@ -8,4 +8,4 @@ from .sign_up_view import *
 from .browse_recipes_view import *
 from .profile_page_view import *
 from .create_recipe_view import *
-
+from .user_list_view import *
