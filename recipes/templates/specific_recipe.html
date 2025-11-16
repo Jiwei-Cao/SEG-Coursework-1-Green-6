@@ -1,0 +1,49 @@
+{% extends 'base_content.html' %} {% block content %}
+<div class="container my-5 d-flex justify-content-center">
+  <div class="card mb-3 specific_recipe_card">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src={{recipe.image.url}} class="img-fluid rounded-start" alt="..." />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{recipe.title}}</h5>
+          <p class="card-text">{{recipe.description}}</p>
+          <p class="card-text fw-bold">Ingredients:</p>
+          <p>{{recipe.ingredients}}</p>
+
+          <p class="card-text fw-bold">Method:</p>
+          <p>{{recipe.method}}</p>
+
+          <div class = "d-flex flex-column flex-md-row gap-3 mt-2 mb-3">
+          <div class="star-rating">
+            <input type="radio" id="star5" name="rating" value="5" />
+            <label for="star5" title="5 stars"><i class="bi bi-star-fill"></i></label>
+
+            <input type="radio" id="star4" name="rating" value="4" />
+            <label for="star4" title="4 stars"><i class="bi bi-star-fill"></i></label>
+
+            <input type="radio" id="star3" name="rating" value="3" />
+            <label for="star3" title="3 stars"><i class="bi bi-star-fill"></i></label>
+
+            <input type="radio" id="star2" name="rating" value="2" />
+            <label for="star2" title="2 stars"><i class="bi bi-star-fill"></i></label>
+
+            <input type="radio" id="star1" name="rating" value="1" />
+            <label for="star1" title="1 star"><i class="bi bi-star-fill"></i></label>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            Submit Rating
+          </button>
+          </div>
+
+          <a href="{% url 'all_recipes' %}" class="btn link-button"
+            >Back to Recipes</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

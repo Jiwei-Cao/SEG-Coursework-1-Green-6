@@ -32,5 +32,9 @@ urlpatterns = [
     path('browse_recipes/', views.browse_recipes, name='browse_recipes'),
     path('profile_page/', views.profile_page, name='profile_page'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
+    path('all_recipes/', views.all_recipes, name='all_recipes'),
+    path('recipe/<int:recipe_id>/', views.get_recipe, name="get_recipe")
+    
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
