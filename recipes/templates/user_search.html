@@ -1,0 +1,61 @@
+{% extends 'base_content.html' %}
+{% block content %}
+
+<h2>User search</h2>
+
+<form method="get">
+  <input type="text" name="q" value="{{ query }}" placeholder="Search users">
+  <button type="submit">Search</button>
+</form>
+
+{% if has_query %}
+  <h3>Top users</h3>
+  <ul>
+    {% for u in top_users %}
+      <li>
+        {{ u.username }}
+        {% if u != user %}
+          {% if u.id in following_ids %}
+            <form method="post" action="{% url 'unfollow_user' u.id %}">
+              {% csrf_token %}
+              <button>Unfollow</button>
+            </form>
+          {% else %}
+            <form method="post" action="{% url 'follow_user' u.id %}">
+              {% csrf_token %}
+              <button>Follow</button>
+            </form>
+          {% endif %}
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>No users found.</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <h3>All users</h3>
+  <ul>
+    {% for u in users %}
+      <li>
+        {{ u.username }}
+        {% if u != user %}
+          {% if u.id in following_ids %}
+            <form method="post" action="{% url 'unfollow_user' u.id %}">
+              {% csrf_token %}
+              <button>Unfollow</button>
+            </form>
+          {% else %}
+            <form method="post" action="{% url 'follow_user' u.id %}">
+              {% csrf_token %}
+              <button>Follow</button>
+            </form>
+          {% endif %}
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>No users found.</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% endblock %}
