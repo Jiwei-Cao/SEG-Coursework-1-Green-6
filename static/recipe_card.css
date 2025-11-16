@@ -1,7 +1,12 @@
 .individual_recipe_card {
     width: 20rem;
+    height: 30rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
     transition: transform 0.2s, box-shadow 0.2s;
     border-radius: 10px;
+    overflow: hidden;
 }
 
 .individual_recipe_card:hover {
@@ -20,6 +25,7 @@
 .favourite-button:hover{
     transform: scale(1.05);
     background-color: #ea78b6;
+    color: #ccc;
 }
 
 .specific_recipe_card{
@@ -61,7 +67,14 @@
 
 .recipe-image {
   height: 27vh;
-  width: auto;
+  width: 100%;
   overflow: hidden;
   border-radius: 5%;
+  object-fit: cover;  
+}
+
+.specific-recipe-image{
+  overflow: hidden;
+  object-fit: cover;
+  height:100%
 }
