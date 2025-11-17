@@ -7,6 +7,7 @@ class Recipe(models.Model):
     description = models.TextField()
     ingredients = models.TextField()
     method = models.TextField()
+    img = models.ImageField(upload_to='images/', blank=True, default='images/default.webp')
 
     def __str__(self):
         return self.title 
