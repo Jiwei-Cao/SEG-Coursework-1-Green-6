@@ -101,6 +101,12 @@
   object-fit: cover;
 }
 
+.recipe-author{
+  transition: transform 0.2s ease;
+}
+
 .recipe-author:hover{
-  background-color: #ccc;
+  background-color: #cccccce1 !important;
+  transform: scale(1.05);
+
 }
