@@ -11,6 +11,7 @@ def create_recipe(request):
             recipe = form.save(commit=False)
             recipe.user = request.user 
             recipe.save()
+            form.save_m2m()
             return redirect('dashboard')
     else:
         form = RecipeForm()
