@@ -44,7 +44,7 @@ class ProfilePageViewTest(TestCase):
         self.assertEqual(range(empty_stars), response.context['empty_stars'])
 
         recipes = response.context['recipes']
-        self.assertEqual(recipes, Recipe.objects.filter(user=user))
+        self.assertQuerySetEqual(recipes, Recipe.objects.filter(user=user))
 
     def test_get_profile_page_redirects_when_not_logged_in(self):
         redirect_url = reverse_with_next('log_in', self.url)
