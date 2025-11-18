@@ -42,5 +42,16 @@
             {% endfor %}
         </div>
     </section>
+
+    <section class="mb-5">
+        <p>Favourites</p>
+        <div class="row g-3">
+            {% for recipe in favourite_recipes %}
+                <div class="col-4">
+                    {% include "partials/recipe_card.html" with recipe=recipe %}
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 </div>
 {% endblock %}
