@@ -1,0 +1,18 @@
+{% extends 'base_content.html' %}
+{% block title %}
+<h1>{{user.username}}'s Cupboard</h1>
+{% endblock %}
+
+{% block content %}
+<h2>Your Ingredients</h2>
+<p><b>Ingredients</b>:</p>
+    {% for ingredient in ingredient_list %}
+    {% endfor %}
+
+<h3>Add new ingredient</h3>
+<form method="post">
+    {% csrf_token %} 
+    {{ form.as_p }}
+    <button type="submit">Add Ingredient</button>
+</form>
+{% endblock %}
