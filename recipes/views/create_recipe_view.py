@@ -5,7 +5,7 @@ from recipes.forms.recipe_form import RecipeForm
 @login_required
 def create_recipe(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST)
+        form = RecipeForm(request.POST, request.FILES)
 
         if form.is_valid():
             recipe = form.save(commit=False)

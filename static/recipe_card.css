@@ -1,0 +1,112 @@
+.individual_recipe_card {
+  width: 20rem;
+  height: 30rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.individual_recipe_card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.favourite-button {
+  background-color: #dae5ebf2;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.favourite-button:hover {
+  transform: scale(1.05);
+  background-color: #ea78b6;
+  color: #ccc;
+}
+
+.specific_recipe_card {
+  width: 80%;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse; /* highest star on left */
+  justify-content: flex-start;
+  font-size: 2rem;
+}
+
+.star-rating input {
+  display: none; /* hide radio buttons */
+}
+
+.star-rating label {
+  color: #ccc; /* empty star color */
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* Highlight stars when checked */
+.star-rating input:checked ~ label i,
+.star-rating input:checked + label i {
+  color: gold;
+}
+
+/* Highlight stars on hover */
+.star-rating label:hover i,
+.star-rating label:hover ~ label i {
+  color: gold;
+}
+
+.recipe-image {
+  height: 27vh;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 5%;
+  object-fit: cover;
+}
+
+.specific-recipe-card-image {
+  overflow: hidden;
+  object-fit: cover;
+  height: 100%;
+}
+
+.submit-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  background-color: #b7e1f7f2;
+  font-size: 13px;
+}
+
+.submit-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  background-color: #9ecee9f6;
+}
+
+.recipe-author img {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+}
+
+.recipe-author{
+  transition: transform 0.2s ease;
+}
+
+.recipe-author:hover{
+  background-color: #cccccce1 !important;
+  transform: scale(1.05);
+
+}
