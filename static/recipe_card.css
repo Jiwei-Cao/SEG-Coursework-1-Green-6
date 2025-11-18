@@ -28,6 +28,21 @@
   color: #ccc;
 }
 
+.unfavourite-button {
+  background-color: #f7c1d1;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.unfavourite-button:hover {
+  transform: scale(1.05);
+  background-color: #ea78b6;
+  color: #ccc;
+}
+
 .specific_recipe_card {
   width: 80%;
   border-radius: 10px;

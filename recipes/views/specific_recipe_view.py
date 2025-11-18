@@ -8,5 +8,5 @@ def get_recipe(request, recipe_id):
     try:
         context = {'recipe': Recipe.objects.get(id=recipe_id)}
     except Recipe.DoesNotExist:
-        raise Http404("Book not found.")
+        raise Http404("Recipe not found.")
     return render(request, "specific_recipe.html", context)

@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0006_merge_0004_recipe_image_alter_user_bio_0005_favourite'),
         ('recipes', '0006_merge_0005_favourite_0005_tag_recipe_tags'),
     ]
 
