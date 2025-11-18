@@ -1,11 +1,18 @@
 <div class="card shadow text-center individual_recipe_card align-items-center">
-  {% if recipe.image %}
-  <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class = "recipe-image"/>
+  {% if recipe.img %}
+  <img src="{{ recipe.img.url }}" alt="{{ recipe.title }}" class = "recipe-image"/>
   {% endif %}
 
   <div class="card-body">
     <h5 class="card-title">{{ recipe.title }}</h5>
     <p class="card-text">{{ recipe.description }}</p>
+    <div class="row">
+        {% for tag in recipe.tags.all %}
+            <div class="col-4">
+                <p>{{tag.name}}</p>
+            </div>
+        {% endfor %}
+    </div>
     <div
       class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-3"
     >

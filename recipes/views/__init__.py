@@ -10,4 +10,4 @@ from .profile_page_view import *
 from .create_recipe_view import *
 from .recipes_view import *
 from .specific_recipe_view import *
-
+from .cupboard_view import *

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from recipes.models import User
+from recipes.models import User, Recipe
 from recipes.tests.helpers import reverse_with_next
 from math import floor
 
@@ -42,6 +42,9 @@ class ProfilePageViewTest(TestCase):
         self.assertEqual(range(full_stars), response.context['full_stars'])
         self.assertEqual(half_star, response.context['half_star'])
         self.assertEqual(range(empty_stars), response.context['empty_stars'])
+
+        recipes = response.context['recipes']
+        self.assertQuerySetEqual(recipes, Recipe.objects.filter(user=user))
 
     def test_get_profile_page_redirects_when_not_logged_in(self):
         redirect_url = reverse_with_next('log_in', self.url)

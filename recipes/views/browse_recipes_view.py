@@ -14,25 +14,38 @@ from recipes.models import Favourite
 def browse_recipes(request):
     recipe_list = Recipe.objects.all()
     if request.method == "POST":
-        
-        if request.POST.get('form_type') == 'favourite_form':
-            search_val = handle_favourites_form_requests(request)
-            path = reverse('browse_recipes') + search_val
+        form = SearchRecipesForm(request.POST)
+        if form.is_valid():
+            if request.POST.get('form_type') == 'favourite_form':
+                search_val = handle_favourites_form_requests(request)
+                path = reverse('browse_recipes') + search_val
 
-            return HttpResponseRedirect(path)
+                return HttpResponseRedirect(path)
             
-        elif request.POST.get('form_type') == 'search_form' :
-            form = SearchRecipesForm(request.POST)
-            if form.is_valid():
+            elif request.POST.get('form_type') == 'search_form' :
                 try:
-                    search_val = f'?search_val={form.cleaned_data['search_field']}'
+                    #recipe_list = (6,7,8)
+                    #recipe_list = Recipe.objects.filter(title__contains=form.cleaned_data['search_field'])
+                    search_val = form.cleaned_data['search_field']
+                    selected_tags = form.cleaned_data['tags']
+
+                    params = []
+                    if search_val:
+                        params.append(f'search_val={search_val}')
+                    if selected_tags:
+                        tag_ids = ','.join(str(tag.id) for tag in selected_tags)
+                        params.append(f'tags={tag_ids}')
+                    query = '?' + '&'.join(params) if params else ''
+
+                    
+
                 except:
                     form.add_error(None, "It wasn't possible to complete this search")
-                    search_val = ''
-
+                    query = ''
                 else:
-                    path = reverse('browse_recipes') + search_val
+                    path = reverse('browse_recipes') + query
                     return HttpResponseRedirect(path)
+
 
             else:
                 path = reverse('browse_recipes') 
@@ -44,11 +57,20 @@ def browse_recipes(request):
     else:  
         form = SearchRecipesForm()
         search_val = request.GET.get('search_val', '')
-        
+        tag_ids = request.GET.get('tags','')
+        initial_data = {'search_field': search_val}
+        if tag_ids:
+            tag_ids = [int (tag_id) for tag_id in tag_ids.split(',')]
+            initial_data['tags'] = tag_ids
+        form = SearchRecipesForm(initial= initial_data)
+
+        recipe_list = Recipe.objects.all()
         if search_val != '':
-            recipe_list = Recipe.objects.filter(title__contains=search_val)
-        else:
-            recipe_list = Recipe.objects.all()
+            #recipe_list = (6,7,8)
+            recipe_list = recipe_list.filter(title__contains=search_val)
+
+        if tag_ids:
+            recipe_list = recipe_list.filter(tags__id__in=tag_ids).distinct()
         
         
 
