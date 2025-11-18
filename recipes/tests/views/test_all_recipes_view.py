@@ -57,3 +57,9 @@ class AllRecipesPageViewTest(TestCase):
         response = self.client.get(url)
         assert response.status_code == 200
         assert self.recipe1.title.encode() in response.content
+
+    def test_get_specific_recipe_not_found(self):
+        self.client.login(username=self.user.username, password='Password123')
+        url = reverse('get_recipe',args=[9999])
+        response = self.client.get(url)
+        assert response.status_code == 404

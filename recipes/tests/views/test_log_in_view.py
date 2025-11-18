@@ -6,7 +6,7 @@ from recipes.forms import LogInForm
 from recipes.models import User
 from recipes.tests.helpers import LogInTester, MenuTesterMixin, reverse_with_next
 
-class LogInViewTestCase(TestCase, LogInTester, MenuTesterMixin):
+class LogInViewTestCase(LogInTester, MenuTesterMixin, TestCase):
     """Tests of the log in view."""
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
