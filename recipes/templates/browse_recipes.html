@@ -1,5 +1,6 @@
 {% extends 'base_content.html' %}
 {% block content %}
+{{ form.media.css }}
 <div class="container">
   <div class="row">
     <div class="col-12">
@@ -8,11 +9,10 @@
   </div>
 
   <div class="row">
-    <form action="{% url 'browse_recipes' %}" method="post">
+    <form action="{% url 'browse_recipes' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
           {% include 'partials/bootstrap_form.html' with form=form %}
-          <input type="text" name="search_field" placeholder="Enter your search here...">
+          <!--<input type="text" name="search_field" placeholder="Enter your search here...">-->
           <input type="submit" value="Search" class="btn btn-primary">
       </form>
   </div>
@@ -20,19 +20,14 @@
   <div class="row">
     
     {% for recipe in recipe_list %}
-
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-          <div class="card-body">
-            <!--h5 class="card-title">{{recipe}}</h5-->
-            <h5 class="card-title">{{recipe.title}}</h5>
-            <p class="card-text">{{recipe.description}}</p>
-            <a href="" class="btn btn-primary">See More</a>
-        </div>
+      <div class="col-4">
+        {% include "partials/recipe_card.html" with recipe=recipe %}
       </div>
 
     {% endfor %}
 
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{ form.media.js }}
 {% endblock %}
