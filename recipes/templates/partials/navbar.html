@@ -1,16 +1,27 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'dashboard' %}">
-      Recipify
-    </a>
-    <a href="{% url 'create_recipe' %}">
-      Create Recipe
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="{% url 'dashboard' %}"> Recipify </a>
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'all_recipes' %}active{% endif %}" 
+               href="{% url 'all_recipes' %}">Recipes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'create_recipe' %}active{% endif %}" 
+               href="{% url 'create_recipe' %}">Create Recipe</a>
+        </li>
+    </ul>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
-    {% if user.is_authenticated %}
-      {% include 'partials/menu.html' %}
-    {% endif %}
+    {% if user.is_authenticated %} {% include 'partials/menu.html' %} {% endif%}
   </div>
 </nav>

@@ -1,5 +1,5 @@
 from django.urls import reverse
-from with_asserts.mixin import AssertHTMLMixin
+from django.test import TestCase
 
 def reverse_with_next(url_name, next_url):
     """Extended version of reverse to generate URLs with redirects"""
@@ -16,7 +16,7 @@ class LogInTester:
 
         return '_auth_user_id' in self.client.session.keys()
 
-class MenuTesterMixin(AssertHTMLMixin):
+class MenuTesterMixin(TestCase):
     """Class to extend tests with tools to check the presents of menu items."""
 
     menu_urls = [
@@ -25,13 +25,14 @@ class MenuTesterMixin(AssertHTMLMixin):
 
     def assert_menu(self, response):
         """Check that menu is present."""
+        html = response.content.decode("utf-8")
 
         for url in self.menu_urls:
-            with self.assertHTML(response, f'a[href="{url}"]'):
-                pass
+            self.assertIn(f'href="{url}"', html)
 
     def assert_no_menu(self, response):
         """Check that no menu is present."""
-        
+        html = response.content.decode("utf-8")
+
         for url in self.menu_urls:
-            self.assertNotHTML(response, f'a[href="{url}"]')
+            self.assertNotIn(f'<a href="{url}">', html)

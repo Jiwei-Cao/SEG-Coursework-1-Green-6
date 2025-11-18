@@ -4,7 +4,6 @@ from math import floor
 
 from recipes.models import Favourite
 from recipes.models import Recipe
-from recipes.models import Recipe
 
 @login_required
 def profile_page(request):

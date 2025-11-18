@@ -1,0 +1,101 @@
+{% extends 'base_content.html' %} {% block content %}
+<div class="container my-5 d-flex justify-content-center">
+  <div class="card mb-3 specific_recipe_card">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img
+          src="{{recipe.image.url}}"
+          class="img-fluid rounded-start specific-recipe-card-image"
+          alt="{{recipe.title}}"
+        />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body d-flex flex-column pb-3">
+          <div
+            class="card-title d-flex justify-content-between align-items-center mb-2"
+          >
+            <h4 class="card-title mb-0">{{recipe.title}}</h4>
+            <span
+              class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author"
+            >
+              <small>Author:</small>
+              <img
+                src="{{ user.gravatar }}"
+                class="rounded-circle"
+              />
+              {{recipe.user}} {% if recipe.user == user %} (YOU) {% endif %}
+            </span>
+          </div>
+
+          <p class="card-text fst-italic">{{recipe.description}}</p>
+
+          <p class = "">
+            <span class = "fw-bold">Rating: </span>
+            <i class="bi bi-star"></i>
+            <i class="bi bi-star"></i>
+            <i class="bi bi-star"></i>
+            <i class="bi bi-star"></i>
+            <i class="bi bi-star"></i>
+             (No rating yet) [dummy display of rating - to be implemented]
+          </p>
+
+          <h6 class="fw-bold">Ingredients:</h6>
+          <p class="mb-3">{{recipe.ingredients}}</p>
+
+          <h6 class="fw-bold">Method:</h6>
+          <p class="mb-3">{{recipe.method}}</p>
+
+          <div class="d-flex flex-column flex-md-row gap-3 mt-2 mb-3">
+            {% if recipe.user != user %}
+            <div class="star-rating">
+              <input type="radio" id="star5" name="rating" value="5" />
+              <label for="star5" title="5 stars"
+                ><i class="bi bi-star-fill"></i
+              ></label>
+
+              <input type="radio" id="star4" name="rating" value="4" />
+              <label for="star4" title="4 stars"
+                ><i class="bi bi-star-fill"></i
+              ></label>
+
+              <input type="radio" id="star3" name="rating" value="3" />
+              <label for="star3" title="3 stars"
+                ><i class="bi bi-star-fill"></i
+              ></label>
+
+              <input type="radio" id="star2" name="rating" value="2" />
+              <label for="star2" title="2 stars"
+                ><i class="bi bi-star-fill"></i
+              ></label>
+
+              <input type="radio" id="star1" name="rating" value="1" />
+              <label for="star1" title="1 star"
+                ><i class="bi bi-star-fill"></i
+              ></label>
+            </div>
+
+            <button type="submit" class="btn submit-button">
+              Submit Rating
+            </button>
+          </div>
+          <div class="comment mb-3 d-flex gap-2">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Add a comment"
+            />
+            <button type="submit" class="btn submit-button">
+              Submit Comment
+            </button>
+            {% endif %}
+            
+          </div>
+          <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
+            >Back to Recipes</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

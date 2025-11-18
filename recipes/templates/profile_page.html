@@ -1,11 +1,10 @@
-{% extends 'base_content.html' %}
-{% block content %}
+{% extends 'base_content.html' %} {% block content %}
 <style>
-    .pfp {
-        border-radius: 50%;
-        width: 150px;
-        height:150px;
-    }
+  .pfp {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+  }
 </style>
 <div class="container">
     <section class="mb-4 border-bottom border-1 border-dark">
@@ -36,17 +35,6 @@
         <p>{{recipes|length}} recipes</p>
         <div class="row g-3">
             {% for recipe in recipes %}
-                <div class="col-4">
-                    {% include "partials/recipe_card.html" with recipe=recipe %}
-                </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <section class="mb-5">
-        <p>Favourites</p>
-        <div class="row g-3">
-            {% for recipe in favourite_recipes %}
                 <div class="col-4">
                     {% include "partials/recipe_card.html" with recipe=recipe %}
                 </div>
