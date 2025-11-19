@@ -1,9 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from math import floor
 
 from recipes.models import Favourite
 from recipes.models import Recipe
+from recipes.models import Rating
+
 
 @login_required
 def profile_page(request):
@@ -14,6 +18,12 @@ def profile_page(request):
     current_user = request.user
 
     recipes = Recipe.objects.filter(user=current_user)
+
+    all_ratings = Rating.objects.filter(recipe__in=recipes)
+    rating_count = all_ratings.count()
+    ratings_sum = sum(rating.rating for rating in all_ratings)
+    total_ratings = all_ratings.count()
+    current_user.rating = ratings_sum / total_ratings if total_ratings > 0 else 0
 
     rating = round(current_user.rating * 2) / 2
     full_stars = int(floor(rating))
@@ -27,13 +37,39 @@ def profile_page(request):
         if item.pk in favourite_recipe_ids:
             favourite_recipes.append(item)
 
+    if request.method == 'POST':
+        if request.POST.get('form_type') == 'favourite_form':
+            handle_favourites_form_requests(request)
+
+            return HttpResponseRedirect(request.path_info)
+
 
 
     return render(request, 'profile_page.html', {
         'user': current_user,
         'recipes':recipes,
+        'rating_count': rating_count,
         'full_stars': range(full_stars),
         'half_star': half_star,
         'empty_stars': range(empty_stars),
-        'favourite_recipes':  favourite_recipes
+        'favourite_recipes':  favourite_recipes,
+        'user_favourited_recipe_ids': favourite_recipe_ids,
         })
+
+
+def handle_favourites_form_requests(request):    
+    if request.POST.get('favourite_recipe', '') == 'unfavourite_recipe':
+        unfavourite_recipe(request)
+    elif request.POST.get('favourite_recipe', '') == 'favourite_recipe':
+        favourite_recipe(request)
+
+def favourite_recipe(request):
+    recipe_id = request.POST.get("recipe_clicked")
+    if recipe_id:
+        recipe = Recipe.objects.get(pk=int(recipe_id))
+        Favourite.objects.get_or_create(user=request.user, recipe=recipe)
+
+def unfavourite_recipe(request):
+    recipe_id = request.POST.get("recipe_clicked")
+    if recipe_id:
+        Favourite.objects.filter(user=request.user, recipe_id=int(recipe_id)).delete()

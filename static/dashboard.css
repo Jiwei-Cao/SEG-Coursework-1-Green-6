@@ -10,6 +10,12 @@
   background: linear-gradient(145deg, #fff4d7, #f2e2b6);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+.recipe-card .card-title{
+  font-size:18px;
+}
+.recipe-card .card-text{
+  font-size: 15px;
+}
 
 .recipe-card:hover {
   transform: translateY(-5px);
@@ -20,6 +26,13 @@
   padding: 1.5rem;
 }
 
+.recipe-card .recipe-image {
+  height: 21vh;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 5%;
+  object-fit: cover;
+}
 /*
 * Button styling
 */
@@ -31,6 +44,7 @@
   transition: transform 0.2s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   background-color: #dae5ebf2;
+  align-self: center;
 }
 
 .link-button:hover {

@@ -16,58 +16,20 @@
     <div class="col-12">
       <h2 class="h4 mb-3 fst-italic">Most Popular Recipes</h2>
       <div class="row">
-        <div class="col-md-3">
-          <div class="card recipe-card text-center">
-            <div class="card-body">
-              <h5 class="card-title">Recipe Title</h5>
-              <p class="card-text">
-                Some quick example text to build on the recipe title and make up
-                the bulk of the recipe's description. You can write a short note
-                here about its flavor or ingredients.
+        {% for recipe in rated_recipes %}
+        <div class="col-md-3 d-flex">
+          <div class="card recipe-card text-center flex-fill d-flex flex-column">
+            <img src="{{recipe.img.url}}" class="card-img-top recipe-image" alt="{{recipe.title}}" style="height: 21vh;"/>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title" style ="font-size:18px;">{{recipe.title}}</h5>
+              <p class="card-text" style = "font-size: 15px;">
+                {{recipe.description}}
               </p>
-              <button class="link-button">Find out more</button>
+              <button class="link-button mt-auto" style="align-self: center;">Find out more</button>
             </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="card recipe-card text-center">
-            <div class="card-body">
-              <h5 class="card-title">Recipe Title</h5>
-              <p class="card-text">
-                Some quick example text to build on the recipe title and make up
-                the bulk of the recipe's description. You can write a short note
-                here about its flavor or ingredients.
-              </p>
-              <button class="link-button">Find out more</button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card recipe-card text-center">
-            <div class="card-body">
-              <h5 class="card-title">Recipe Title</h5>
-              <p class="card-text">
-                Some quick example text to build on the recipe title and make up
-                the bulk of the recipe's description. You can write a short note
-                here about its flavor or ingredients.
-              </p>
-              <button class="link-button">Find out more</button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card recipe-card text-center">
-            <div class="card-body">
-              <h5 class="card-title">Recipe Title</h5>
-              <p class="card-text">
-                Some quick example text to build on the recipe title and make up
-                the bulk of the recipe's description. You can write a short note
-                here about its flavor or ingredients.
-              </p>
-              <button class="link-button">Find out more</button>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
     </div>
   </div>

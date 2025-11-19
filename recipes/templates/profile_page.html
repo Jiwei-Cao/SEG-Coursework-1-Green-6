@@ -15,7 +15,12 @@
       </div>
       <div class="col">
         <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
-        <p>
+        {% if user.rating != 0 %}
+        {{user.rating|floatformat:1}} 
+        {% else %}
+        No ratings yet
+        {% endif %}
+        <p class = "rating">
           {% for _ in full_stars %}
           <i class="bi bi-star-fill"></i>
           {% endfor %} {% if half_star %}
@@ -30,6 +35,13 @@
       <p>{{ user.bio }}</p>
     </div>
   </section>
+  {%if recipes|length == 0 %}
+  <p class="text-muted">
+    {% if user == request.user %} You haven't added any recipes yet. 
+    {% else %}
+    This user hasn't added any recipes yet.</p>
+    {% endif %}
+  {% else %}
   <section class="mb-5">
     <p>{{recipes|length}} recipes</p>
     <div class="row g-3">
@@ -39,6 +51,7 @@
       </div>
       {% endfor %}
     </div>
+    {% endif %}
   </section>
 
   <section class="mb-5">

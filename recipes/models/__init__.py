@@ -3,3 +3,4 @@ from .recipe import *
 from .favourite import *
 from .tag import *
 from .ingredient import *
+from .rating import *

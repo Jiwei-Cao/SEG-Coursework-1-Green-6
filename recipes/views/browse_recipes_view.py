@@ -9,7 +9,6 @@ from recipes.forms import FavouriteForm
 from recipes.models import Recipe
 from recipes.models import Favourite
 
-
 @login_required
 def browse_recipes(request):
     recipe_list = Recipe.objects.all()
