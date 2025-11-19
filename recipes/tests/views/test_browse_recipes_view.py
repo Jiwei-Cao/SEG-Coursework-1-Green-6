@@ -113,8 +113,6 @@ class BrowseRecipesTestCase(TestCase):
 		self.form_input['search_field'] = "x" * 256
 		self.form_input['form_type'] = "search_form"
 
-		expected_redirect_url = reverse("all_recipes")
-
 		response = self.client.post(self.url, self.form_input, follow=True)
 		self.assertIn('form', response.context)
 		form = response.context['form']

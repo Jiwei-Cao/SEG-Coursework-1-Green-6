@@ -27,14 +27,13 @@ def get_recipe(request, recipe_id):
         user_rating = None
 
     all_ratings = Rating.objects.filter(recipe=recipe)
-    rating_count = all_ratings.count()
-    average_rating = None
-    empty_stars = half_star = full_stars = 0
-    if all_ratings.exists():
-        average_rating = sum(r.rating for r in all_ratings) / all_ratings.count()
-        full_stars = int(floor(average_rating))
-        half_star = average_rating-full_stars==0.5
-        empty_stars = 5 - full_stars - half_star
+    average_rating = recipe.average_rating
+    rating_count = recipe.rating_count
+
+    full_stars = int(floor(average_rating))
+    half_star = 1 if average_rating - full_stars >= 0.5 else 0
+    empty_stars = 5 - full_stars - half_star
+
 
     context = {
         "recipe": recipe,
