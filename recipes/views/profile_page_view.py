@@ -38,12 +38,9 @@ def profile_page(request):
             favourite_recipes.append(item)
 
     if request.method == 'POST':
-        if request.POST.get('form_type') == 'favourite_form':
-            handle_favourites_form_requests(request)
+        handle_favourites_form_requests(request)
 
-            return HttpResponseRedirect(request.path_info)
-
-
+        return HttpResponseRedirect(request.path_info)
 
     return render(request, 'profile_page.html', {
         'user': current_user,
@@ -56,18 +53,9 @@ def profile_page(request):
         'user_favourited_recipe_ids': favourite_recipe_ids,
         })
 
-
 def handle_favourites_form_requests(request):    
     if request.POST.get('favourite_recipe', '') == 'unfavourite_recipe':
         unfavourite_recipe(request)
-    elif request.POST.get('favourite_recipe', '') == 'favourite_recipe':
-        favourite_recipe(request)
-
-def favourite_recipe(request):
-    recipe_id = request.POST.get("recipe_clicked")
-    if recipe_id:
-        recipe = Recipe.objects.get(pk=int(recipe_id))
-        Favourite.objects.get_or_create(user=request.user, recipe=recipe)
 
 def unfavourite_recipe(request):
     recipe_id = request.POST.get("recipe_clicked")

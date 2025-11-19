@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from ..models import Recipe, Rating
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from math import floor
 @login_required
 def get_recipe(request, recipe_id):
@@ -26,7 +26,6 @@ def get_recipe(request, recipe_id):
     except Rating.DoesNotExist:
         user_rating = None
 
-    all_ratings = Rating.objects.filter(recipe=recipe)
     average_rating = recipe.average_rating
     rating_count = recipe.rating_count
 
