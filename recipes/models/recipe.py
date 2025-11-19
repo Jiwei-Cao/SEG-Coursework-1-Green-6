@@ -11,5 +11,16 @@ class Recipe(models.Model):
     img = models.ImageField(upload_to='images/', blank=True, default='images/default.webp')
     tags = models.ManyToManyField(Tag,blank=True)
 
+    @property
+    def average_rating(self):
+        ratings = self.rating_set.all()
+        if ratings.exists():
+            return sum(r.rating for r in ratings) / ratings.count()
+        return 0
+
+    @property
+    def rating_count(self):
+        return self.rating_set.count()
+
     def __str__(self):
         return self.title 
