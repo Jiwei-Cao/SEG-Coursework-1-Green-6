@@ -19,13 +19,13 @@
         {% for recipe in rated_recipes %}
         <div class="col-md-3 d-flex">
           <div class="card recipe-card text-center flex-fill d-flex flex-column">
-            <img src="{{recipe.img.url}}" class="card-img-top recipe-image" alt="{{recipe.title}}" style="height: 21vh;"/>
+            <img src="{{recipe.img.url}}" class="card-img-top recipe-image" alt="{{recipe.title}}"/>
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title" style ="font-size:18px;">{{recipe.title}}</h5>
-              <p class="card-text" style = "font-size: 15px;">
+              <h5 class="card-title" >{{recipe.title}}</h5>
+              <p class="card-text">
                 {{recipe.description}}
               </p>
-              <button class="link-button mt-auto" style="align-self: center;">Find out more</button>
+              <a href="{% url 'get_recipe' recipe.id %}" class="btn link-button mt-auto">Find out more</a>
             </div>
           </div>
         </div>

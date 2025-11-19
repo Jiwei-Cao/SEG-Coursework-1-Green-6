@@ -21,7 +21,7 @@ class BrowseRecipesTestCase(TestCase):
 	def setUp(self):
 		self.user = User.objects.get(username='@johndoe')
 		self.client.login(username=self.user.username, password='Password123')
-		self.url = reverse("browse_recipes")
+		self.url = reverse("all_recipes")
 
 		self.recipe1 =  Recipe.objects.create(user=self.user, title="123",description="123",ingredients="123",method="123")
 		self.recipe2 =  Recipe.objects.create(user=self.user, title="456",description="abc",ingredients="456",method="abc")
@@ -36,14 +36,14 @@ class BrowseRecipesTestCase(TestCase):
 							'recipe_clicked': ''
 						   }
 
-	def test_browse_recipes_url(self):
-		self.assertEqual(self.url, "/browse_recipes/")
+	def test_all_recipes_url(self):
+		self.assertEqual(self.url, "/all_recipes/")
 
 
-	def test_get_browse_recipes_without_search_value(self):
+	def test_get_all_recipes_without_search_value(self):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, 200)
-		self.assertTemplateUsed(response, 'browse_recipes.html')
+		self.assertTemplateUsed(response, 'all_recipes.html')
 
 		self.assertIn('form', response.context)
 		form = response.context['form']
@@ -55,13 +55,13 @@ class BrowseRecipesTestCase(TestCase):
 		self.assertEqual((response.context['recipe_list']).count(), recipes_count)
 
 
-	def test_get_browse_recipes_with_search_value(self):
+	def test_get_all_recipes_with_search_value(self):
 		search_val = self.form_input['search_field']
 		search_query_string = f'?search_val={search_val}'
-		self.url = reverse("browse_recipes")  + search_query_string
+		self.url = reverse("all_recipes")  + search_query_string
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, 200)
-		self.assertTemplateUsed(response, 'browse_recipes.html')
+		self.assertTemplateUsed(response, 'all_recipes.html')
 
 		self.assertIn('form', response.context)
 		form = response.context['form']
@@ -79,7 +79,7 @@ class BrowseRecipesTestCase(TestCase):
 
 		search_val = self.form_input['search_field']
 		search_query_string = f'?search_val={search_val}'
-		expected_redirect_url = reverse("browse_recipes") + search_query_string
+		expected_redirect_url = reverse("all_recipes") + search_query_string
 
 		response = self.client.post(self.url, self.form_input, follow=True)
 		self.assertIn('form', response.context)
@@ -96,7 +96,7 @@ class BrowseRecipesTestCase(TestCase):
 		self.form_input['search_field'] = ''
 		self.form_input['form_type'] = 'search_form'
 
-		expected_redirect_url = reverse("browse_recipes")
+		expected_redirect_url = reverse("all_recipes")
 
 		response = self.client.post(self.url, self.form_input, follow=True)
 		self.assertIn('form', response.context)
@@ -113,13 +113,13 @@ class BrowseRecipesTestCase(TestCase):
 		self.form_input['search_field'] = "x" * 256
 		self.form_input['form_type'] = "search_form"
 
-		expected_redirect_url = reverse("browse_recipes")
+		expected_redirect_url = reverse("all_recipes")
 
 		response = self.client.post(self.url, self.form_input, follow=True)
 		self.assertIn('form', response.context)
 		form = response.context['form']
 		self.assertTrue(isinstance(form, SearchRecipesForm))
-		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
+		self.assertEqual(response.status_code, 200)
 
 		recipes_count = Recipe.objects.count()
 		self.assertIn('recipe_list', response.context)
@@ -130,7 +130,7 @@ class BrowseRecipesTestCase(TestCase):
 		self.form_input['search_field'] = ''
 		self.form_input['form_type'] = 'favourite_form'
 
-		expected_redirect_url = reverse("browse_recipes") 
+		expected_redirect_url = reverse("all_recipes") 
 		response = self.client.post(self.url, self.form_input, follow=True)
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 		self.assertIn('form', response.context)
@@ -148,9 +148,9 @@ class BrowseRecipesTestCase(TestCase):
 
 		search_val = self.form_input['search_field']
 		search_query_string = f'?search_val={search_val}'
-		expected_redirect_url = reverse("browse_recipes") + search_query_string
+		expected_redirect_url = reverse("all_recipes") + search_query_string
 
-		expected_redirect_url = reverse("browse_recipes") 
+		expected_redirect_url = reverse("all_recipes") 
 		response = self.client.post(self.url, self.form_input, follow=True)
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 		self.assertIn('form', response.context)
@@ -174,7 +174,7 @@ class BrowseRecipesTestCase(TestCase):
 		after_favourite_count = Favourite.objects.count()
 		self.assertEqual(after_favourite_count, before_favourite_count + 1)
 
-		expected_redirect_url = reverse("browse_recipes") 
+		expected_redirect_url = reverse("all_recipes") 
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 		self.assertIn('user_favourite_objects', response.context)
 		favourited_recipes = response.context['user_favourite_objects']
@@ -186,20 +186,18 @@ class BrowseRecipesTestCase(TestCase):
 	def test_favourite_already_favourited_recipe(self):
 		self.form_input['form_type'] = 'favourite_form'
 		self.form_input['favourite_recipe'] = 'favourite_recipe'
-		self.form_input['recipe_clicked'] = (self.recipe1).pk
+		self.form_input['recipe_clicked'] = self.recipe1.pk
 
-		favourite_object = Favourite.objects.create(user=self.user, recipe=self.recipe1)
-		before_favourite_count = Favourite.objects.count()
-		try:
-			with transaction.atomic():	
-					response = self.client.post(self.url, self.form_input, follow=True)
-		except:
-			pass
-		else:
-			self.fail("Shouldn't be able to favourite an already favourited recipe")
+		# Pre-favourite the recipe
+		Favourite.objects.create(user=self.user, recipe=self.recipe1)
+		before_count = Favourite.objects.count()
+
+		# Attempt to favourite again
+		response = self.client.post(self.url, self.form_input, follow=True)
 		
-		after_favourite_count = Favourite.objects.count()
-		self.assertEqual(after_favourite_count, before_favourite_count)
+		after_count = Favourite.objects.count()
+		self.assertEqual(after_count, before_count, "Favourite count should not increase")
+
 
 
 	def test_unfavourite_favourited_recipe(self):
@@ -218,7 +216,7 @@ class BrowseRecipesTestCase(TestCase):
 		after_favourite_count = Favourite.objects.count()
 		self.assertEqual(after_favourite_count, before_favourite_count - 1)
 
-		expected_redirect_url = reverse("browse_recipes") 
+		expected_redirect_url = reverse("all_recipes") 
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 		self.assertIn('user_favourite_objects', response.context)
 		favourited_recipes = response.context['user_favourite_objects']

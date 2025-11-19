@@ -51,7 +51,6 @@ def browse_recipes(request):
                 return HttpResponseRedirect(path)
         else:
             search_val = ''
-            form = None
 
     else:  
         form = SearchRecipesForm()
