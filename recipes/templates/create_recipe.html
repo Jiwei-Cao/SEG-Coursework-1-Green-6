@@ -1,9 +1,12 @@
 {% extends 'base_content.html' %}
 {% block content %}
+{{ form.media.css }}
 <h2>Create a New Recipe</h2>
-<form method="post">
-    {% csrf_token %} 
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Save Recipe</button>
 </form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{ form.media.js }}
 {% endblock %}
