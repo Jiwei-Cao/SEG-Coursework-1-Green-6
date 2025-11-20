@@ -1,0 +1,24 @@
+[
+    {
+        "model": "recipes.recipe",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "title": "Tomato Soup",
+            "description": "Basic soup",
+            "ingredients": "Tomatoes\nSalt\nWater",
+            "method": "Boil tomatoes.\nBlend.\nServe."
+        }
+    },
+    {
+        "model": "recipes.recipe",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "title": "Chicken Curry",
+            "description": "Simple curry",
+            "ingredients": "Chicken\nCurry paste\nOnions",
+            "method": "Cook onions.\nAdd chicken.\nAdd paste."
+        }
+    }
+]
