@@ -50,7 +50,9 @@ def browse_recipes(request):
                 return HttpResponseRedirect(path)
         else:
             search_val = ''
-            form = None
+            form = SearchRecipesForm()
+            path = reverse('browse_recipes') 
+            return HttpResponseRedirect(path)
 
     else:  
         form = SearchRecipesForm()
