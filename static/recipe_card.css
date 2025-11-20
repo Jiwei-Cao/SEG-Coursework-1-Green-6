@@ -24,8 +24,7 @@
 
 .favourite-button:hover {
   transform: scale(1.05);
-  background-color: #ea78b6;
-  color: #ccc;
+  background-color: rgb(225, 146, 190);
 }
 
 .unfavourite-button {
@@ -45,6 +44,11 @@
   transform: scale(1.05);
   background-color: rgb(225, 146, 190);
 }
+
+.unfavourite-button:hover i {
+  color: #ec466d;
+}
+
 
 .specific_recipe_card {
   width: 80%;

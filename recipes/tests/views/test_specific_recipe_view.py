@@ -78,3 +78,11 @@ class SpecificRecipeViewTestCase(TestCase):
         rating_count = response.context['rating_count']
         self.assertEqual(average_rating, 0) 
         self.assertEqual(rating_count, 0)    
+
+    def test_post_rating_no_rating_value(self):
+        """Test posting a rating with no value."""
+        response = self.client.post(self.url, {'form_type': 'rating_form'})
+        self.assertEqual(response.status_code, 302)
+
+        rating = Rating.objects.get(user=self.user, recipe=self.recipe)
+        self.assertEqual(rating.rating, 4)

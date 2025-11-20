@@ -44,8 +44,9 @@
           <h6 class="fw-bold">Method:</h6>
           <p class="mb-3">{{recipe.method}}</p>
 
-          <div class="d-flex flex-column flex-md-row gap-3 mt-2 mb-3">
             {% if recipe.user != user %}
+            <span class="fw-bold small">Your Rating:</span>
+            <div class="d-flex flex-column flex-md-row gap-3 mb-3">
             <form method="post" class="rating-form">
               {% csrf_token %}
               <input type="hidden" name="form_type" value="rating_form" />

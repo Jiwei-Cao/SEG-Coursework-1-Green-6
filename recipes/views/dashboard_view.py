@@ -14,7 +14,7 @@ def dashboard(request):
     is not authenticated, they are automatically redirected to the login
     page.
     """
-
+    
     recipes = Recipe.objects.all()
     rated_recipes = sorted(
         recipes,

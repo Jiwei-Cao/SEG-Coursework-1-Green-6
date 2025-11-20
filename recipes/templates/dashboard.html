@@ -25,7 +25,7 @@
               <p class="card-text">
                 {{recipe.description}}
               </p>
-              <a href="{% url 'get_recipe' recipe.id %}" class="btn link-button mt-auto">Find out more</a>
+              <a href="{% url 'get_recipe' recipe.id %}" class="btn link-button mt-auto">Check it out</a>
             </div>
           </div>
         </div>
@@ -33,33 +33,34 @@
       </div>
     </div>
   </div>
-  <div class="row justify-content-center g-4 feature-item-container">
+  <div class="row justify-content-center g-4 feature-item-container mt-1">
+    <h2 class="h4 mb-2 fst-italic">Features</h2>
     <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill">
+      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
         <h2 class="h4 mb-3">All Recipes <i class="bi bi-bookmark-plus"></i></h2>
         <p>
           Find the perfect recipe based on your preferences, e.g. ingredients
           available, cooking time
         </p>
-        <a href = "{% url 'all_recipes' %}" class="link-button btn" >Go here</a>
+        <a href = "{% url 'all_recipes' %}" class="link-button btn mt-auto" >Go here</a>
       </div>
     </div>
     <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill">
+      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
         <h2 class="h4 mb-3">
           Create Your Recipe <i class="bi bi-file-earmark-text"></i>
         </h2>
         <p>Create and store your own recipe</p>
-         <a href = "{% url 'create_recipe' %}" class="link-button btn" >Go here</a>
+         <a href = "{% url 'create_recipe' %}" class="link-button btn mt-auto" >Go here</a>
       </div>
     </div>
     <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill">
+      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
         <h2 class="h4 mb-3">
           Your Profile <i class="bi bi-person-circle"></i>
         </h2>
         <p>Have a look at what recipes you have created!!</p>
-        <a href = "{% url 'profile_page' %}" class="link-button btn" >Go here</a>
+        <a href = "{% url 'profile_page' %}" class="link-button btn mt-auto" >Go here</a>
       </div>
     </div>
   </div>

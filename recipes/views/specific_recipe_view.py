@@ -6,35 +6,48 @@ from math import floor
 @login_required
 def get_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    if request.method == "POST" and request.POST.get("form_type") == "rating_form":
-        rating_value = request.POST.get("rating")
-        if rating_value:
-            try:
-                rating_value = int(rating_value)
-                if 1 <= rating_value <= 5:
-                    Rating.objects.update_or_create(
-                        user=request.user,
-                        recipe=recipe,
-                        defaults={'rating': rating_value}
-                    )
-            except ValueError:
-                   pass
+    if is_rating_post(request):
+        handle_rating_post(request, recipe)
         return HttpResponseRedirect(request.path_info)
-    
+
+    context = create_recipe_context(request.user,recipe)
+    return render(request, "specific_recipe.html", context)
+
+def is_rating_post(request):
+    return request.method == "POST" and request.POST.get("form_type") == "rating_form"
+
+def handle_rating_post(request, recipe):
+    rating_value = request.POST.get("rating")
+    if not rating_value:
+        return
     try:
-        user_rating = Rating.objects.get(user=request.user, recipe=recipe).rating
-    except Rating.DoesNotExist:
-        user_rating = None
+        rating_value = int(rating_value)
+    except ValueError:
+        return
+    if 1 <= rating_value <= 5:
+        Rating.objects.update_or_create(
+            user=request.user,
+            recipe=recipe,
+            defaults={'rating': rating_value}
+        )
 
-    average_rating = recipe.average_rating
-    rating_count = recipe.rating_count
+def get_user_rating(user,recipe):
+    rating = Rating.objects.filter(user=user, recipe=recipe).first()
+    return rating.rating if rating else None
 
+def calculate_star_distribution(average_rating):
     full_stars = int(floor(average_rating))
     half_star = 1 if average_rating - full_stars >= 0.5 else 0
     empty_stars = 5 - full_stars - half_star
+    return full_stars, half_star, empty_stars
 
+def create_recipe_context(user,recipe):
+    user_rating = get_user_rating(user, recipe)
+    average_rating = recipe.average_rating
+    rating_count = recipe.rating_count
+    full_stars, half_star, empty_stars = calculate_star_distribution(average_rating)
 
-    context = {
+    return {
         "recipe": recipe,
         "user_rating": user_rating,
         "average_rating": average_rating, 
@@ -43,4 +56,3 @@ def get_recipe(request, recipe_id):
         "half_star": half_star,
         "empty_stars": range(empty_stars),
     }
-    return render(request, "specific_recipe.html", context)

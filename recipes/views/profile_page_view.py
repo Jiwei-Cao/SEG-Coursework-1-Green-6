@@ -19,23 +19,12 @@ def profile_page(request):
 
     recipes = Recipe.objects.filter(user=current_user)
 
-    all_ratings = Rating.objects.filter(recipe__in=recipes)
-    rating_count = all_ratings.count()
-    ratings_sum = sum(rating.rating for rating in all_ratings)
-    total_ratings = all_ratings.count()
-    current_user.rating = ratings_sum / total_ratings if total_ratings > 0 else 0
+    rating_count = calculate_user_rating(current_user,recipes)
 
-    rating = round(current_user.rating * 2) / 2
-    full_stars = int(floor(rating))
-    half_star = rating-full_stars==0.5
-    empty_stars = 5 - full_stars - half_star
+    full_stars,half_star, empty_stars = star_rating(current_user.rating)
 
-
-    favourite_recipes = []
-    favourite_recipe_ids = Favourite.objects.filter(user=current_user).values_list('recipe', flat=True)
-    for item in Recipe.objects.all():
-        if item.pk in favourite_recipe_ids:
-            favourite_recipes.append(item)
+    favourite_recipe_ids = get_favourite_recipes_id(current_user)
+    favourite_recipes = Recipe.objects.filter(pk__in=favourite_recipe_ids)
 
     if request.method == 'POST':
         handle_favourites_form_requests(request)
@@ -52,6 +41,25 @@ def profile_page(request):
         'favourite_recipes':  favourite_recipes,
         'user_favourited_recipe_ids': favourite_recipe_ids,
         })
+
+def calculate_user_rating(user,recipes):
+    all_ratings = Rating.objects.filter(recipe__in=recipes)
+    rating_count = all_ratings.count()
+    ratings_sum = sum(rating.rating for rating in all_ratings)
+    total_ratings = all_ratings.count()
+    user_rating = ratings_sum / total_ratings if total_ratings > 0 else 0
+    user.rating = user_rating
+    return rating_count
+
+def star_rating(rating):
+    rating = round(rating * 2) / 2
+    full_stars = int(floor(rating))
+    half_star = rating-full_stars==0.5
+    empty_stars = 5 - full_stars - half_star
+    return (full_stars, half_star, empty_stars)
+
+def get_favourite_recipes_id(user):
+    return list(Favourite.objects.filter(user=user).values_list('recipe', flat=True))
 
 def handle_favourites_form_requests(request):    
     if request.POST.get('favourite_recipe', '') == 'unfavourite_recipe':
