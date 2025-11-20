@@ -26,9 +26,30 @@ class RecipeModelTestCase(TestCase):
         self.recipe.title = ''
         self._assert_recipe_is_invalid()
 
-    
+    def test_title_may_contain_100_characters(self):
+        self.recipe.title = 'x' * 100
+        self._assert_recipe_is_valid()
 
-    
+    def test_title_must_not_contain_more_than_100_characters(self):
+        self.recipe.title = 'x' * 101
+        self._assert_recipe_is_invalid()
+
+    def test_description_must_not_be_blank(self):
+        self.recipe.description = ''
+        self._assert_recipe_is_invalid()
+
+    def test_ingredients_must_not_be_blank(self):
+        self.recipe.ingredients = ''
+        self._assert_recipe_is_invalid()
+
+    def test_method_must_not_be_blank(self):
+        self.recipe.method = ''
+        self._assert_recipe_is_invalid()
+
+    def test_str_returns_title(self):
+        self.recipe.title = "My Recipe Title"
+        self.assertEqual(str(self.recipe), "My Recipe Title")
+
     def _assert_recipe_is_valid(self):
         try:
             self.recipe.full_clean()

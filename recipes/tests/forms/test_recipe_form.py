@@ -32,8 +32,14 @@ class RecipeFormTestCase(TestCase):
         self.assertTrue(isinstance(form.fields['ingredients'], forms.CharField))
         self.assertTrue(isinstance(form.fields['method'], forms.CharField))
 
-    
-    
+    def test_valid_recipe_form(self):
+            form = RecipeForm(data=self.form_input)
+            self.assertTrue(form.is_valid())
+
+    def test_form_uses_model_validation(self):
+        self.form_input['title'] = ''
+        form = RecipeForm(data=self.form_input)
+        self.assertFalse(form.is_valid()) 
 
     def test_form_must_save_correctly(self):
         recipe = Recipe.objects.get(pk=1)
