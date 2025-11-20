@@ -20,16 +20,5 @@
             "ingredients": "Flour\nMilk\nEggs",
             "method": "Mix.\nFry.\nFlip."
         }
-    },
-    {
-        "model": "recipes.recipe",
-        "pk": 3,
-        "fields": {
-            "user": 1,
-            "title": "Chicken Curry",
-            "description": "Simple curry",
-            "ingredients": "Chicken\nCurry paste\nOnions",
-            "method": "Cook onions.\nAdd chicken.\nAdd paste."
-        }
     }
 ]

@@ -1,6 +1,6 @@
 """Unit tests for the Recipe model."""
 
-from recipes.models import Recipe, User 
+from recipes.models import Recipe
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
