@@ -24,8 +24,6 @@ def browse_recipes(request):
             
             elif request.POST.get('form_type') == 'search_form' :
                 try:
-                    #recipe_list = (6,7,8)
-                    #recipe_list = Recipe.objects.filter(title__contains=form.cleaned_data['search_field'])
                     search_val = form.cleaned_data['search_field']
                     selected_tags = form.cleaned_data['tags']
 
@@ -66,7 +64,6 @@ def browse_recipes(request):
 
         recipe_list = Recipe.objects.all()
         if search_val != '':
-            #recipe_list = (6,7,8)
             recipe_list = recipe_list.filter(title__contains=search_val)
 
         if tag_ids:

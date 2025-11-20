@@ -2,14 +2,14 @@
 <div class="container my-5 d-flex justify-content-center">
   <div class="card mb-3 specific_recipe_card">
     <div class="row g-0">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <img
           src="{{recipe.image.url}}"
           class="img-fluid rounded-start specific-recipe-card-image"
           alt="{{recipe.title}}"
         />
       </div>
-      <div class="col-md-8">
+      <div class="col-md-5">
         <div class="card-body d-flex flex-column pb-3">
           <div
             class="card-title d-flex justify-content-between align-items-center mb-2"
@@ -79,14 +79,15 @@
             </button>
           </div>
           <div class="comment mb-3 d-flex gap-2">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Add a comment"
-            />
-            <button type="submit" class="btn submit-button">
-              Submit Comment
-            </button>
+            <form action="{% url 'get_recipe' recipe.pk %}" method="post">
+              {% csrf_token %}
+               <input type="hidden" name="form_type" value="comment_form">
+               {% include 'partials/bootstrap_form.html' with form=form %}
+                <!--input type="text" name="comment_text" class="form-control" placeholder="Add a comment"  /-->
+              <button type="submit" class="btn submit-button">
+                Submit Comment
+              </button>
+            </form>
             {% endif %}
             
           </div>
@@ -95,7 +96,51 @@
           >
         </div>
       </div>
+      <div class="col-md-4">
+        <div class="card-body d-flex flex-column pb-3">
+          <div
+            class="card-title d-flex justify-content-between align-items-center mb-2"
+          >
+            <h6 class="card-title mb-0">Comments</h6>
+
+      
+          </div>
+
+          <div class="comment-container">
+            {% for comment in comments %}
+              {% if comment.recipe == recipe %}
+              <div class="card" >
+                <div class="card-body">
+                  <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
+                    {% with user=comment.user%}
+                    <img src="{{ user.gravatar }}"class="rounded-circle" />
+                    {% endwith %}
+                      {{comment.user}} {% if comment.user == user %} (YOU) {% endif %}
+                    
+                  </span>
+                  
+                  <small class="card-subtitle mb-2 text-body-secondary">{{comment.date_published}}</small>
+                  <p class="card-text">{{comment.comment}}</p>
+                  {% if comment.user == user %} 
+                    <form action="{% url 'get_recipe' recipe.pk %}" method="post">
+                      {% csrf_token %}
+                      <input type="hidden" name="form_type" value="delete_comment_form">
+                      <input type="hidden" name="comment_clicked" value="{{comment.id}}">
+                      <button class="btn btn-sm submit-button" type='submit'>Delete</button>
+                    </form>
+                  {% endif %}
+                </div>
+              </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </div>
 </div>
+
 {% endblock %}

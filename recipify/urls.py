@@ -33,10 +33,9 @@ urlpatterns = [
     path('profile_page/', views.profile_page, name='profile_page'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('all_recipes/', views.all_recipes, name='all_recipes'),
-    path('recipe/<int:recipe_id>/', views.get_recipe, name="get_recipe"),
+    path('recipe/<int:recipe_id>/', views.get_recipe, name='get_recipe'),
     path('cupboard/', views.cupboard, name="cupboard"),
-    path('select2/', include('django_select2.urls'),
-
+    path('select2/', include('django_select2.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

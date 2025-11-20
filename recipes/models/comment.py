@@ -1,0 +1,11 @@
+from django.db import models
+from .user import User
+from .recipe import Recipe
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    comment = models.TextField()
+    date_published = models.DateTimeField()
+    
+   
