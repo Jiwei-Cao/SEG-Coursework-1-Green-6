@@ -34,8 +34,7 @@
             <i class="bi bi-star-half half"></i>
             {% endif %} {% for _ in empty_stars %}
             <i class="bi bi-star"></i>
-            {% endfor %}
-            {{average_rating}} from {{rating_count}} rating(s)
+            {% endfor %} {{average_rating}} from {{rating_count}} rating(s)
           </p>
 
           <h6 class="fw-bold">Ingredients:</h6>
@@ -44,9 +43,9 @@
           <h6 class="fw-bold">Method:</h6>
           <p class="mb-3">{{recipe.method}}</p>
 
-            {% if recipe.user != user %}
-            <span class="fw-bold small">Your Rating:</span>
-            <div class="d-flex flex-column flex-md-row gap-3 mb-3">
+          {% if recipe.user != user %}
+          <span class="fw-bold small">Your Rating:</span>
+          <div class="d-flex flex-column flex-md-row gap-3 mb-3">
             <form method="post" class="rating-form">
               {% csrf_token %}
               <input type="hidden" name="form_type" value="rating_form" />
@@ -55,20 +54,20 @@
                 name="recipe_clicked"
                 value="{{ recipe.id }}"
               />
-              <div class="star-rating d-flex flex-md-row gap-2" >
-                <div class = "d-flex gap-2 mr-3">
-                {% for i in "54321" %} 
-                <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}"
-           {% if user_rating|stringformat:"i" == i %}checked{% endif %} />
-                <label for="star{{ i }}" title="{{ i }} stars">
-                  <i class="bi bi-star-fill"></i>
-                </label>
-                {% endfor %}
-                </div>  
+              <div class="star-rating d-flex flex-md-row gap-2">
+                <div class="d-flex gap-2 mr-3">
+                  {% for i in "54321" %} <input type="radio" id="star{{ i }}"
+                  name="rating" value="{{ i }}" {% if user_rating|stringformat:"i" == i %}
+                  checked{% endif %} />
+                  <label for="star{{ i }}" title="{{ i }} stars">
+                    <i class="bi bi-star-fill"></i>
+                  </label>
+                  {% endfor %}
+                </div>
                 <button type="submit" class="btn submit-button">
-                Submit Rating
-              </button>
-            </div>
+                  Submit Rating
+                </button>
+              </div>
             </form>
           </div>
           <div class="comment mb-3 d-flex gap-2">
@@ -82,9 +81,11 @@
             </button>
             {% endif %}
           </div>
+          <div class = "d-flex justify-content-center mt-auto">
           <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
             >Back to Recipes</a
           >
+          </div>
         </div>
       </div>
     </div>
