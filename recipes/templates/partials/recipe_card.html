@@ -19,21 +19,18 @@
     </div>
     <div class="mt-auto d-flex flex-column flex-md-row justify-content-center gap-3">
     {% if recipe.user != user %}
-      <form method="post" class="favourite-form">
+      <form method="post" action="{% url 'toggle_favourite' recipe.id %}">
         {% csrf_token %}
-        <input type="hidden" name="form_type" value="favourite_form" />
-        <input type="hidden" name="recipe_clicked" value="{{ recipe.id }}" />
         {% if user in recipe.favourites.all %}
         <input
           type="hidden"
           name="favourite_recipe"
           value="unfavourite_recipe"
         />
-        <button type="submit" class="unfavourite-button w-auto mt-auto">
+        <button type="submit" class="favourite-button w-auto mt-auto">
           Unfavourite <i class="bi bi-heartbreak-fill"></i>
         </button>
         {% else %}
-        <input type="hidden" name="favourite_recipe" value="favourite_recipe" />
         <button type="submit" class="favourite-button w-auto mt-auto">
           Favourite <i class="bi bi-heart"></i>
         </button>

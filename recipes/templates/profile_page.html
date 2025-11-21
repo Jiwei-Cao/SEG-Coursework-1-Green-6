@@ -72,9 +72,9 @@
     </h2>
 
     <div class="collapse mt-3" id="favouritesCollapse">
-      {% if favourite_recipes %}
+      {% if user.recipes_favourited.all %}
       <div class="row g-3">
-        {% for recipe in favourite_recipes %}
+        {% for recipe in user.recipes_favourited.all %}
         <div class="col-4">
           {% include "partials/recipe_card.html" with recipe=recipe %}
         </div>

@@ -29,10 +29,10 @@ def browse_recipes(request):
                 params.append(f'order_by={order_by}')
             query = '?' + '&'.join(params) if params else ''
             
-            path = reverse('browse_recipes') + query
+            path = reverse('all_recipes') + query
             return HttpResponseRedirect(path)
         else:
-            return HttpResponseRedirect(reverse('browse_recipes'))
+            return HttpResponseRedirect(reverse('all_recipes'))
     else:
         search_val = request.GET.get('search_val', '')
         tag_ids = request.GET.get('tags','')
