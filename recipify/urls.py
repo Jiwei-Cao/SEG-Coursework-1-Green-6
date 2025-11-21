@@ -37,6 +37,7 @@ urlpatterns = [
     path('user/<int:user_id>/follow/', views.follow_user, name="follow_user"),
     path('user/<int:user_id>/unfollow/', views.unfollow_user, name="unfollow_user"),
     path('cupboard/', views.cupboard, name="cupboard"),
+    path('recipe/<int:recipe_id>/toggle_favourite', views.toggle_favourite, name='toggle_favourite'),
     path('select2/', include('django_select2.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

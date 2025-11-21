@@ -19,4 +19,16 @@ class SearchRecipesForm(forms.Form):
                 'style':'width: 20%',
                 'data-minimum-input-length':0
             }
-        ))
+        )
+	)
+	order_by = forms.ChoiceField(
+		choices=[
+			('-created_at', 'Newest'),
+			('created_at', 'Oldest'),
+			('rating', 'Highest rated'),
+			('-rating', 'Lowest rated'),
+			('favourites', 'Most favourited'),
+			('-favourites', 'Least favourited')
+        ],
+		required=False
+    )

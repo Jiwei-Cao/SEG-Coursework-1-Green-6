@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.db.models import Count
 
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
 from django.urls import reverse
 
 from recipes.forms import SearchRecipesForm
-from recipes.forms import FavouriteForm
 from recipes.models import Recipe
-from recipes.models import Favourite
+
 
 @login_required
 def browse_recipes(request):
@@ -15,110 +15,55 @@ def browse_recipes(request):
     if request.method == "POST":
         form = SearchRecipesForm(request.POST)
         if form.is_valid():
-            if request.POST.get('form_type') == 'favourite_form':
-                search_val = handle_favourites_form_requests(request)
-                path = reverse('all_recipes') + search_val
+            search_val = form.cleaned_data['search_field']
+            selected_tags = form.cleaned_data['tags']
+            order_by = form.cleaned_data['order_by']
 
-                return HttpResponseRedirect(path)
+            params = []
+            if search_val:
+                params.append(f'search_val={search_val}')
+            if selected_tags:
+                tag_ids = ','.join(str(tag.id) for tag in selected_tags)
+                params.append(f'tags={tag_ids}')
+            if order_by:
+                params.append(f'order_by={order_by}')
+            query = '?' + '&'.join(params) if params else ''
             
-            elif request.POST.get('form_type') == 'search_form' :
-                try:
-                    search_val = form.cleaned_data['search_field']
-                    selected_tags = form.cleaned_data['tags']
-
-                    params = []
-                    if search_val:
-                        params.append(f'search_val={search_val}')
-                    if selected_tags:
-                        tag_ids = ','.join(str(tag.id) for tag in selected_tags)
-                        params.append(f'tags={tag_ids}')
-                    query = '?' + '&'.join(params) if params else ''
-
-                    
-
-                except:
-                    form.add_error(None, "It wasn't possible to complete this search")
-                    query = ''
-                else:
-                    path = reverse('all_recipes') + query
-                    return HttpResponseRedirect(path)
-
-
-            else:
-                path = reverse('all_recipes') 
-                return HttpResponseRedirect(path)
+            path = reverse('all_recipes') + query
+            return HttpResponseRedirect(path)
         else:
-            search_val = ''
-            form = None
-
-    else:  
-        form = SearchRecipesForm()
+            return HttpResponseRedirect(reverse('all_recipes'))
+    else:
         search_val = request.GET.get('search_val', '')
         tag_ids = request.GET.get('tags','')
         initial_data = {'search_field': search_val}
+        order_by = request.GET.get('order_by','')
+        initial_data['order_by'] = order_by
         if tag_ids:
             tag_ids = [int (tag_id) for tag_id in tag_ids.split(',')]
             initial_data['tags'] = tag_ids
-        form = SearchRecipesForm(initial= initial_data)
+        form = SearchRecipesForm(initial=initial_data)
 
-        recipe_list = Recipe.objects.all()
         if search_val != '':
             recipe_list = recipe_list.filter(title__contains=search_val)
 
         if tag_ids:
             recipe_list = recipe_list.filter(tags__id__in=tag_ids).distinct()
-        
-        
 
-    favourited_recipe_ids = list(Favourite.objects.filter(user=request.user).values_list('recipe', flat=True))
-    recipe_favourite_counts = map_recipe_to_favourite_count()
-    user_favourite_objects = Favourite.objects.filter(user=request.user)
+        if order_by:
+            if order_by == 'favourites' or order_by == '-favourites':
+                recipe_list = recipe_list.annotate(fav_count = Count('favourites'))
+                if order_by == 'favourites':
+                    recipe_list = recipe_list.order_by('fav_count')
+                else:
+                    recipe_list = recipe_list.order_by('-fav_count')
+            else:
+                recipe_list = recipe_list.order_by(order_by)
 
     context = {
     'recipe_list': recipe_list,
     'search_val': search_val,
-    'user_favourite_objects': user_favourite_objects, 
-    'user_favourited_recipe_ids': favourited_recipe_ids, 
-    'single_recipe_favourites_count': recipe_favourite_counts,
-    'form' : form,
-    'user': request.user,
+    'form' : form
     }
 
     return render(request, 'all_recipes.html', context)
-
-
-def handle_favourites_form_requests(request):    
-    if request.POST.get('favourite_recipe', '') == 'unfavourite_recipe':
-        unfavourite_recipe(request)
-    elif request.POST.get('favourite_recipe', '') == 'favourite_recipe':
-        favourite_recipe(request)
-
-    search_val = request.POST.get('search_val', '')
-    search_query_string = f'?search_val={search_val}'
-    if search_val == '' :
-        search_query_string = ''
-
-    return search_query_string
-
-
-def favourite_recipe(request):
-    recipe_id = request.POST.get("recipe_clicked")
-    if recipe_id:
-        recipe = Recipe.objects.get(pk=int(recipe_id))
-        Favourite.objects.get_or_create(user=request.user, recipe=recipe)  # avoids duplicates
-
-def unfavourite_recipe(request):
-    recipe_id = request.POST.get("recipe_clicked")
-    if recipe_id:
-        Favourite.objects.filter(user=request.user, recipe_id=int(recipe_id)).delete()
-
-
-    
-
-def map_recipe_to_favourite_count():
-    favourite_count_on_recipes = []
-    for recipe in Recipe.objects.all():
-        count = Favourite.objects.filter(recipe=recipe.pk).count()
-        favourite_count_on_recipes.append((recipe.pk, count))
-
-    return favourite_count_on_recipes
