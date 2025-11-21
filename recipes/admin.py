@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Recipe, Ingredient
+from .models import User, Recipe, Ingredient, Unit, RecipeIngredient, RecipeMethod
 
 # Register your models here.
 
@@ -15,4 +15,6 @@ class AccountAdmin(UserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Recipe)
 admin.site.register(Ingredient)
-
+admin.site.register(Unit)
+admin.site.register(RecipeIngredient)
+admin.site.register(RecipeMethod)

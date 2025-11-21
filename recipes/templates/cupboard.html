@@ -6,7 +6,10 @@
 {% block content %}
 <h2>Your Ingredients</h2>
 <p><b>Ingredients</b>:</p>
-    {% for ingredient in ingredient_list %}
+    {% for ingredient in ingredients %}
+      <div class="col-md-4">
+        {{ingredient.name}}
+      </div>
     {% endfor %}
 
 <h3>Add new ingredient</h3>
