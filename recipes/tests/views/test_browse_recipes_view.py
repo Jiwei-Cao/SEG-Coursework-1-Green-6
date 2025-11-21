@@ -252,8 +252,25 @@ class BrowseRecipesTestCase(TestCase):
 		self.assertEqual(after_favourite_count, before_favourite_count)
 
 
+	def test_map_recipe_to_favourite_count(self):
+		self.form_input['form_type'] = 'favourite_form'
+		self.form_input['favourite_recipe'] = 'favourite_recipe'
+		self.form_input['recipe_clicked'] = (self.recipe1).pk
 
-	#def test_generate_search_query_string(self):
+		response = self.client.post(self.url, self.form_input, follow=True)
+
+		self.assertIn('single_recipe_favourites_count', response.context)
+		recipe_favourite_map = response.context['single_recipe_favourites_count']
+		self.assertTrue(isinstance(recipe_favourite_map, list))
+		self.assertEqual(len(recipe_favourite_map), 2)
+		for pair in recipe_favourite_map:
+			if pair[0] == (self.recipe1).pk:
+				self.assertEqual(pair[1], 1)
+			elif pair[0] == (self.recipe2).pk:
+				self.assertEqual(pair[1], 0)
 
 
-	#def test_map_recipe_to_favourite_count(self):
+
+
+
+

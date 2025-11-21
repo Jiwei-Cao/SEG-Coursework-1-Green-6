@@ -13,12 +13,44 @@
             </div>
         {% endfor %}
     </div>
-    <div
-      class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-3"
-    >
-      <a href="" class="btn favourite-button">
-        Favourite <i class="bi bi-heart"></i>
-      </a>
+    
+    <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-3">
+      <form action="{% url 'browse_recipes' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="favourite_form">
+        <input type="hidden" name="recipe_clicked" value= '{{ recipe.pk }}'>
+        <input type="hidden" name="search_val" value= "{{ search_val }}">
+        {% if recipe.pk in user_favourited_recipe_ids %}
+          <input type="hidden" name="favourite_recipe" value= "unfavourite_recipe">
+            <button type="submit" class="btn favourite-button">
+              Favourite <i class="bi bi-heart-fill"></i>
+            
+                <p style="display:inline;"> 
+                    {% for key, value in single_recipe_favourites_count %}
+                      {% if key == recipe.pk %}
+                          {{value}}
+                      {% endif%}
+                    {% endfor %}
+                </p>
+            </button>
+                        
+        {% else %}
+          <input type="hidden" name="favourite_recipe" value="favourite_recipe">
+          <button type="submit" class="btn favourite-button">
+              Favourite <i class="bi bi-heart"></i>
+            
+                <p style="display:inline;"> 
+                    {% for key, value in single_recipe_favourites_count %}
+                      {% if key == recipe.pk %}
+                          {{value}}
+                      {% endif%}
+                    {% endfor %}
+                </p>
+            </button>
+        {% endif %}
+    </form>
+      
+        
       {% if recipe.id %}
       <a href="{% url 'get_recipe' recipe.id %}" class="btn link-button">
         Check it out
@@ -27,3 +59,4 @@
     </div>
   </div>
 </div>
+
