@@ -9,7 +9,6 @@ from recipes.forms import FavouriteForm
 from recipes.models import Recipe
 from recipes.models import Favourite
 
-
 @login_required
 def browse_recipes(request):
     recipe_list = Recipe.objects.all()
@@ -18,7 +17,7 @@ def browse_recipes(request):
         if form.is_valid():
             if request.POST.get('form_type') == 'favourite_form':
                 search_val = handle_favourites_form_requests(request)
-                path = reverse('browse_recipes') + search_val
+                path = reverse('all_recipes') + search_val
 
                 return HttpResponseRedirect(path)
             
@@ -41,18 +40,16 @@ def browse_recipes(request):
                     form.add_error(None, "It wasn't possible to complete this search")
                     query = ''
                 else:
-                    path = reverse('browse_recipes') + query
+                    path = reverse('all_recipes') + query
                     return HttpResponseRedirect(path)
 
 
             else:
-                path = reverse('browse_recipes') 
+                path = reverse('all_recipes') 
                 return HttpResponseRedirect(path)
         else:
             search_val = ''
-            form = SearchRecipesForm()
-            path = reverse('browse_recipes') 
-            return HttpResponseRedirect(path)
+            form = None
 
     else:  
         form = SearchRecipesForm()
@@ -73,7 +70,7 @@ def browse_recipes(request):
         
         
 
-    favourited_recipe_ids = Favourite.objects.filter(user=request.user).values_list('recipe', flat=True)
+    favourited_recipe_ids = list(Favourite.objects.filter(user=request.user).values_list('recipe', flat=True))
     recipe_favourite_counts = map_recipe_to_favourite_count()
     user_favourite_objects = Favourite.objects.filter(user=request.user)
 
@@ -83,13 +80,14 @@ def browse_recipes(request):
     'user_favourite_objects': user_favourite_objects, 
     'user_favourited_recipe_ids': favourited_recipe_ids, 
     'single_recipe_favourites_count': recipe_favourite_counts,
-    'form' : form
+    'form' : form,
+    'user': request.user,
     }
 
-    return render(request, 'browse_recipes.html', context)
+    return render(request, 'all_recipes.html', context)
 
 
-def handle_favourites_form_requests(request):
+def handle_favourites_form_requests(request):    
     if request.POST.get('favourite_recipe', '') == 'unfavourite_recipe':
         unfavourite_recipe(request)
     elif request.POST.get('favourite_recipe', '') == 'favourite_recipe':
@@ -104,31 +102,16 @@ def handle_favourites_form_requests(request):
 
 
 def favourite_recipe(request):
-
-    form = FavouriteForm(request.POST)
-
-    try:
-        current_user = request.user
-        recipe_clicked = Recipe.objects.get(pk=(request.POST.get("recipe_clicked")))
-        favourite = Favourite(user=current_user, recipe=recipe_clicked)
-        favourite.save() 
-    except:
-        form.add_error(None, " Couldn't favourite this recipe") 
-
-    return render(request, 'browse_recipes.html')
-
+    recipe_id = request.POST.get("recipe_clicked")
+    if recipe_id:
+        recipe = Recipe.objects.get(pk=int(recipe_id))
+        Favourite.objects.get_or_create(user=request.user, recipe=recipe)  # avoids duplicates
 
 def unfavourite_recipe(request):
+    recipe_id = request.POST.get("recipe_clicked")
+    if recipe_id:
+        Favourite.objects.filter(user=request.user, recipe_id=int(recipe_id)).delete()
 
-    try:
-        favourite = Favourite.objects.filter(user=request.user, recipe=request.POST.get("recipe_clicked"))
-    except Favourite.DoesNotExist:
-        raise Http404(f"Could not unfavourite recipe")
-        return HttpResponseNotFound()
-    else: 
-        favourite.delete()
-
-    return render(request, 'browse_recipes.html')
 
     
 

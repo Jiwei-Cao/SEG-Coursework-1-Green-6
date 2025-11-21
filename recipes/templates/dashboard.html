@@ -16,88 +16,51 @@
     <div class="col-12">
       <h2 class="h4 mb-3 fst-italic">Most Popular Recipes</h2>
       <div class="row">
-        <div class="col-md-3">
-          <div class="card recipe-card text-center">
-            <div class="card-body">
-              <h5 class="card-title">Recipe Title</h5>
+        {% for recipe in rated_recipes %}
+        <div class="col-md-3 d-flex">
+          <div class="card recipe-card text-center flex-fill d-flex flex-column">
+            <img src="{{recipe.img.url}}" class="card-img-top recipe-image" alt="{{recipe.title}}"/>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title" >{{recipe.title}}</h5>
               <p class="card-text">
-                Some quick example text to build on the recipe title and make up
-                the bulk of the recipe's description. You can write a short note
-                here about its flavor or ingredients.
+                {{recipe.description}}
               </p>
-              <button class="link-button">Find out more</button>
+              <a href="{% url 'get_recipe' recipe.id %}" class="btn link-button mt-auto">Check it out</a>
             </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="card recipe-card text-center">
-            <div class="card-body">
-              <h5 class="card-title">Recipe Title</h5>
-              <p class="card-text">
-                Some quick example text to build on the recipe title and make up
-                the bulk of the recipe's description. You can write a short note
-                here about its flavor or ingredients.
-              </p>
-              <button class="link-button">Find out more</button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card recipe-card text-center">
-            <div class="card-body">
-              <h5 class="card-title">Recipe Title</h5>
-              <p class="card-text">
-                Some quick example text to build on the recipe title and make up
-                the bulk of the recipe's description. You can write a short note
-                here about its flavor or ingredients.
-              </p>
-              <button class="link-button">Find out more</button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card recipe-card text-center">
-            <div class="card-body">
-              <h5 class="card-title">Recipe Title</h5>
-              <p class="card-text">
-                Some quick example text to build on the recipe title and make up
-                the bulk of the recipe's description. You can write a short note
-                here about its flavor or ingredients.
-              </p>
-              <button class="link-button">Find out more</button>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
     </div>
   </div>
-  <div class="row justify-content-center g-4 feature-item-container">
+  <div class="row justify-content-center g-4 feature-item-container mt-1">
+    <h2 class="h4 mb-0 fst-italic">Features</h2>
     <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill">
+      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
         <h2 class="h4 mb-3">All Recipes <i class="bi bi-bookmark-plus"></i></h2>
         <p>
           Find the perfect recipe based on your preferences, e.g. ingredients
           available, cooking time
         </p>
-        <a href = "{% url 'all_recipes' %}" class="link-button btn" >Go here</a>
+        <a href = "{% url 'all_recipes' %}" class="link-button btn mt-auto" >Go here</a>
       </div>
     </div>
     <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill">
+      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
         <h2 class="h4 mb-3">
           Create Your Recipe <i class="bi bi-file-earmark-text"></i>
         </h2>
         <p>Create and store your own recipe</p>
-         <a href = "{% url 'create_recipe' %}" class="link-button btn" >Go here</a>
+         <a href = "{% url 'create_recipe' %}" class="link-button btn mt-auto" >Go here</a>
       </div>
     </div>
     <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill">
+      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
         <h2 class="h4 mb-3">
           Your Profile <i class="bi bi-person-circle"></i>
         </h2>
         <p>Have a look at what recipes you have created!!</p>
-        <a href = "{% url 'profile_page' %}" class="link-button btn" >Go here</a>
+        <a href = "{% url 'profile_page' %}" class="link-button btn mt-auto" >Go here</a>
       </div>
     </div>
   </div>
