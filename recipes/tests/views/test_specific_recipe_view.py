@@ -86,3 +86,11 @@ class SpecificRecipeViewTestCase(TestCase):
 
         rating = Rating.objects.get(user=self.user, recipe=self.recipe)
         self.assertEqual(rating.rating, 4)
+
+    def test_post_out_of_bounds_rating(self):
+        """Test posting an out-of-bounds rating."""
+        response = self.client.post(self.url, {'form_type': 'rating_form', 'rating': '6'})
+        self.assertEqual(response.status_code, 302)
+
+        rating = Rating.objects.get(user=self.user, recipe=self.recipe)
+        self.assertEqual(rating.rating, 4)

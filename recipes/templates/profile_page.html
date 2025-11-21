@@ -25,7 +25,7 @@
           {% endfor %}
         </p>
         {% if user.rating != 0 %}
-        {{user.rating|floatformat:1}} 
+        {{user.rating|floatformat:1}}/5 from {{ rating_count }} ratings
         {% else %}
         No ratings yet
         {% endif %}

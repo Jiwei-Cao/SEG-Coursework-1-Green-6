@@ -67,3 +67,32 @@
   transform: translateX(5px); 
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
+
+@media (max-width: 576px) {
+  .recipe-card{
+    width: 90%;
+    max-width: 100%;
+    margin: 10px auto;
+  }
+
+  .recipe-card .card-body {
+    padding: 1rem;
+  }
+
+  .recipe-card .card-title{
+    font-size:16px;
+  }
+
+  .recipe-card .card-text{
+    font-size: 14px;
+  }
+
+  .recipe-card .recipe-image {
+    height: 20vh;
+  }
+
+  .link-button {
+    padding: 0.4rem 1rem;
+    font-size: 13px;
+  }
+}
