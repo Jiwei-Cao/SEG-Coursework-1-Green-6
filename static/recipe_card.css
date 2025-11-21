@@ -24,9 +24,31 @@
 
 .favourite-button:hover {
   transform: scale(1.05);
-  background-color: #ea78b6;
-  color: #ccc;
+  background-color: rgb(225, 146, 190);
 }
+
+.unfavourite-button {
+  background-color: #f7c1d1;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.unfavourite-button i {
+  color: #ea78b6;
+}
+
+.unfavourite-button:hover {
+  transform: scale(1.05);
+  background-color: rgb(225, 146, 190);
+}
+
+.unfavourite-button:hover i {
+  color: #ec466d;
+}
+
 
 .specific_recipe_card {
   width: 80%;
@@ -37,32 +59,51 @@
 
 .star-rating {
   display: flex;
-  flex-direction: row-reverse; /* highest star on left */
   justify-content: flex-start;
   font-size: 2rem;
 }
 
+.star-rating div{
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.2rem;
+}
+
 .star-rating input {
-  display: none; /* hide radio buttons */
+  display: none;
 }
 
 .star-rating label {
-  color: #ccc; /* empty star color */
+  color: #ccc;
   cursor: pointer;
   transition: color 0.2s;
 }
 
-/* Highlight stars when checked */
-.star-rating input:checked ~ label i,
-.star-rating input:checked + label i {
-  color: gold;
+.star-rating input:checked ~ label i {
+  color: #ccc; 
+}
+.star-rating input:checked + label i,
+.star-rating input:checked + label ~ label i {
+  color: gold; 
 }
 
-/* Highlight stars on hover */
 .star-rating label:hover i,
 .star-rating label:hover ~ label i {
   color: gold;
 }
+
+.rating i {
+  color: #ccc;
+}
+
+.rating .full {
+  color: gold;
+}
+
+.rating .half {
+  color: gold; 
+}
+
 
 .recipe-image {
   height: 27vh;

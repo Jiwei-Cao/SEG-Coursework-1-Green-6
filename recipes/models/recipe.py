@@ -13,5 +13,16 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     favourites = models.ManyToManyField(User,blank=True, related_name='recipes_favourited')
 
+    @property
+    def average_rating(self):
+        ratings = self.rating_set.all()
+        if ratings.exists():
+            return sum(r.rating for r in ratings) / ratings.count()
+        return 0
+
+    @property
+    def rating_count(self):
+        return self.rating_set.count()
+
     def __str__(self):
         return self.title 

@@ -66,4 +66,4 @@ def browse_recipes(request):
     'form' : form
     }
 
-    return render(request, 'browse_recipes.html', context)
+    return render(request, 'all_recipes.html', context)

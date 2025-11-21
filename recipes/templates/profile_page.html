@@ -1,4 +1,5 @@
-{% extends 'base_content.html' %} {% block content %}
+{% extends 'base_content.html' %} 
+{% block content %}
 <style>
   .pfp {
     border-radius: 50%;
@@ -7,39 +8,82 @@
   }
 </style>
 <div class="container">
-    <section class="mb-4 border-bottom border-1 border-dark">
-        <div class="row align-items-center">
-            <div class="col-auto">
-                <img src="{{ user.gravatar }}" class="pfp"/>
-            </div>
-            <div class="col">
-                <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
-                <p>
-                    {% for _ in full_stars %}
-                    <i class="bi bi-star-fill"></i>
-                    {% endfor %}
-                    {% if half_star %}
-                    <i class="bi bi-star-half"></i>
-                    {% endif %}
-                    {% for _ in empty_stars %}
-                    <i class="bi bi-star"></i>
-                    {% endfor %}
-                </p>
-            </div>
+  <section class="mb-4 border-bottom border-1 border-dark">
+    <div class="row align-items-center">
+      <div class="col-auto">
+        <img src="{{ user.gravatar }}" class="pfp" />
+      </div>
+      <div class="col">
+        <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
+        <p class = "rating mb-0">
+          {% for _ in full_stars %}
+          <i class="bi bi-star-fill full"></i>
+          {% endfor %} {% if half_star %}
+          <i class="bi bi-star-half half"></i>
+          {% endif %} {% for _ in empty_stars %}
+          <i class="bi bi-star"></i>
+          {% endfor %}
+        </p>
+        {% if user.rating != 0 %}
+        {{user.rating|floatformat:1}}/5 from {{ rating_count }} ratings
+        {% else %}
+        No ratings yet
+        {% endif %}
+      </div>
+    </div>
+    <div class="row mt-3">
+      <p>{{ user.bio }}</p>
+    </div>
+  </section>
+  {%if recipes|length == 0 %}
+  <p class="text-muted">
+    {% if user == request.user %} You haven't created any recipes yet. 
+    {% else %}
+    This user hasn't added any recipes yet.</p>
+    {% endif %}
+  {% else %}
+  <section class="mb-5">
+    <p>{{recipes|length}} recipes</p>
+    <div
+      class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
+      ref="recipeGrid"
+    >
+      {% for recipe in recipes %}
+      <div class="col-md-4">
+        {% include "partials/recipe_card.html" with recipe=recipe %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="mb-5">
+    <h2>
+      <button
+        class="btn btn-secondary"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#favouritesCollapse"
+        aria-expanded="false"
+        aria-controls="favouritesCollapse"
+      >
+        Show Favourites
+      </button>
+    </h2>
+
+    <div class="collapse mt-3" id="favouritesCollapse">
+      {% if favourite_recipes %}
+      <div class="row g-3">
+        {% for recipe in favourite_recipes %}
+        <div class="col-4">
+          {% include "partials/recipe_card.html" with recipe=recipe %}
         </div>
-        <div class="row mt-3">
-            <p>{{ user.bio }}</p>
-        </div>
-    </section>
-    <section class="mb-5">
-        <p>{{recipes|length}} recipes</p>
-        <div class="row g-3">
-            {% for recipe in recipes %}
-                <div class="col-4">
-                    {% include "partials/recipe_card.html" with recipe=recipe %}
-                </div>
-            {% endfor %}
-        </div>
-    </section>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-muted">You haven’t favourited any recipes yet.</p>
+      {% endif %}
+    </div>
+  </section>
 </div>
 {% endblock %}

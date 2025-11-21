@@ -1,24 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
   <div class="container">
     <a class="navbar-brand" href="{% url 'dashboard' %}"> Recipify </a>
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'all_recipes' %}active{% endif %}" 
-               href="{% url 'browse_recipes' %}">Recipes</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'create_recipe' %}active{% endif %}" 
-               href="{% url 'create_recipe' %}">Create Recipe</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'user_search' %}active{% endif %}" 
-               href="{% url 'user_search' %}">Find users</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'cupboard' %}active{% endif %}" 
-               href="{% url 'cupboard' %}">Cupboard</a>
-        </li>
-    </ul>
     <button
       class="navbar-toggler"
       type="button"
@@ -30,6 +12,42 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-    {% if user.is_authenticated %} {% include 'partials/menu.html' %} {% endif%}
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'all_recipes' %}active{% endif %}"
+            href="{% url 'all_recipes' %}"
+            >Recipes</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'user_search' %}active{% endif %}"
+            href="{% url 'user_search' %}"
+            >Find users</a
+          >
+        </li>
+
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'create_recipe' %}active{% endif %}"
+            href="{% url 'create_recipe' %}"
+            >Create Recipe</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'cupboard' %}active{% endif %}"
+            href="{% url 'cupboard' %}"
+            >Cupboard</a
+          >
+        </li>
+      </ul>
+
+      {% if user.is_authenticated %} 
+      {% include 'partials/menu.html' %} 
+      {% endif%}
+    </div>
   </div>
 </nav>
