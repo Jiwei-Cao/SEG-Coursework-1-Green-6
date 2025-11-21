@@ -15,9 +15,6 @@
                href="{% url 'user_search' %}">Find users</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'user_search' %}active{% endif %}" 
-               href="{% url 'user_search' %}">Find users</a>
-        </li>
             <a class="nav-link {% if request.resolver_match.url_name == 'cupboard' %}active{% endif %}" 
                href="{% url 'cupboard' %}">Cupboard</a>
         </li>
