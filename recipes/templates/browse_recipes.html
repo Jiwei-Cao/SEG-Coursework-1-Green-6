@@ -11,8 +11,7 @@
   <div class="row">
     <form action="{% url 'browse_recipes' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-          {% include 'partials/bootstrap_form.html' with form=form %}
-        <input type="hidden" name="form_type" value="search_form">
+        {% include 'partials/bootstrap_form.html' with form=form %}
           <input type="submit" value="Search" class="btn btn-primary">
       </form>
   </div>
@@ -25,31 +24,7 @@
       </div>
 
     {% endfor %}
-
   </div>
-
-  <div class="row-1">
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Favourite ID</th>
-          <th scope="col">Username</th>
-          <th scope="col">Recipe Title</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for favourite in user_favourite_objects %}
-          <tr>
-            <th scope="row">{{favourite.pk}}</th>
-            <td>{{favourite.user}}</td>
-            <td>{{favourite.recipe}}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-  </div>
-
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {{ form.media.js }}

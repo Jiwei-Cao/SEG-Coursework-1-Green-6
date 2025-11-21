@@ -16,9 +16,18 @@
     <div
       class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-3"
     >
-      <a href="" class="btn favourite-button">
-        Favourite <i class="bi bi-heart"></i>
-      </a>
+      <form method="post" action="{% url 'toggle_favourite' recipe.id %}">
+        {% csrf_token %}
+        {% if user in recipe.favourites.all %}
+          <button type="submit" class="btn favourite-button">
+            Favourite <i class="bi bi-heart"></i>
+          </button>
+        {% else %}
+          <button type="submit" class="btn favourite-button">
+            Unfavourite <i class="bi bi-heart-fill"></i>
+          </button>
+        {% endif %}
+      </form>
       {% if recipe.id %}
       <a href="{% url 'get_recipe' recipe.id %}" class="btn link-button">
         Check it out

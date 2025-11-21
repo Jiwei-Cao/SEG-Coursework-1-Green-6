@@ -14,14 +14,14 @@ class AllRecipesPageViewTest(TestCase):
             title="Chocolate Cake",
             description="Delicious chocolate dessert",
             ingredients="Chocolate, Flour",
-            image = "recipe_image/chocolate-cake.jpeg",
+            img = "recipe_image/chocolate-cake.jpeg",
             method="Bake",
             user=self.user
         )
         self.recipe2 = Recipe.objects.create(
             title="Apple Pie",
             description="Classic apple pie",
-            image = "recipe_image/apple-pie.jpeg",
+            img = "recipe_image/apple-pie.jpeg",
             ingredients="Apple, Flour",
             method="Bake",
             user=self.user

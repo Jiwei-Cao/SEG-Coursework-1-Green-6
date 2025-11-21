@@ -4,7 +4,7 @@
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.url_name == 'all_recipes' %}active{% endif %}" 
-               href="{% url 'all_recipes' %}">Recipes</a>
+               href="{% url 'browse_recipes' %}">Recipes</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.url_name == 'create_recipe' %}active{% endif %}" 
