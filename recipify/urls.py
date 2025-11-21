@@ -33,6 +33,9 @@ urlpatterns = [
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('all_recipes/', views.browse_recipes, name='all_recipes'),
     path('recipe/<int:recipe_id>/', views.get_recipe, name="get_recipe"),
+    path('user_search/', views.user_search, name="user_search"),
+    path('user/<int:user_id>/follow/', views.follow_user, name="follow_user"),
+    path('user/<int:user_id>/unfollow/', views.unfollow_user, name="unfollow_user"),
     path('cupboard/', views.cupboard, name="cupboard"),
     path('select2/', include('django_select2.urls')),
 ]
