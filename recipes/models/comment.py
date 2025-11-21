@@ -5,7 +5,7 @@ from .recipe import Recipe
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    comment = models.TextField()
+    comment = models.TextField(blank=False)
     date_published = models.DateTimeField()
     
    
