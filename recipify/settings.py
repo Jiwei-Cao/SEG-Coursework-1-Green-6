@@ -28,6 +28,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
 
 # Application definition
 
@@ -40,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'recipes',
+    'django_select2',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +146,7 @@ REDIRECT_URL_WHEN_LOGGED_IN = 'dashboard'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+# Media URLs
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

@@ -5,12 +5,13 @@ from recipes.forms.recipe_form import RecipeForm
 @login_required
 def create_recipe(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST)
+        form = RecipeForm(request.POST, request.FILES)
 
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.user = request.user 
             recipe.save()
+            form.save_m2m()
             return redirect('dashboard')
     else:
         form = RecipeForm()

@@ -1,10 +1,29 @@
-<a href="#" class="text-decoration-none text-dark d-block">
-    <div class="card shadow text-center" style="width: 20rem;">
-        <img src="{{recipe.img}}" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="card-title">{{ recipe.title }}</h5>
-            <p class="card-text">{{ recipe.description }}</p>
-            <a href="#" class="btn btn-primary">Favourite</a>
-        </div>
+<div class="card shadow text-center individual_recipe_card align-items-center">
+  {% if recipe.img %}
+  <img src="{{ recipe.img.url }}" alt="{{ recipe.title }}" class = "recipe-image"/>
+  {% endif %}
+
+  <div class="card-body">
+    <h5 class="card-title">{{ recipe.title }}</h5>
+    <p class="card-text">{{ recipe.description }}</p>
+    <div class="row">
+        {% for tag in recipe.tags.all %}
+            <div class="col-4">
+                <p>{{tag.name}}</p>
+            </div>
+        {% endfor %}
     </div>
-</a>
+    <div
+      class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-3"
+    >
+      <a href="" class="btn favourite-button">
+        Favourite <i class="bi bi-heart"></i>
+      </a>
+      {% if recipe.id %}
+      <a href="{% url 'get_recipe' recipe.id %}" class="btn link-button">
+        Check it out
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>

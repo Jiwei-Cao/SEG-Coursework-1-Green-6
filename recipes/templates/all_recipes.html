@@ -1,0 +1,32 @@
+{% extends 'base_content.html' %} 
+{% block content %}
+<div class="container">
+  <div class="row mb-3">
+    <h1>Recipes</h1>
+      <form action="{% url 'all_recipes' %}" method="post">
+        {% csrf_token %} {{ form.as_p }} 
+        {% include 'partials/bootstrap_form.html' with form=form %}
+        <div class="d-flex mb-3 gap-2 mt-2">
+          <input
+            type="text"
+            name="search_field"
+            class="form-control g-2"
+            placeholder="Enter your search here..."
+          />
+          <input type="submit" value="Search" class="btn btn-primary" />
+        </div>
+      </form>
+    <p class = "mb-1">{{recipes|length}} recipes</p>
+    <div
+      class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
+      ref="recipeGrid"
+    >
+      {% for recipe in recipes %}
+      <div class="col-md-4">
+        {% include "partials/recipe_card.html" with recipe=recipe %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

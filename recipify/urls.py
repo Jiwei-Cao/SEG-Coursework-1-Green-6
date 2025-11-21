@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from recipes import views
 
 urlpatterns = [
@@ -35,5 +35,10 @@ urlpatterns = [
     path('users/', views.user_search, name='user_search'),
     path('users/<int:user_id>/follow/', views.follow_user, name='follow_user'),
     path('users/<int:user_id>/unfollow/', views.unfollow_user, name='unfollow_user'),
+    path('all_recipes/', views.all_recipes, name='all_recipes'),
+    path('recipe/<int:recipe_id>/', views.get_recipe, name="get_recipe"),,
+    path('cupboard/', views.cupboard, name="cupboard")
+    path('select2/', include('django_select2.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
