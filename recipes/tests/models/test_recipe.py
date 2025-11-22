@@ -1,6 +1,6 @@
 """Unit tests for the Recipe model."""
 
-from recipes.models import Recipe
+from recipes.models import Recipe, User
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
@@ -49,6 +49,19 @@ class RecipeModelTestCase(TestCase):
     def test_str_returns_title(self):
         self.recipe.title = "My Recipe Title"
         self.assertEqual(str(self.recipe), "My Recipe Title")
+
+    def test_user_can_add_favourite_recipe(self):
+        user = User.objects.create(username="@Janedoe")
+        self.recipe.favourites.add(user)
+        self.assertIn(user, self.recipe.favourites.all())
+
+    def test_user_can_unfavourite_recipe(self):
+        user = User.objects.create(username="@Janedoe")
+        self.recipe.favourites.add(user)
+        self.assertIn(user, self.recipe.favourites.all())
+        self.recipe.favourites.remove(user)
+        self.assertNotIn(user, self.recipe.favourites.all())
+
 
     def _assert_recipe_is_valid(self):
         try:

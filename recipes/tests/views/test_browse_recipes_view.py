@@ -1,17 +1,9 @@
 from django.test import TestCase
-
 from django.urls import reverse
-from django.db import transaction
-from django.db.utils import IntegrityError
-
 
 from recipes.forms import SearchRecipesForm
-from recipes.forms import FavouriteForm
-
-
 from recipes.models import Recipe
 from recipes.models import User
-from recipes.models import Favourite
 
 
 class BrowseRecipesTestCase(TestCase):

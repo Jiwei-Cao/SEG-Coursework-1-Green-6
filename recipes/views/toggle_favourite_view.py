@@ -2,13 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.shortcuts import render, get_object_or_404
 
-from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
+from django.http import HttpResponseRedirect
 from django.urls import reverse
-
-from recipes.forms import SearchRecipesForm
-from recipes.forms import FavouriteForm
 from recipes.models import Recipe
-from recipes.models import Favourite
 
 @login_required
 @require_POST
