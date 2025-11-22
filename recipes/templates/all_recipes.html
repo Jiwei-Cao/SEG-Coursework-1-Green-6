@@ -1,27 +1,29 @@
 {% extends 'base_content.html' %} 
 {% block content %}
+{{ form.media.css }}
 <div class="container">
   <div class="row mb-3">
     <h1>Recipes</h1>
-      <form action="{% url 'all_recipes' %}" method="post">
-        {% csrf_token %} {{ form.as_p }} 
+    <div class="row">
+      <form
+        action="{% url 'all_recipes' %}"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        {% csrf_token %} 
         {% include 'partials/bootstrap_form.html' with form=form %}
         <div class="d-flex mb-3 gap-2 mt-2">
-          <input
-            type="text"
-            name="search_field"
-            class="form-control g-2"
-            placeholder="Enter your search here..."
-          />
+          <input type="hidden" name="form_type" value="search_form" />
           <input type="submit" value="Search" class="btn btn-primary" />
         </div>
       </form>
-    <p class = "mb-1">{{recipes|length}} recipes</p>
+    </div>
+    <p class="mb-1">{{recipe_list|length}} recipes</p>
     <div
       class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
       ref="recipeGrid"
     >
-      {% for recipe in recipes %}
+      {% for recipe in recipe_list %}
       <div class="col-md-4">
         {% include "partials/recipe_card.html" with recipe=recipe %}
       </div>
@@ -29,4 +31,6 @@
     </div>
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{form.media.js}}
 {% endblock %}

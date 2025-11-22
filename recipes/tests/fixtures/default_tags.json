@@ -1,0 +1,44 @@
+[
+    {
+        "model": "recipes.tag",
+        "pk": 1,
+        "fields": {
+        "name": "Vegan"
+        }
+    },
+    {
+    "model": "recipes.tag",
+    "pk": 2,
+    "fields": {
+      "name": "Vegetarian"
+    }
+  },
+  {
+    "model": "recipes.tag",
+    "pk": 3,
+    "fields": {
+      "name": "Quick"
+    }
+  },
+  {
+    "model": "recipes.tag",
+    "pk": 4,
+    "fields": {
+      "name": "Easy"
+    }
+  },
+  {
+    "model": "recipes.tag",
+    "pk": 5,
+    "fields": {
+      "name": "Indian"
+    }
+  },
+  {
+    "model": "recipes.tag",
+    "pk": 6,
+    "fields": {
+      "name": "Mediterranean"
+    }
+  }
+]

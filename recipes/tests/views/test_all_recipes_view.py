@@ -14,14 +14,14 @@ class AllRecipesPageViewTest(TestCase):
             title="Chocolate Cake",
             description="Delicious chocolate dessert",
             ingredients="Chocolate, Flour",
-            image = "recipe_image/chocolate-cake.jpeg",
+            img = "image/chocolate-cake.jpeg",
             method="Bake",
             user=self.user
         )
         self.recipe2 = Recipe.objects.create(
             title="Apple Pie",
             description="Classic apple pie",
-            image = "recipe_image/apple-pie.jpeg",
+            img = "image/apple-pie.jpeg",
             ingredients="Apple, Flour",
             method="Bake",
             user=self.user
@@ -36,8 +36,8 @@ class AllRecipesPageViewTest(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'all_recipes.html')
-        self.assertIn(self.recipe1, response.context['recipes'])
-        self.assertIn(self.recipe2, response.context['recipes'])
+        self.assertIn(self.recipe1, response.context['recipe_list'])
+        self.assertIn(self.recipe2, response.context['recipe_list'])
 
         user = response.context['user']
         self.assertTrue(isinstance(user, User))
@@ -46,7 +46,7 @@ class AllRecipesPageViewTest(TestCase):
     def test_recipes_exists_in_page(self):
         self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(self.url)
-        recipes = response.context.get('recipes')
+        recipes = response.context.get('recipe_list')
         self.assertIsNotNone(recipes)
         self.assertTrue(len(recipes) >= 0)
     
