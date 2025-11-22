@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Count
+from django.db.models import Q
 
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
 from django.urls import reverse
@@ -11,7 +12,7 @@ from recipes.models import Recipe
 
 @login_required
 def browse_recipes(request):
-    recipe_list = Recipe.objects.all()
+    recipe_list = Recipe.objects.filter(Q(public=True)|Q(user__followers=request.user)|Q(user=request.user)).distinct()
     if request.method == "POST":
         form = SearchRecipesForm(request.POST)
         if form.is_valid():

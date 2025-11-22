@@ -14,7 +14,7 @@
         {% include 'partials/bootstrap_form.html' with form=form %}
         <div class="d-flex mb-3 gap-2 mt-2">
           <input type="hidden" name="form_type" value="search_form" />
-          <input type="submit" value="Search" class="btn btn-primary" />
+          <input type="submit" value="Search" class="btn search-button"/>
         </div>
       </form>
     </div>
@@ -25,7 +25,7 @@
     >
       {% for recipe in recipe_list %}
       <div class="col-md-4">
-        {% include "partials/recipe_card.html" with recipe=recipe %}
+        {% include "partials/recipe_card.html" with recipe=recipe showBadge=False %}
       </div>
       {% endfor %}
     </div>

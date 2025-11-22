@@ -142,12 +142,64 @@
   object-fit: cover;
 }
 
-.recipe-author{
+.recipe-author .delete-button{
   transition: transform 0.2s ease;
 }
 
 .recipe-author:hover{
   background-color: #cccccce1 !important;
   transform: scale(1.05);
+}
 
+.search-button{
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  color: rgb(240, 234, 234);
+  background-color: darkolivegreen;
+  align-self: center;
+}
+
+.search-button:hover{
+  transform: scale(1.05);
+}
+
+.delete-button:hover{
+  transform: scale(1.05);
+}
+
+.followers-exclusive-badge{
+  background: linear-gradient(145deg, #FEEABC, #f2d1b6); 
+  color: rgb(149, 148, 148);
+  transition: transform 0.2s ease;
+}
+.followers-exclusive-badge:hover{
+  transform: scale(1.05);
+}
+
+
+@media (max-width: 576px){
+  .individual_recipe_card{
+    width: 90%;
+    max-width: 100%;
+    margin: 10px auto;
+  }
+  .individual_recipe_card .card-body {
+    padding: 1rem;
+  }
+
+  .individual_recipe_card .card-title{
+    font-size:16px;
+  }
+
+  .individual_recipe_card .card-text{
+    font-size: 14px;
+  }
+  .favourite-button, .unfavourite-button, .submit-button {
+    padding: 0.4rem 1rem;
+    font-size: 13px;
+  }
 }
