@@ -13,3 +13,4 @@ from .cupboard_view import *
 from .user_search_view import *
 from .toggle_favourite_view import *
 from .delete_recipe_view import *
+from .edit_recipe_view import *

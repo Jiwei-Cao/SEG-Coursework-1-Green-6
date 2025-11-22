@@ -26,6 +26,11 @@
             </span>
 
             {% if user == recipe.user %}
+              <a href="{% url 'edit_recipe' recipe.id %}">
+                <button type="button" class="btn btn-primary btn-sm">
+                  Edit Recipe
+                </button>
+              </a>
               <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                 Delete recipe
               </button>

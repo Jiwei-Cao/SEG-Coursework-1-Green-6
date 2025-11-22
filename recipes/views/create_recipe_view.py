@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from recipes.forms.recipe_form import RecipeForm
+from recipes.forms import RecipeForm
 
 @login_required
 def create_recipe(request):
