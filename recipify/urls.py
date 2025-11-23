@@ -40,7 +40,8 @@ urlpatterns = [
     path('recipe/<int:recipe_id>/toggle_favourite', views.toggle_favourite, name='toggle_favourite'),
     path('select2/', include('django_select2.urls')),
     path('recipe/<int:recipe_id>/delete', views.delete_recipe, name='delete_recipe'),
-    path('recipe/<int:recipe_id>/edit', views.EditRecipeView.as_view(), name="edit_recipe")
+    path('recipe/<int:recipe_id>/edit', views.EditRecipeView.as_view(), name="edit_recipe"),
+    path('users/<str:username>/', views.profile_page, name='user_profile')
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
