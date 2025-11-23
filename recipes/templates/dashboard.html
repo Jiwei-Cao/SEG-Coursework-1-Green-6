@@ -1,49 +1,50 @@
-{% extends 'base_content.html' %} {% block content %}
+{% extends 'base_content.html' %} 
+{% block content %}
 <div class="container py-5">
   <div class="row text-center mb-3">
-    <div class="col-12">
+    <div class="col-12 mb-4">
       <h1>
         Welcome to your dashboard
         <span class="fst-italic">{{ user.username }}</span>
       </h1>
-      <p class="lead my-3 hero-text">
-        Feel free to create your own recipe and find the perfect one based on
-        your preferences
-      </p>
     </div>
   </div>
   <div class="row justify-content-center mb-3">
     <div class="col-12">
-      <h2 class="h4 mb-3 fst-italic">Most Popular Recipes</h2>
+      <h2 class="h4 mb-3">MOST POPULAR RECIPES</h2>
       {% if rated_recipes|length == 0 %}
       <p class="text-muted">No rated recipes available. Check back later!</p>
       {% endif %}
       <div class="row">
         {% for recipe in rated_recipes %}
         <div class="col-md-3 d-flex">
-          <div class="card recipe-card text-center flex-fill d-flex flex-column">
-            <img src="{{recipe.img.url}}" class="card-img-top recipe-image" alt="{{recipe.title}}"/>
+          <div
+            class="card recipe-card text-center flex-fill d-flex flex-column"
+          >
+            <img
+              src="{{recipe.img.url}}"
+              class="card-img-top recipe-image"
+              alt="{{recipe.title}}"
+            />
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title">
+              <h5 class="card-title" style="text-transform: uppercase">
                 {{recipe.title}}
               </h5>
               <p class="card-text rating mb-2">
                 {% for _ in recipe.full_stars %}
-                    <i class="bi bi-star-fill full" style="color:orange"></i>
-                {% endfor %}
-                {% if recipe.half_star %}
-                    <i class="bi bi-star-half half" style="color:orange"></i>
-                {% endif %}
-                {% for _ in recipe.empty_stars %}
-                    <i class="bi bi-star"></i>
-                {% endfor %}
-                {{recipe.average_rating}} / 5.0 ({{recipe.rating_count}})
+                <i class="bi bi-star-fill full"></i>
+                {% endfor %} {% if recipe.half_star %}
+                <i class="bi bi-star-half half"></i>
+                {% endif %} {% for _ in recipe.empty_stars %}
+                <i class="bi bi-star"></i>
+                {% endfor %} {{recipe.average_rating}} / 5.0
+                ({{recipe.rating_count}})
               </p>
-
-              <!--<p class="card-text">
-                {{recipe.description}}
-              </p>-->
-              <a href="{% url 'get_recipe' recipe.id %}" class="btn link-button mt-auto">Check it out</a>
+              <a
+                href="{% url 'get_recipe' recipe.id %}"
+                class="btn link-button mt-auto"
+                >Check it out</a
+              >
             </div>
           </div>
         </div>
@@ -52,35 +53,10 @@
     </div>
   </div>
   <div class="row justify-content-center g-4 feature-item-container mt-1">
-    <h2 class="h4 mb-0 fst-italic">Features</h2>
-    <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
-        <h2 class="h4 mb-3">All Recipes <i class="bi bi-bookmark-plus"></i></h2>
-        <p>
-          Find the perfect recipe based on your preferences, e.g. ingredients
-          available, cooking time
-        </p>
-        <a href = "{% url 'all_recipes' %}" class="link-button btn mt-auto" >Go here</a>
-      </div>
-    </div>
-    <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
-        <h2 class="h4 mb-3">
-          Create Your Recipe <i class="bi bi-file-earmark-text"></i>
-        </h2>
-        <p>Create and store your own recipe</p>
-         <a href = "{% url 'create_recipe' %}" class="link-button btn mt-auto" >Go here</a>
-      </div>
-    </div>
-    <div class="col-md-4 text-align-center d-flex">
-      <div class="feature-item text-center p-4 flex-fill d-flex flex-column">
-        <h2 class="h4 mb-3">
-          Your Profile <i class="bi bi-person-circle"></i>
-        </h2>
-        <p>Have a look at what recipes you have created!!</p>
-        <a href = "{% url 'profile_page' %}" class="link-button btn mt-auto" >Go here</a>
-      </div>
-    </div>
+    <h2 class="h4 mb-0">FEATURES</h2>
+    {% for feature in features %} 
+    {% include "partials/feature.html" with title=feature.title icon=feature.icon description=feature.description link=feature.link %} 
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

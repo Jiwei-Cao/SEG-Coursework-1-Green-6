@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Count
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
 from django.urls import reverse
@@ -60,9 +61,15 @@ def browse_recipes(request):
                     recipe_list = recipe_list.order_by('-fav_count')
             else:
                 recipe_list = recipe_list.order_by(order_by)
+        else:
+            recipe_list = recipe_list.order_by('id')
+
+    paginator = Paginator(recipe_list, 12)
+    page_number =request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-    'recipe_list': recipe_list,
+    'recipe_list': page_obj,
     'search_val': search_val,
     'form' : form
     }
