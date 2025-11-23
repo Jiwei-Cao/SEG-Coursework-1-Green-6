@@ -29,20 +29,3 @@ def cupboard(request):
         'ingredients': ingredients
     }
     return render(request, 'cupboard.html', context)
-
-# def cupboard(request):
-#     if request.method == 'POST':
-#         form = IngredientForm(request.POST)
-
-#         if form.is_valid():
-#             ingredient = form.save(commit=False)
-#             ingredient.user = request.user
-#             ingredient.save()
-#             return redirect('dashboard')
-#     else:
-#         form = IngredientForm()
-#     context = {
-#         'form': form
-#         }
-
-#     return render(request, 'cupboard.html', context)

@@ -7,3 +7,4 @@ from .unit import *
 from .recipe_ingredient import *
 from .comment import *
 from .rating import *
+from .recipe_method import *
