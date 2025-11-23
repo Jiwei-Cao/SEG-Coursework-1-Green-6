@@ -40,6 +40,7 @@ urlpatterns = [
     path('recipe/<int:recipe_id>/toggle_favourite', views.toggle_favourite, name='toggle_favourite'),
     path('select2/', include('django_select2.urls')),
     path('recipe/<int:recipe_id>/comment', views.handle_comments, name='handle_comments'),
+    path('create_recipe/<int:recipe_id>/add_method/', views.add_method, name='add_method'),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

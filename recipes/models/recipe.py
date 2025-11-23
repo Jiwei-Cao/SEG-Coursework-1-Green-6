@@ -2,6 +2,7 @@ from django.db import models
 from .user import User
 from .tag import Tag
 from .comment import Comment
+from .method_step import MethodStep
 
 class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes_created')
@@ -14,8 +15,8 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     favourites = models.ManyToManyField(User,blank=True, related_name='recipes_favourited')
 
-    #comments = models.ManyToManyField(User, blank=True, related_name='recipe_comments', through="Comment")
     comments = models.ManyToManyField(Comment, blank=True, related_name='recipe_comments')
+    method_steps = models.ManyToManyField(MethodStep, blank=True, related_name='recipe_method_steps')
 
     @property
     def average_rating(self):

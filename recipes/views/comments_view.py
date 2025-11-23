@@ -8,8 +8,8 @@ from django.urls import reverse
 @login_required
 def handle_comments(request, recipe_id):
 	recipe = get_object_or_404(Recipe, id=recipe_id)
-	if validate_comment_request(request):
-		create_comment(request, recipe)
+	if is_create_comment_post(request):
+		handle_create_comment_post(request, recipe)
 	elif is_delete_comment_post(request):
 		delete_comment(request, recipe)
 
@@ -20,6 +20,9 @@ def handle_comments(request, recipe_id):
 def is_create_comment_post(request):
     return request.method == "POST" and request.POST.get("form_type") == "comment_form"
 
+def handle_create_comment_post(request, recipe):
+	if validate_comment_request(request):
+		create_comment(request, recipe)
 
 def validate_comment_request(request):
 	comment_text = request.POST.get('comment_text', '')
@@ -35,7 +38,7 @@ def create_comment(request, recipe):
         comment.save()
         recipe.comments.add(comment)
     except:
-    	raise Http404(f"Could not create comment")
+    	raise Http404("Could not create comment")
     	return HttpResponseNotFound()
 
 

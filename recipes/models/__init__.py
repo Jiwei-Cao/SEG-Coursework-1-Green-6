@@ -8,3 +8,4 @@ from .unit import *
 from .recipe_ingredient import *
 
 from .rating import *
+from .method_step import *

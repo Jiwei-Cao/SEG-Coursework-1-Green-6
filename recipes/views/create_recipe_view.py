@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from recipes.forms.recipe_form import RecipeForm
 
@@ -12,7 +13,8 @@ def create_recipe(request):
             recipe.user = request.user 
             recipe.save()
             form.save_m2m()
-            return redirect('dashboard')
+            path = reverse('add_method', kwargs={"recipe_id": f"{recipe.id}"}) 
+            return redirect(path)
     else:
         form = RecipeForm()
 
