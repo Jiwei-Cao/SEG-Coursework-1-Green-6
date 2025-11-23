@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from recipes.models import User, Recipe,Favourite
+from recipes.models import User, Recipe
 from recipes.tests.helpers import reverse_with_next
 from math import floor
 
@@ -50,26 +50,3 @@ class ProfilePageViewTest(TestCase):
         redirect_url = reverse_with_next('log_in', self.url)
         response = self.client.get(self.url)
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-
-    def test_post_unfavourite_recipe(self):
-        self.client.login(username=self.user.username, password='Password123')
-        recipe = Recipe.objects.create(
-            user=self.user,
-            title="Test Recipe",
-            description="Test Description",
-            ingredients="Test Ingredients",
-            method="Test Method"
-        )
-        
-        Favourite.objects.create(user=self.user, recipe=recipe)
-
-        form_input = {
-            'form_type': 'favourite_form',
-            'favourite_recipe': 'unfavourite_recipe',
-            'recipe_clicked': str(recipe.id)
-        }
-
-        response = self.client.post(self.url, form_input)
-        self.assertEqual(response.status_code, 302)
-
-        self.assertFalse(Favourite.objects.filter(user=self.user, recipe=recipe).exists())

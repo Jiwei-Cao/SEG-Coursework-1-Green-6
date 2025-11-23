@@ -10,12 +10,12 @@ class TagModelTestCase(TestCase):
     fixture = 'recipes/tests/fixtures/default_tags.json'
 
     def setUp(self):
-        self.tag = Tag(name="Vegan")
+        self.tag = Tag(name="UniqueTag")
         self.tag.save()
     
     def test_tag_name_must_be_unique(self):
         with self.assertRaises(IntegrityError):
-            Tag.objects.create(name="Vegan")
+            Tag.objects.create(name="UniqueTag")
     
     def test_tag_str_method(self):
-        self.assertEqual(str(self.tag), 'Vegan')
+        self.assertEqual(str(self.tag), 'UniqueTag')
