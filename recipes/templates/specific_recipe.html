@@ -39,10 +39,20 @@
 
           <h6 class="fw-bold">Ingredients:</h6>
           <p class="mb-3">{{recipe.ingredients}}</p>
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <b>Method </b><a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm  btn-link">Edit</a>
+              </div>
+              <ul class="list-group list-group-flush">
+                {% for step in recipe.method_steps.all %}
+                <li class="list-group-item"><b>{{step.step_number}}</b>. {{step.method_text}}</li>
+                {% endfor %}
+              </ul>
+            </div>
 
-          <h6 class="fw-bold">Method:</h6>
-          <p class="mb-3">{{recipe.method}}</p>
 
+          </div>
           {% if recipe.user != user %}
           <span class="fw-bold small">Your Rating:</span>
           <div class="d-flex flex-column flex-md-row gap-3 mb-3">
@@ -84,8 +94,7 @@
           </div>
           <div class = "d-flex justify-content-center mt-auto">
           <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
-            >Back to Recipes</a
-          >
+            >Back to Recipes</a>
           </div>
         </div>
       </div>

@@ -10,13 +10,16 @@
             {{ form.as_p }}
             <button class="btn btn-sm submit-button" type="submit" name='operation' value='add_step'>Add Step</button>
         </form>
-        <form action="{% url 'add_method' recipe.pk %}" method="post">
+        <br><a href="{% url 'get_recipe' recipe.pk %}" class="btn link-button mb-3"
+            >View Recipe</a
+          >
+        <!--form action="{% url 'add_method' recipe.pk %}" method="post">
 
             {% csrf_token %}
-       
-            <button class="btn btn-sm submit-button" type="submit" name='operation' value='save_form'>Save Method to Recipe</button>
-            <button class="btn btn-sm submit-button" type="submit" name='operation' value='cancel_form'> Cancel Method </button>
-        </form>
+        
+            <button class="btn btn-sm submit-button" type="submit" name='operation' value='save_form'>Save Method to Recipe/View Recipe</button>
+            <button class="btn btn-sm submit-button" type="submit" name='operation' value='clear_steps'> Clear Steps </button>
+        </form-->
     </div>
 
     <hr>

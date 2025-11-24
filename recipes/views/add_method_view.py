@@ -1,23 +1,26 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+
 from recipes.forms import MethodStepForm
 from recipes.models import Recipe, MethodStep
-from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect
+
+from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
 from django.urls import reverse
 
 
 @login_required
 def add_method(request, recipe_id):
-	recipe = get_object_or_404(Recipe, id=recipe_id)
 
+	recipe = get_object_or_404(Recipe, id=recipe_id)
 	if is_create_method_step_post(request):
 		handle_create_method_step(request, recipe)
+		return HttpResponseRedirect(request.path_info)
 	elif is_delete_method_step_post(request):
 		delete_method_step(request, recipe)
+		return HttpResponseRedirect(request.path_info)
+	#elif is_clear_method_steps_post(request):
+		#return HttpResponseRedirect(request.path_info)
 	#elif is_save_method_post():
-	#elif is_cancel_method_post():
-
-
 
 	form = MethodStepForm()
 
@@ -26,7 +29,7 @@ def add_method(request, recipe_id):
 	'form': form,
 	}
 
-	print(recipe.method_steps.all(), "\n")
+	print(request.POST.get('operation'), "\n")
 	print("method count", MethodStep.objects.count(), "\n")
 
 	return render(request, 'add_method.html', context)
@@ -37,8 +40,9 @@ def is_create_method_step_post(request):
 
 def handle_create_method_step(request, recipe):
 	form = MethodStepForm(request.POST)
-	if form.is_valid() and step_number_is_unique(request, recipe, form):
+	if (form.is_valid() and step_number_is_unique(request, recipe, form)):
 		create_method_step(request, recipe, form)
+
 
 def step_number_is_unique(request, recipe, form):
 	if recipe.method_steps.filter(step_number=form.cleaned_data['step_number']).count() <= 0:
@@ -51,8 +55,6 @@ def create_method_step(request, recipe, form):
 		method_step = MethodStep(step_number=form.cleaned_data['step_number'], method_text=form.cleaned_data['method_text'])
 		method_step.save()
 		recipe.method_steps.add(method_step)
-		path = reverse('add_method', kwargs={"recipe_id": f"{recipe.id}"}) 
-		return HttpResponseRedirect(path)
 	except:
 		raise Http404("Couldn't create method step.")
 		return HttpResponseNotFound()
@@ -70,13 +72,14 @@ def delete_method_step(request, recipe):
         return HttpResponseNotFound()
     else: 
         method_step.delete()
-        path = reverse('add_method', kwargs={"recipe_id": f"{recipe.id}"}) 
-        return HttpResponseRedirect(path)
 
 
+'''
 def is_save_method_post(request):
 	return request.method == "POST" and request.POST.get("operation") == "save_form"
 
 
-def is_cancel_method_post(request):
-	return request.method == "POST" and request.POST.get("operation") == "cancel_form"
+def is_clear_method_steps_post(request):
+	return request.method == "POST" and request.POST.get("operation") == "clear_steps"
+
+'''

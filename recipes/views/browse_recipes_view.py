@@ -18,6 +18,7 @@ def browse_recipes(request):
             search_val = form.cleaned_data['search_field']
             selected_tags = form.cleaned_data['tags']
             order_by = form.cleaned_data['order_by']
+            searched_ingredients = form.cleaned_data['ingredients']
 
             params = []
             if search_val:
@@ -27,6 +28,8 @@ def browse_recipes(request):
                 params.append(f'tags={tag_ids}')
             if order_by:
                 params.append(f'order_by={order_by}')
+            if searched_ingredients:
+                params.append(f'ingredients={searched_ingredients}')
             query = '?' + '&'.join(params) if params else ''
             
             path = reverse('all_recipes') + query
@@ -42,6 +45,8 @@ def browse_recipes(request):
         if tag_ids:
             tag_ids = [int (tag_id) for tag_id in tag_ids.split(',')]
             initial_data['tags'] = tag_ids
+        searched_ingredients = request.GET.get('ingredients', '')
+        initial_data['searched_ingredients'] = searched_ingredients
         form = SearchRecipesForm(initial=initial_data)
 
         if search_val != '':
@@ -59,6 +64,9 @@ def browse_recipes(request):
                     recipe_list = recipe_list.order_by('-fav_count')
             else:
                 recipe_list = recipe_list.order_by(order_by)
+
+        if searched_ingredients != '':
+            recipe_list = recipe_list.filter(ingredients__contains=searched_ingredients)
 
     context = {
     'recipe_list': recipe_list,
