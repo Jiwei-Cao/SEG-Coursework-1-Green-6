@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from math import floor
+from django.db.models import Count
+
 
 from recipes.models import Favourite
 from recipes.models import Recipe
@@ -26,6 +28,19 @@ def profile_page(request):
     favourite_recipe_ids = get_favourite_recipes_id(current_user)
     favourite_recipes = Recipe.objects.filter(pk__in=favourite_recipe_ids)
 
+    most_popular_recipe = recipes.order_by('-rating').first()
+    most_popular_id = most_popular_recipe.id if most_popular_recipe else None
+
+    most_favourited_recipe = (
+        recipes
+        .annotate(fav_count=Count('favourites'))
+        .order_by('-fav_count', '-created_at')
+        .first()                          
+    )
+    most_favourited_recipe_id = most_favourited_recipe.id if most_favourited_recipe else None
+    print("most favourite id" + str(most_favourited_recipe_id))
+
+
     if request.method == 'POST':
         handle_favourites_form_requests(request)
 
@@ -40,6 +55,8 @@ def profile_page(request):
         'empty_stars': range(empty_stars),
         'favourite_recipes':  favourite_recipes,
         'user_favourited_recipe_ids': favourite_recipe_ids,
+        'most_popular': most_popular_id,
+        'most_favourite': most_favourited_recipe_id
         })
 
 def calculate_user_rating(user,recipes):

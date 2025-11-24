@@ -13,14 +13,20 @@
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
-.favourite-button {
-  background-color: #dae5ebf2;
+
+.favourite-button,
+.unfavourite-button {
   border: none;
   border-radius: 20px;
   padding: 0.5rem 1.2rem;
   cursor: pointer;
   transition: transform 0.2s ease;
-  font-size:15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  font-size: 15px;
+}
+
+.favourite-button {
+  background-color: #dae5ebf2;
 }
 
 .favourite-button:hover {
@@ -30,12 +36,6 @@
 
 .unfavourite-button {
   background-color: #f7c1d1;
-  border: none;
-  border-radius: 20px;
-  padding: 0.5rem 1.2rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  font-size:15px;
 }
 
 .unfavourite-button i {
@@ -51,7 +51,6 @@
   color: #ec466d;
 }
 
-
 .specific_recipe_card {
   width: 80%;
   border-radius: 10px;
@@ -65,7 +64,7 @@
   font-size: 2rem;
 }
 
-.star-rating div{
+.star-rating div {
   display: flex;
   flex-direction: row-reverse;
   gap: 0.2rem;
@@ -82,11 +81,11 @@
 }
 
 .star-rating input:checked ~ label i {
-  color: #ccc; 
+  color: #ccc;
 }
 .star-rating input:checked + label i,
 .star-rating input:checked + label ~ label i {
-  color: gold; 
+  color: gold;
 }
 
 .star-rating label:hover i,
@@ -103,9 +102,8 @@
 }
 
 .rating .half {
-  color: gold; 
+  color: gold;
 }
-
 
 .recipe-image {
   height: 27vh;
@@ -144,16 +142,16 @@
   object-fit: cover;
 }
 
-.recipe-author .delete-button{
+.recipe-author .delete-button {
   transition: transform 0.2s ease;
 }
 
-.recipe-author:hover{
+.recipe-author:hover {
   background-color: #cccccce1 !important;
   transform: scale(1.05);
 }
 
-.search-button{
+.search-button {
   border: none;
   border-radius: 20px;
   padding: 0.5rem 1.2rem;
@@ -165,27 +163,42 @@
   align-self: center;
 }
 
-.search-button:hover{
+.search-button:hover {
   transform: scale(1.05);
   color: rgb(240, 234, 234);
 }
 
-.delete-button:hover{
+.delete-button:hover {
   transform: scale(1.05);
 }
-
-.followers-exclusive-badge{
-  background: linear-gradient(145deg, #FEEABC, #f2d1b6); 
-  color: rgb(149, 148, 148);
+.followers-exclusive-badge,
+.favourite-badge,
+.popular-badge,
+.public-badge {
+  color: rgb(149, 148, 148) !important;
   transition: transform 0.2s ease;
 }
-.followers-exclusive-badge:hover{
-  transform: scale(1.05);
+.favourite-badge {
+  background: linear-gradient(145deg, #f0d6e6, #f0abc9);
+}
+.popular-badge {
+  background: linear-gradient(145deg, #d3f4ef, #95eaed);
+}
+.public-badge {
+  background: linear-gradient(145deg, #b4edc3, #79bd93);
+}
+.followers-exclusive-badge {
+  background: linear-gradient(145deg, #feeabc, #f2d1b6);
+}
+.followers-exclusive-badge:hover,
+.favourite-badge:hover,
+.popular-badge:hover,
+.public-badge:hover {
+  transform: scale(1.1);
 }
 
-
-@media (max-width: 576px){
-  .individual_recipe_card{
+@media (max-width: 576px) {
+  .individual_recipe_card {
     width: 90%;
     max-width: 100%;
     margin: 10px auto;
@@ -194,14 +207,16 @@
     padding: 1rem;
   }
 
-  .individual_recipe_card .card-title{
-    font-size:16px;
+  .individual_recipe_card .card-title {
+    font-size: 16px;
   }
 
-  .individual_recipe_card .card-text{
+  .individual_recipe_card .card-text {
     font-size: 14px;
   }
-  .favourite-button, .unfavourite-button, .submit-button {
+  .favourite-button,
+  .unfavourite-button,
+  .submit-button {
     padding: 0.4rem 1rem;
     font-size: 13px;
   }

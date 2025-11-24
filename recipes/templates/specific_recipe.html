@@ -163,7 +163,7 @@
               class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author"
             >
               <img src="{{ comment.user.gravatar }}" class="rounded-circle" />
-              {{comment.user}} {% if recipe.user == user %} (YOU) {% endif %}
+              {{comment.user}} {% if commnet.user == user %} (YOU) {% endif %}
             </span>
               <small class="text-body-secondary"
                 >{{comment.date_published}}</small

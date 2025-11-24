@@ -12,15 +12,22 @@
     <h5 class="card-title mb-0 flex-grow-1">
         {{ recipe.title }}
     </h5>
-    {% if showBadge %}
-        {% if recipe.public %}
-            <span class="badge bg-success flex-shrink-0">Public</span>
-        {% endif %}
-    {% endif %}
-
+    <div class="d-flex flex-wrap gap-2">
     {% if recipe.public != True %}
         <span class="badge followers-exclusive-badge flex-shrink-0">Followers exclusive</span>
     {% endif %}
+    {% if showBadge %}
+        {% if recipe.public %}
+            <span class="badge public-badge flex-shrink-0">Public</span>
+        {% endif %}
+        {% if recipe.user == user and recipe.id == most_popular %}
+        <span class="badge popular-badge flex-shrink-0">Most Popular</span>
+        {% endif %}
+        {% if recipe.user == user and recipe.id == most_favourite %}
+        <span class="badge favourite-badge flex-shrink-0">Most Favourited</span>
+        {% endif %}
+    {% endif %}
+    </div>
   </div>
     <p class="card-text">{{ recipe.description }}</p>
     <div class="row">
@@ -40,11 +47,11 @@
           name="favourite_recipe"
           value="unfavourite_recipe"
         />
-        <button type="submit" class="unfavourite-button w-auto mt-auto">
+        <button type="submit" class="btn unfavourite-button w-auto" style="transform: translateY(8px);">
           Unfavourite <i class="bi bi-heartbreak-fill"></i>
         </button>
         {% else %}
-        <button type="submit" class="favourite-button w-auto mt-auto">
+        <button type="submit" class="btn favourite-button w-auto" style="transform: translateY(8px);">
           Favourite <i class="bi bi-heart"></i>
         </button>
         {% endif %}

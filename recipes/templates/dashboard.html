@@ -2,11 +2,13 @@
 {% block content %}
 <div class="container py-5">
   <div class="row text-center mb-3">
-    <div class="col-12 mb-4">
+    <div class="rounded-4 mb-4 text-center hero-section">
       <h1>
-        Welcome to your dashboard
-        <span class="fst-italic">{{ user.username }}</span>
+        Welcome back, <span class="fst-italic">{{ user.username }}</span> 👋
       </h1>
+      <p class="text-muted mb-0">
+        Here’s what’s trending today on your recipe board
+      </p>
     </div>
   </div>
   <div class="row justify-content-center mb-3">
@@ -54,6 +56,7 @@
   </div>
   <div class="row justify-content-center g-4 feature-item-container mt-1">
     <h2 class="h4 mb-0">FEATURES</h2>
+    <div class="row row-cols-1 row-cols-md-4 g-3 mt-2">
     {% for feature in features %} 
     {% include "partials/feature.html" with title=feature.title icon=feature.icon description=feature.description link=feature.link %} 
     {% endfor %}
