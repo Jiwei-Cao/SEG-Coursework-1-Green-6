@@ -52,10 +52,18 @@
           </p>
 
           <h6 class="fw-bold">Ingredients:</h6>
-          <p class="mb-3">{{recipe.ingredients}}</p>
+            {% for ingredient in ingredients %}
+              <div class="col-md-8">
+                {{ingredient}}
+              </div>
+            {% endfor %}
 
           <h6 class="fw-bold">Method:</h6>
-          <p class="mb-3">{{recipe.method}}</p>
+            {% for step in method %}
+              <div class="col-md-8">
+                {{step}}
+              </div>
+            {% endfor %}
 
           {% if recipe.user != user %}
           <span class="fw-bold small">Your Rating:</span>
