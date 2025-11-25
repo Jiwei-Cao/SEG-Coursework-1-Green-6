@@ -12,7 +12,7 @@ def create_recipe_method(request):
             recipe.user = request.user
             recipe.save()
             form.save_m2m()
-            return redirect('dashboard')
+            return redirect('create_recipe_method')
     else:
         form = RecipeMethodForm()
     return render(request, 'create_recipe_method.html', {'form': RecipeMethodForm})

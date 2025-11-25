@@ -12,7 +12,7 @@ def create_recipe_ingredient(request):
             recipe.user = request.user
             recipe.save()
             form.save_m2m()
-            return redirect('dashboard')
+            return redirect('create_recipe_ingredient')
     else:
         form = RecipeIngredientForm()
     return render(request, 'create_recipe_ingredient.html', {'form': RecipeIngredientForm})
