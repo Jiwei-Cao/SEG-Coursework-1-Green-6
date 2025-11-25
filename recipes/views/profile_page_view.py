@@ -1,29 +1,32 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from math import floor
 
-from recipes.models import Recipe
-from recipes.models import Rating
+from recipes.models import Recipe, Rating, User
 
 
 @login_required
-def profile_page(request):
+def profile_page(request, username=None):
     """
-    Display's the current user's profile.
+    Displays either the current user's profile (if no username is provided)
+    or another user's profile (if username is provided)
     """
-    
-    current_user = request.user
 
-    recipes = Recipe.objects.filter(user=current_user)
+    if username is None:
+        profile_user = request.user
+    else:
+        profile_user = get_object_or_404(User, username=username)
 
-    rating_count = calculate_user_rating(current_user,recipes)
+    recipes = Recipe.objects.filter(user=profile_user)
 
-    full_stars,half_star, empty_stars = star_rating(current_user.rating)
+    rating_count = calculate_user_rating(profile_user,recipes)
+
+    full_stars,half_star, empty_stars = star_rating(profile_user.rating)
 
     return render(request, 'profile_page.html', {
-        'user': current_user,
+        'user': profile_user,
         'recipes':recipes,
         'rating_count': rating_count,
         'full_stars': range(full_stars),
