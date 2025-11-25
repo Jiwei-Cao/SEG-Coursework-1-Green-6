@@ -1,0 +1,40 @@
+.custom-paginator .page-item {
+    margin: 0 4px;
+}
+
+.custom-paginator .page-item:first-child .page-link {
+    border-radius: 8px 8px 8px 8px; /* round left side */
+}
+
+.custom-paginator .page-item:last-child .page-link {
+    border-radius: 8px 8px 8px 8px; /* round left side */
+}
+
+.custom-paginator .page-link {
+    border-radius: 0; /* middle buttons flat */
+}
+
+
+.custom-paginator .page-link {
+    border: none !important;
+    padding: 8px 14px;
+    margin: 0 4px;
+    border-radius: 8px;
+    background-color: #f2e2b6;
+    text-decoration: none;
+    color: #444444;
+    font-weight: 400;
+    transition: transform 0.2s ease;
+}
+
+.custom-paginator .page-item.active .page-link {
+    font-weight: bolder;
+    background: linear-gradient(145deg, #e6dac0, #ecca80);
+    color: #7c7a7a;
+}
+
+.custom-paginator .page-link:hover {
+    background-color: #e6d1a3;
+    color: #444444;
+    transform: scale(1.05);
+}

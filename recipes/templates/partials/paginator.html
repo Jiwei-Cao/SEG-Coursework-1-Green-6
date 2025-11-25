@@ -1,0 +1,40 @@
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="custom-paginator d-flex justify-content-center mt-4">
+  <nav aria-label="Pagination">
+    <ul class="pagination">
+
+      {# Previous #}
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number}}">
+            PREVIOUS <i class="bi bi-arrow-left"></i>
+          </a>
+        </li>
+      {% endif %}
+
+      {# Page numbers #}
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+          <li class="page-item active"> <span class = "page-link">{{ num }}</span></li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ num }}">
+              {{ num }}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {# Next #}
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link next" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">
+            NEXT <i class="bi bi-arrow-right"></i>
+          </a>
+        </li>
+      {% endif %}
+
+    </ul>
+  </nav>
+</div>
+{% endif %}

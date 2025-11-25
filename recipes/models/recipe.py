@@ -12,6 +12,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     favourites = models.ManyToManyField(User,blank=True, related_name='recipes_favourited')
+    public = models.BooleanField(default=True)
 
     @property
     def average_rating(self):

@@ -14,7 +14,7 @@
         <img src="{{ user.gravatar }}" class="pfp" />
       </div>
       <div class="col">
-        <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
+        <h2 class="mb-0" style="font-weight:400 !important"><strong>{{ user.username}}</strong></h2>
         <p class = "rating mb-0">
           {% for _ in full_stars %}
           <i class="bi bi-star-fill full"></i>
@@ -50,7 +50,7 @@
     >
       {% for recipe in recipes %}
       <div class="col-md-4">
-        {% include "partials/recipe_card.html" with recipe=recipe %}
+        {% include "partials/recipe_card.html" with recipe=recipe showBadge=True%}
       </div>
       {% endfor %}
     </div>
@@ -76,7 +76,7 @@
       <div class="row g-3">
         {% for recipe in user.recipes_favourited.all %}
         <div class="col-4">
-          {% include "partials/recipe_card.html" with recipe=recipe %}
+          {% include "partials/recipe_card.html" with recipe=recipe showBadge=False%}
         </div>
         {% endfor %}
       </div>

@@ -70,6 +70,7 @@ class Migration(migrations.Migration):
                 ('method', models.TextField()),
                 ('img', models.ImageField(blank=True, default='images/default.webp', upload_to='images/')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('public', models.BooleanField(default=True)),
                 ('favourites', models.ManyToManyField(blank=True, related_name='recipes_favourited', to=settings.AUTH_USER_MODEL)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipes_created', to=settings.AUTH_USER_MODEL)),
                 ('tags', models.ManyToManyField(blank=True, to='recipes.tag')),

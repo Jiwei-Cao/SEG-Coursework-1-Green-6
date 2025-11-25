@@ -44,7 +44,6 @@
   transition: transform 0.2s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   background-color: #dae5ebf2;
-  align-self: center;
 }
 
 .link-button:hover {
@@ -67,6 +66,11 @@
   transform: translateX(5px); 
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
+
+.card-text.rating i {
+  color: orange;
+}
+
 
 @media (max-width: 576px) {
   .recipe-card{
