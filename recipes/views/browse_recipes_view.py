@@ -69,7 +69,8 @@ def browse_recipes(request):
     page_obj = paginator.get_page(page_number)
 
     context = {
-    'recipe_list': page_obj,
+    'recipe_list': recipe_list,
+    'page_obj': page_obj,
     'search_val': search_val,
     'form' : form
     }

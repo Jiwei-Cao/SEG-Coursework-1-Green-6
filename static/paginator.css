@@ -29,8 +29,8 @@
 
 .custom-paginator .page-item.active .page-link {
     font-weight: bolder;
-    background-color: #ecca80; /* Highlight active page */
-    color: #444444;
+    background: linear-gradient(145deg, #e6dac0, #ecca80);
+    color: #7c7a7a;
 }
 
 .custom-paginator .page-link:hover {

@@ -23,13 +23,13 @@
       class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
       ref="recipeGrid"
     >
-      {% for recipe in recipe_list %}
+      {% for recipe in page_obj %}
       <div class="col-md-4">
         {% include "partials/recipe_card.html" with recipe=recipe showBadge=False %}
       </div>
       {% endfor %}
     </div>
-    {% include "partials/paginator.html" with page_obj=recipe_list %}
+    {% include "partials/paginator.html" with page_obj=page_obj %}
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
