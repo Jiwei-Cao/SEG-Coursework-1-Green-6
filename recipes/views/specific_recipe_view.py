@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
-from ..models import Recipe, Rating, RecipeIngredient, RecipeMethod, Ingredient
+from ..models import Recipe, Rating, RecipeIngredient, Ingredient
 from django.http import HttpResponseRedirect
 from math import floor
 
@@ -11,8 +11,8 @@ def get_recipe(request, recipe_id):
         handle_rating_post(request, recipe)
         return HttpResponseRedirect(request.path_info)
     ingredients = getIngredientsList(recipe_id=recipe_id)
-    method = getOrderedMethod(recipe_id=recipe_id)
-    context = create_recipe_context(request.user, recipe, ingredients, method)
+    #method = getOrderedMethod(recipe_id=recipe_id)
+    context = create_recipe_context(request.user, recipe, ingredients)
     return render(request, "specific_recipe.html", context)
 
 def getIngredientsList(recipe_id):
@@ -37,29 +37,29 @@ def getIngredients(recipe_id):
         recipe_ingredients.append(recipe_ingredient_dictionary)
     return recipe_ingredients
 
-def getOrderedMethod(recipe_id):
-    recipe_steps = getMethod(recipe_id=recipe_id)
-    current_step_num = 0
-    ordered_method = []
-    for recipe_step_dict in recipe_steps:
-        order = recipe_step_dict.get("order")
-        if order > current_step_num:
-            instruction = recipe_step_dict.get("instruction")
-            ordered_method.append(str(order) + ") " + instruction)
-            current_step_num+=1
-    return ordered_method
+# def getOrderedMethod(recipe_id):
+#     recipe_steps = getMethod(recipe_id=recipe_id)
+#     current_step_num = 0
+#     ordered_method = []
+#     for recipe_step_dict in recipe_steps:
+#         order = recipe_step_dict.get("order")
+#         if order > current_step_num:
+#             instruction = recipe_step_dict.get("instruction")
+#             ordered_method.append(str(order) + ") " + instruction)
+#             current_step_num+=1
+#     return ordered_method
 
 
-def getMethod(recipe_id):
-    recipe_step_instances = RecipeMethod.objects.filter(recipe__id = recipe_id)
-    recipe_steps = []
-    for recipe_step in recipe_step_instances:
-        recipe_step_dictionary = {
-            "instruction": str(recipe_step.step),
-            "order": recipe_step.order
-        }
-        recipe_steps.append(recipe_step_dictionary)
-    return recipe_steps
+# def getMethod(recipe_id):
+#     recipe_step_instances = RecipeMethod.objects.filter(recipe__id = recipe_id)
+#     recipe_steps = []
+#     for recipe_step in recipe_step_instances:
+#         recipe_step_dictionary = {
+#             "instruction": str(recipe_step.step),
+#             "order": recipe_step.order
+#         }
+#         recipe_steps.append(recipe_step_dictionary)
+#     return recipe_steps
 
 def is_rating_post(request):
     return request.method == "POST" and request.POST.get("form_type") == "rating_form"
@@ -89,9 +89,9 @@ def calculate_star_distribution(average_rating):
     empty_stars = 5 - full_stars - half_star
     return full_stars, half_star, empty_stars
 
-def create_recipe_context(user,recipe, ingredients, method):
+def create_recipe_context(user,recipe, ingredients):
     ingredients = ingredients
-    method = method
+    #method = method
     user_rating = get_user_rating(user, recipe)
     average_rating = recipe.average_rating
     rating_count = recipe.rating_count
@@ -100,7 +100,7 @@ def create_recipe_context(user,recipe, ingredients, method):
     return {
         "recipe": recipe,
         "ingredients": ingredients,
-        "method": method,
+        #"method": method,
         "user_rating": user_rating,
         "average_rating": average_rating, 
         "rating_count": rating_count,
