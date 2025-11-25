@@ -16,5 +16,4 @@ from .delete_recipe_view import *
 from .edit_recipe_view import *
 from .comments_view import *
 from .add_method_view import *
-
 from .create_recipe_ingredient_view import *

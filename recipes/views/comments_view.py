@@ -33,24 +33,24 @@ def validate_comment_request(request):
 
 
 def create_comment(request, recipe):
-    try:
-        comment = Comment(user=request.user, comment=request.POST.get('comment_text'), date_published=datetime.datetime.now())
-        comment.save()
-        recipe.comments.add(comment)
-    except:
-    	raise Http404("Could not create comment")
-    	return HttpResponseNotFound()
+	try:
+		comment = Comment(user=request.user, comment=request.POST.get('comment_text'), date_published=datetime.datetime.now())
+		comment.save()
+		recipe.comments.add(comment)
+	except:
+		raise Http404("Could not create comment")
+		return HttpResponseNotFound()
 
 
 def is_delete_comment_post(request):
-    return request.method == "POST" and request.POST.get("form_type") == "delete_comment_form"
+	return request.method == "POST" and request.POST.get("form_type") == "delete_comment_form"
 
 def delete_comment(request, recipe):
-    try:
-    	comment = Comment.objects.get(pk=request.POST.get('comment_clicked'))
-    	recipe.comments.remove(comment)
-    except:
-        raise Http404(f"Could not delete comment")
-        return HttpResponseNotFound()
-    else: 
-        comment.delete()
+	try:
+		comment = Comment.objects.get(pk=request.POST.get('comment_clicked'))
+		recipe.comments.remove(comment)
+	except:
+		raise Http404(f"Could not delete comment")
+		return HttpResponseNotFound()
+	else: 
+		comment.delete()

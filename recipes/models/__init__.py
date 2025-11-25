@@ -8,5 +8,4 @@ from .recipe_ingredient import *
 from .comment import *
 from .rating import *
 from .method_step import *
-
 from .user_ingredient import *
