@@ -68,6 +68,19 @@
 
 
           </div>
+            {% for ingredient in ingredients %}
+              <div class="col-md-8">
+                {{ingredient}}
+              </div>
+            {% endfor %}
+
+          <h6 class="fw-bold">Method:</h6>
+            {% for step in method %}
+              <div class="col-md-8">
+                {{step}}
+              </div>
+            {% endfor %}
+
           {% if recipe.user != user %}
           <span class="fw-bold small">Your Rating:</span>
           <div class="d-flex flex-column flex-md-row gap-3 mb-2">

@@ -86,8 +86,6 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=100)),
                 ('description', models.TextField()),
-                ('ingredients', models.TextField()),
-                ('method', models.TextField()),
                 ('img', models.ImageField(blank=True, default='images/default.webp', upload_to='images/')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('public', models.BooleanField(default=True)),
@@ -116,6 +114,17 @@ class Migration(migrations.Migration):
                 ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='recipes.recipe')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='recipes.unit')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='UserIngredient',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=100)),
+                ('category', models.CharField(choices=[('NN', 'None'), ('VG', 'Vegetable'), ('SP', 'Spice'), ('HB', 'Herbs'), ('BT', 'Butchery'), ('SF', 'Seafood')], default='NN', max_length=2)),
+                ('quantity', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='recipes.unit')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
