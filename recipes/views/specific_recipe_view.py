@@ -30,7 +30,7 @@ def get_recipe(request, recipe_id):
     form = CommentForm()
     context = create_recipe_context(request.user, recipe)
     context["form"] = form
-    context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
+    #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
     return render(request, "specific_recipe.html", context)
 
 
@@ -74,29 +74,3 @@ def create_recipe_context(user, recipe):
         "half_star": half_star,
         "empty_stars": range(empty_stars),
     }
-
-
-# ----- Comment helpers -----
-@login_required
-def create_comment(request, recipe, form):
-    if form.is_valid():
-        try:
-            comment_text = form.cleaned_data['comment']
-            Comment.objects.create(
-                user=request.user,
-                recipe=recipe,
-                comment=comment_text,
-                date_published=datetime.datetime.now()
-            )
-        except Exception:
-            form.add_error(None, "Couldn't create this comment.")
-
-
-@login_required
-def delete_comment(request):
-    try:
-        comment_id = request.POST.get('comment_clicked')
-        comment = Comment.objects.get(pk=comment_id)
-        comment.delete()
-    except Comment.DoesNotExist:
-        raise Http404("Could not delete comment")

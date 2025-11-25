@@ -14,3 +14,5 @@ from .user_search_view import *
 from .toggle_favourite_view import *
 from .delete_recipe_view import *
 from .edit_recipe_view import *
+from .comments_view import *
+from .add_method_view import *
