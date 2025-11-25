@@ -29,7 +29,8 @@ def get_recipe(request, recipe_id):
             return HttpResponseRedirect(request.path_info)
 
     form = CommentForm()
-    context = create_recipe_context(request.user, recipe)
+    ingredients = getIngredientsList(recipe_id=recipe_id)
+    context = create_recipe_context(request.user, recipe, ingredients)
     context["form"] = form
     #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
     return render(request, "specific_recipe.html", context)
@@ -84,7 +85,8 @@ def calculate_star_distribution(average_rating):
     empty_stars = 5 - full_stars - half_star
     return full_stars, half_star, empty_stars
 
-def create_recipe_context(user, recipe):
+def create_recipe_context(user, recipe, ingredients):
+    ingredients = ingredients
     user_rating = get_user_rating(user, recipe)
     average_rating = recipe.average_rating or 0
     rating_count = recipe.rating_count or 0
@@ -92,6 +94,7 @@ def create_recipe_context(user, recipe):
 
     return {
         "recipe": recipe,
+        "ingredients": ingredients,
         "user_rating": user_rating,
         "average_rating": average_rating,
         "rating_count": rating_count,
