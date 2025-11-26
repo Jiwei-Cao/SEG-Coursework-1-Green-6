@@ -20,18 +20,6 @@
             <a href="{% url 'user_profile' user.username %}">
                 {{ user.username }}
             </a>
-
-            {% if user.id in following_ids %}
-                <form method="post" action="{% url 'unfollow_user' user.id %}?next={{ request.path }}{% if query %}&q={{ query }}{% endif %}">
-                    {% csrf_token %}
-                    <button type="submit">Unfollow</button>
-                </form>
-            {% else %}
-                <form method="post" action="{% url 'follow_user' user.id %}?next={{ request.path }}{% if query %}&q={{ query }}{% endif %}">
-                    {% csrf_token %}
-                    <button type="submit">Follow</button>
-                </form>
-            {% endif %}
         </li>
     {% empty %}
         <li>No users found.</li>

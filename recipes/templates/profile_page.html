@@ -15,6 +15,24 @@
       </div>
       <div class="col">
         <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
+
+        <p>Followers: {{ follower_count }}</p>
+        <p>Following: {{ following_count }}</p>
+
+        {% if user != request.user %}
+            {% if is_following %}
+                <form method="post" action="{% url 'unfollow_user' user.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Unfollow</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'follow_user' user.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Follow</button>
+                </form>
+            {% endif %}
+        {% endif %}
+
         <p class = "rating mb-0">
           {% for _ in full_stars %}
           <i class="bi bi-star-fill full"></i>

@@ -25,6 +25,14 @@ def profile_page(request, username=None):
 
     full_stars,half_star, empty_stars = star_rating(profile_user.rating)
 
+    following_count = profile_user.following.count()
+    follower_count = profile_user.followers.count()
+
+    is_following = False
+
+    if profile_user != request.user:
+        is_following = profile_user.id in request.user.following.values_list('id', flat=True)
+
     return render(request, 'profile_page.html', {
         'user': profile_user,
         'recipes':recipes,
@@ -32,6 +40,9 @@ def profile_page(request, username=None):
         'full_stars': range(full_stars),
         'half_star': half_star,
         'empty_stars': range(empty_stars),
+        'following_count': following_count,
+        'follower_count': follower_count,
+        'is_following': is_following,
         })
 
 def calculate_user_rating(user,recipes):
