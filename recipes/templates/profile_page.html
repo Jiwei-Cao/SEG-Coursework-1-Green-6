@@ -16,8 +16,16 @@
       <div class="col">
         <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
 
-        <p>Followers: {{ follower_count }}</p>
-        <p>Following: {{ following_count }}</p>
+        <p>
+          <a href="{% url 'following_list' user.username %}">
+            Following: {{ following_count }}
+          </a>
+        </p>
+        <p>
+          <a href="{% url 'followers_list' user.username %}">
+            Followers: {{ follower_count }}
+          </a>
+        </p>
 
         {% if user != request.user %}
             {% if is_following %}

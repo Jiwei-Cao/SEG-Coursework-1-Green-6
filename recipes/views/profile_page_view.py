@@ -45,6 +45,34 @@ def profile_page(request, username=None):
         'is_following': is_following,
         })
 
+@login_required
+def following_list(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    following = profile_user.following.all()
+
+    following_ids= set(request.user.following.values_list('id', flat=True))
+
+    return render(request, 'user_list.html', {
+        'title': f"{profile_user.username} is following",
+        'profile_user': profile_user,
+        'users': following,
+        'following_ids': following_ids,
+    })
+
+@login_required 
+def followers_list(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    followers = profile_user.followers.all()
+
+    following_ids = set(request.user.following.values_list('id', flat=True))
+
+    return render(request, 'user_list.html', {
+        'title': f"{profile_user.username}'s followers",
+        'profile_user': profile_user,
+        'users': followers,
+        'following_ids': following_ids,
+    })
+
 def calculate_user_rating(user,recipes):
     all_ratings = Rating.objects.filter(recipe__in=recipes)
     rating_count = all_ratings.count()
