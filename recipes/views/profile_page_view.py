@@ -1,34 +1,64 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from math import floor
+from django.db.models import Count
 
-from recipes.models import Recipe
-from recipes.models import Rating
+
+from recipes.models import Recipe, Rating, User
 
 
 @login_required
-def profile_page(request):
+def profile_page(request, username=None):
     """
-    Display's the current user's profile.
+    Displays either the current user's profile (if no username is provided)
+    or another user's profile (if username is provided)
     """
-    
     current_user = request.user
 
-    recipes = Recipe.objects.filter(user=current_user)
+    if username is None:
+        profile_user = request.user
+    else:
+        profile_user = get_object_or_404(User, username=username)
 
-    rating_count = calculate_user_rating(current_user,recipes)
+    recipes = Recipe.objects.filter(user=profile_user)
+
+    rating_count = calculate_user_rating(profile_user,recipes)
 
     full_stars,half_star, empty_stars = star_rating(current_user.rating)
 
+    favourite_recipe_ids = get_favourite_recipes_id(current_user)
+    favourite_recipes = Recipe.objects.filter(pk__in=favourite_recipe_ids)
+
+    most_popular_recipe = recipes.order_by('-rating').first()
+    most_popular_id = most_popular_recipe.id if most_popular_recipe else None
+
+    most_favourited_recipe = (
+        recipes
+        .annotate(fav_count=Count('favourites'))
+        .order_by('-fav_count', '-created_at')
+        .first()                          
+    )
+    most_favourited_recipe_id = most_favourited_recipe.id if most_favourited_recipe else None
+    print("most favourite id" + str(most_favourited_recipe_id))
+
+    if request.method == 'POST':
+        handle_favourites_form_requests(request)
+
+        return HttpResponseRedirect(request.path_info)
+
     return render(request, 'profile_page.html', {
-        'user': current_user,
+        'user': profile_user,
         'recipes':recipes,
         'rating_count': rating_count,
         'full_stars': range(full_stars),
         'half_star': half_star,
         'empty_stars': range(empty_stars),
+        'favourite_recipes':  favourite_recipes,
+        'user_favourited_recipe_ids': favourite_recipe_ids,
+        'most_popular': most_popular_id,
+        'most_favourite': most_favourited_recipe_id
         })
 
 def calculate_user_rating(user,recipes):
@@ -46,3 +76,22 @@ def star_rating(rating):
     half_star = rating-full_stars==0.5
     empty_stars = 5 - full_stars - half_star
     return (full_stars, half_star, empty_stars)
+
+def get_favourite_recipes_id(user):
+    return list(
+        user.recipes_favourited.values_list('id', flat=True)
+    )
+
+
+def handle_favourites_form_requests(request):    
+    if request.POST.get('favourite_recipe', '') == 'unfavourite_recipe':
+        unfavourite_recipe(request)
+
+def unfavourite_recipe(request):
+    recipe_id = request.POST.get("recipe_clicked")
+
+    if not recipe_id:
+        return
+
+    # Remove relationship
+    request.user.recipes_favourited.remove(recipe_id)

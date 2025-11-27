@@ -1,61 +1,41 @@
 {% extends 'base_content.html' %}
 {% block content %}
+<div class = "container">
 
-<h2>User search</h2>
+<h1>User search</h1>
 
 <form method="get">
-  <input type="text" name="q" value="{{ query }}" placeholder="Search users">
-  <button type="submit">Search</button>
+    <input type="text" name="q" value="{{ query }}" placeholder="Search users">
+    <button type="submit">Search</button>
 </form>
 
 {% if has_query %}
-  <h3>Top users</h3>
-  <ul>
-    {% for u in top_users %}
-      <li>
-        {{ u.username }}
-        {% if u != user %}
-          {% if u.id in following_ids %}
-            <form method="post" action="{% url 'unfollow_user' u.id %}">
-              {% csrf_token %}
-              <button>Unfollow</button>
-            </form>
-          {% else %}
-            <form method="post" action="{% url 'follow_user' u.id %}">
-              {% csrf_token %}
-              <button>Follow</button>
-            </form>
-          {% endif %}
-        {% endif %}
-      </li>
-    {% empty %}
-      <li>No users found.</li>
-    {% endfor %}
-  </ul>
+    <h2>Results</h2>
 {% else %}
-  <h3>All users</h3>
-  <ul>
-    {% for u in users %}
-      <li>
-        {{ u.username }}
-        {% if u != user %}
-          {% if u.id in following_ids %}
-            <form method="post" action="{% url 'unfollow_user' u.id %}">
-              {% csrf_token %}
-              <button>Unfollow</button>
-            </form>
-          {% else %}
-            <form method="post" action="{% url 'follow_user' u.id %}">
-              {% csrf_token %}
-              <button>Follow</button>
-            </form>
-          {% endif %}
-        {% endif %}
-      </li>
-    {% empty %}
-      <li>No users found.</li>
-    {% endfor %}
-  </ul>
+    <h2>Suggested users</h2>
 {% endif %}
 
+<ul>
+    {% for user in top_users %}
+        <li>
+            <a href="{% url 'user_profile' user.username %}">
+                {{ user.username }}
+            </a>
+
+            {% if user.id in following_ids %}
+                <form method="post" action="{% url 'unfollow_user' user.id %}?next={{ request.path }}{% if query %}&q={{ query }}{% endif %}">
+                    {% csrf_token %}
+                    <button type="submit">Unfollow</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'follow_user' user.id %}?next={{ request.path }}{% if query %}&q={{ query }}{% endif %}">
+                    {% csrf_token %}
+                    <button type="submit">Follow</button>
+                </form>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No users found.</li>
+    {% endfor %}
+  </ul>
 {% endblock %}

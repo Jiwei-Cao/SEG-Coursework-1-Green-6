@@ -23,7 +23,7 @@ def user_search(request):
         )
         has_query = True
     else:
-        top_users = User.objects.none()
+        top_users = users.order_by("?")[:10]
         has_query = False
 
     following_ids = set(request.user.following.values_list('id', flat=True))

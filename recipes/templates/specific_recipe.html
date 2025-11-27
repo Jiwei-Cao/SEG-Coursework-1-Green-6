@@ -1,15 +1,16 @@
-{% extends 'base_content.html' %} {% block content %}
-<div class="container my-5 d-flex justify-content-center">
+{% extends 'base_content.html' %} 
+{% block content %}
+<div class="container my-3 mt-5 d-flex justify-content-center">
   <div class="card mb-3 specific_recipe_card">
     <div class="row g-0">
-      <div class="col-md-3">
+      <div class="col-md-4">
         <img
           src="{{recipe.img.url}}"
           class="img-fluid rounded-start specific-recipe-card-image"
           alt="{{recipe.title}}"
         />
       </div>
-      <div class="col-md-5">
+      <div class="col-md-8">
         <div class="card-body d-flex flex-column pb-3">
           <div
             class="card-title d-flex justify-content-between align-items-center mb-2"
@@ -52,14 +53,35 @@
           </p>
 
           <h6 class="fw-bold">Ingredients:</h6>
-          <p class="mb-3">{{recipe.ingredients}}</p>
+            {% for ingredient in ingredients %}
+              <div class="col-md-8">
+                {{ingredient}}
+              </div>
+            {% endfor %}
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <b>Method </b><a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm  btn-link">Edit</a>
+              </div>
+              <ul class="list-group list-group-flush">
+                {% for step in recipe.method_steps.all %}
+                <li class="list-group-item"><b>{{step.step_number}}</b>. {{step.method_text}}</li>
+                {% endfor %}
+              </ul>
+            </div>
 
+
+          </div>
           <h6 class="fw-bold">Method:</h6>
-          <p class="mb-3">{{recipe.method}}</p>
+            {% for step in method %}
+              <div class="col-md-8">
+                {{step}}
+              </div>
+            {% endfor %}
 
           {% if recipe.user != user %}
           <span class="fw-bold small">Your Rating:</span>
-          <div class="d-flex flex-column flex-md-row gap-3 mb-3">
+          <div class="d-flex flex-column flex-md-row gap-3 mb-2">
             <form method="post" class="rating-form">
               {% csrf_token %}
               <input type="hidden" name="form_type" value="rating_form" />
@@ -71,8 +93,9 @@
               <div class="star-rating d-flex flex-md-row gap-2">
                 <div class="d-flex gap-2 mr-3">
                   {% for i in "54321" %} <input type="radio" id="star{{ i }}"
-                  name="rating" value="{{ i }}" {% if user_rating|stringformat:"i" == i %}
-                  checked{% endif %} />
+                  name="rating" value="{{ i }}" 
+                  {% if user_rating|stringformat:"i" == i %} checked
+                  {% endif %} />
                   <label for="star{{ i }}" title="{{ i }} stars">
                     <i class="bi bi-star-fill"></i>
                   </label>
@@ -84,38 +107,40 @@
               </div>
             </form>
           </div>
-          <div class="comment mb-3 d-flex gap-2">
-            <form action="{% url 'get_recipe' recipe.pk %}" method="post">
+          {% endif %}
+          <br>
+          <div class="comment mb-3 d-flex flex-md-row gap-3">
+            <form action="{% url 'handle_comments' recipe.id %}" method="post" class="flex-grow-1">
               {% csrf_token %}
                <input type="hidden" name="form_type" value="comment_form">
-               {% include 'partials/bootstrap_form.html' with form=form %}
-                <!--input type="text" name="comment_text" class="form-control" placeholder="Add a comment"  /-->
+               <!--{% include 'partials/bootstrap_form.html' with form=form %}-->
+                <input type="text" name="comment_text" class="form-control" placeholder="Add a comment"/>
               <button type="submit" class="btn submit-button">
                 Submit Comment
               </button>
             </form>
-            {% endif %}
+          
           </div>
-          <div class = "d-flex justify-content-center mt-auto">
-          <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
-            >Back to Recipes</a
-          >
+
+
+          <div class="d-flex justify-content-center mt-auto">
+            <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
+              >Back to Recipes</a>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card-body d-flex flex-column pb-3">
           <div
-            class="card-title d-flex justify-content-between align-items-center mb-2"
-          >
+            class="card-title d-flex justify-content-between align-items-center mb-2">
             <h6 class="card-title mb-0">Comments</h6>
 
       
           </div>
 
           <div class="comment-container">
-            {% for comment in comments %}
-              {% if comment.recipe == recipe %}
+            {% for comment in recipe.comments.all %}
+              
               <div class="card" >
                 <div class="card-body">
                   <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
@@ -129,7 +154,7 @@
                   <small class="card-subtitle mb-2 text-body-secondary">{{comment.date_published}}</small>
                   <p class="card-text">{{comment.comment}}</p>
                   {% if comment.user == user %} 
-                    <form action="{% url 'get_recipe' recipe.pk %}" method="post">
+                    <form action="{% url 'handle_comments' recipe.pk %}" method="post">
                       {% csrf_token %}
                       <input type="hidden" name="form_type" value="delete_comment_form">
                       <input type="hidden" name="comment_clicked" value="{{comment.id}}">
@@ -138,14 +163,13 @@
                   {% endif %}
                 </div>
               </div>
-              {% endif %}
+              
             {% endfor %}
           </div>
 
         </div>
 
       </div>
-
     </div>
   </div>
 </div>
