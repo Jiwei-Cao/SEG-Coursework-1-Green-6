@@ -191,8 +191,8 @@
 .public-badge {
   background: linear-gradient(145deg, #b4edc3, #79bd93);
 }
-.followers-exclusive-badge {
-  background: linear-gradient(145deg, #feeabc, #f2d1b6);
+  .followers-exclusive-badge {
+  background: linear-gradient(145deg, #fad59d, #f1c5d7);
 }
 .followers-exclusive-badge:hover,
 .favourite-badge:hover,
@@ -202,14 +202,13 @@
 }
 
 
-  .follow-button, .unfollow-button {
+.follow-button, .unfollow-button {
   border: none;
   border-radius: 20px;
   padding: 0.3rem 0.9rem;
   cursor: pointer;
   transition: transform 0.2s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  
 }
 .follow-button{
 background-color: #dae5ebf2;

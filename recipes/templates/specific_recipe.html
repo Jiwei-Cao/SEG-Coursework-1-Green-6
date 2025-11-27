@@ -2,8 +2,8 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<div class="container my-5 d-flex justify-content-center">
-  <div class="card mb-3 specific_recipe_card" >
+<div class="container my- d-flex justify-content-center">
+  <div class="card mb-3 specific_recipe_card">
     <div class="row g-0">
       <div class="col-md-4">
         <img src="{{ recipe.img.url }}" class="img-fluid rounded-start specific-recipe-card-image" alt="{{ recipe.title }}">
@@ -11,9 +11,8 @@
       <div class="col-md-8">
         <div class="card-body d-flex flex-column pb-3">
 
-          <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap">
             <h4 class="mb-0">{{ recipe.title }}</h4>
-            <div class="d-flex align-items-center gap-2">
               {% if recipe.user != user %}
               <a href="{% url 'user_profile' recipe.user.username %}" style="text-decoration: none; color: inherit">
               {% endif %}
@@ -24,10 +23,11 @@
                 </span>
               {% if recipe.user != user %}</a>{% endif %}
               {% if user == recipe.user %}
-              <a href="{% url 'edit_recipe' recipe.id %}" class="btn btn-primary btn-sm ms-2">Edit Recipe</a>
-              <button type="button" class="btn btn-danger btn-sm ms-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete Recipe</button>
+              <div class="d-flex gap-2 ms-auto mt-3">
+                <a href="{% url 'edit_recipe' recipe.id %}" class="btn btn-primary btn-sm">Edit Recipe</a>
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete Recipe</button>
+              </div>
               {% endif %}
-            </div>
           </div>
 
           <p class="card-text fst-italic">{{ recipe.description }}</p>
@@ -63,7 +63,7 @@
             </ul>
           </div>
           {% if recipe.user != user %}
-          <span class="fw-bold small">Your Rating:</span>
+          <span class="fw-bold small mb-2">Your Rating:</span>
           <div class="d-flex flex-column flex-md-row gap-3 mb-2">
             <form method="post" class="rating-form">
               {% csrf_token %}
@@ -91,12 +91,12 @@
             </form>
           </div>
           {% endif %}
+          <span class="fw-bold small">Comment:</span>
           <form action="{% url 'handle_comments' recipe.id %}" method="post" class="mt-3 gap-2">
               {% csrf_token %}
                <input type="hidden" name="form_type" value="comment_form">
-               <!--{% include 'partials/bootstrap_form.html' with form=form %}-->
                <div class="d-flex gap-2"> 
-                <input type="text" name="comment_text" class="form-control" placeholder="Add a comment" style="width: 400px;" />
+                <input type="text" name="comment_text" class="form-control" placeholder="Add a comment" style="width: 500px;" />
                  <button type="submit" class="btn submit-button">
                 Submit Comment
               </button>
@@ -104,9 +104,7 @@
               </div>
             </form>
           </div>
-            
-         
-          <div class="d-flex justify-content-center mt-4">
+          <div class="d-flex justify-content-center mt-2 mb-2">
             <a href="{% url 'all_recipes' %}" class="btn link-button mb-3">Back to Recipes</a>
           </div>
            </div>
@@ -117,7 +115,7 @@
     </div>
   </div>
 </div>
-<div class="container my-4 text-center mt-2">
+<div class="container text-center mb-4">
   <button class="btn btn-outline-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#commentCollapse">
     Show Comments ({{ recipe.comments.all|length }})
   </button>
@@ -132,7 +130,7 @@
             <div class="d-flex justify-content-between align-items-center mb-1">
               <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
                 <img src="{{ comment.user.gravatar }}" class="rounded-circle" style="width:24px; height:24px;">
-                {{ comment.user }} {% if recipe.user == user %}(YOU){% endif %}
+                {{ comment.user }} {% if comment.user == user %}(YOU){% endif %}
               </span>
               <small class="text-body-secondary">{{ comment.date_published }}</small>
             </div>

@@ -47,6 +47,10 @@ def follow_user(request, user_id):
 
     if target != request.user:
         request.user.following.add(target) 
+
+    next_url = request.GET.get("next")
+    if next_url:
+        return redirect(next_url)
         
     return redirect('user_search')
 
@@ -59,5 +63,9 @@ def unfollow_user(request, user_id):
     
     if target != request.user:
         request.user.following.remove(target)
+
+    next_url = request.GET.get("next")
+    if next_url:
+        return redirect(next_url)
 
     return redirect('user_search')

@@ -6,6 +6,23 @@
     width: 150px;
     height: 150px;
   }
+  .follow-button, .unfollow-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+.follow-button{
+background-color: #dae5ebf2;
+}
+.unfollow-button{
+  background-color: #cccccce1;
+}
+.follow-button:hover, .unfollow-button:hover{
+  transform: scale(1.05);
+}
 </style>
 <div class="container">
   <section class="mb-4 border-bottom border-1 border-dark">
@@ -18,14 +35,14 @@
         <h2 style="font-weight:400 !important"><strong>{{ user.username}}</strong></h2>
         {% if user != request.user %}
           {% if is_following %}
-                <form class="d-inline-block" method="post" action="{% url 'unfollow_user' user.id %}?next={{ request.path }}{% if query %}&q={{ query }}{% endif %}">
+                <form class="d-inline-block d-flex align-items-center" method="post" action="{% url 'unfollow_user' user.id %}?next={{ request.path }}">
                     {% csrf_token %}
-                    <button type="sumbit" class = 'unfollow-button'>Unfollow</button>
+                    <button type="submit" class="unfollow-button mt-2"><i class="bi bi-dash"></i>Unfollow</button>
                 </form>
             {% else %}
-                <form class="d-inline-block" method="post" action="{% url 'follow_user' user.id %}?next={{ request.path }}{% if query %}&q={{ query }}{% endif %}">
+                <form class="d-inline-block d-flex align-items-center" method="post" action="{% url 'follow_user' user.id %}?next={{ request.path }}">
                     {% csrf_token %}
-                    <button type="submit" class = 'follow-button'>Follow</button>
+                    <button type="submit" class="follow-button mt-2"><i class="bi bi-plus"></i>Follow</button>
                 </form>
             {% endif %}
         {% endif %}

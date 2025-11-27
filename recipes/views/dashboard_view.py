@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.db.models import Q
 
 from ..models import Recipe, Rating
 
@@ -7,6 +8,7 @@ from math import floor
 
 @login_required
 def dashboard(request):
+    current_user = request.user
     """
     Display the current user's dashboard.
 
@@ -16,7 +18,7 @@ def dashboard(request):
     page.
     """
     
-    rated_recipes = get_top_rated_recipes()
+    rated_recipes = get_top_rated_recipes(current_user)
     features = get_features()
 
     current_user = request.user
@@ -32,8 +34,10 @@ def star_rating(recipe):
     recipe.half_stars = half_star
     recipe.empty_stars = range(empty)
 
-def get_top_rated_recipes():
-    recipes = Recipe.objects.filter(public=True)
+def get_top_rated_recipes(current_user):
+    following_user = current_user.following.all()
+    recipes = Recipe.objects.filter( Q(public=True) | Q(user__in=following_user) | Q(user=current_user)).distinct()
+
     recipes = recipes.filter(rating__isnull=False).distinct()
     rated_recipes = sorted(
         recipes,
