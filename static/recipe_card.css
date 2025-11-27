@@ -80,7 +80,7 @@
   transition: color 0.2s;
 }
 
-.star-rating input:checked ~ label i {
+.star-rating input:checked ~ label i, .star-rating label i {
   color: #ccc;
 }
 .star-rating input:checked + label i,
@@ -134,6 +134,10 @@
   transform: scale(1.05);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   background-color: #9ecee9f6;
+}
+
+.recipe-author{
+  transition: transform 0.2s ease;
 }
 
 .recipe-author img {
@@ -195,6 +199,26 @@
 .popular-badge:hover,
 .public-badge:hover {
   transform: scale(1.1);
+}
+
+
+  .follow-button, .unfollow-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  
+}
+.follow-button{
+background-color: #dae5ebf2;
+}
+.unfollow-button{
+  background-color: #cccccce1;
+}
+.follow-button:hover, .unfollow-button:hover{
+  transform: scale(1.05);
 }
 
 @media (max-width: 576px) {

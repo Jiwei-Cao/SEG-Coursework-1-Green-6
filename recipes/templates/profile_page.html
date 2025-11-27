@@ -14,7 +14,22 @@
         <img src="{{ user.gravatar }}" class="pfp" />
       </div>
       <div class="col">
-        <h2 class="mb-0" style="font-weight:400 !important"><strong>{{ user.username}}</strong></h2>
+        <div class = "d-flex align-items-center gap-3">
+        <h2 style="font-weight:400 !important"><strong>{{ user.username}}</strong></h2>
+        {% if user != request.user %}
+          {% if is_following %}
+                <form class="d-inline-block" method="post" action="{% url 'unfollow_user' user.id %}?next={{ request.path }}{% if query %}&q={{ query }}{% endif %}">
+                    {% csrf_token %}
+                    <button type="sumbit" class = 'unfollow-button'>Unfollow</button>
+                </form>
+            {% else %}
+                <form class="d-inline-block" method="post" action="{% url 'follow_user' user.id %}?next={{ request.path }}{% if query %}&q={{ query }}{% endif %}">
+                    {% csrf_token %}
+                    <button type="submit" class = 'follow-button'>Follow</button>
+                </form>
+            {% endif %}
+        {% endif %}
+        </div>
         <p class = "rating mb-0">
           {% for _ in full_stars %}
           <i class="bi bi-star-fill full"></i>
@@ -57,6 +72,7 @@
     {% endif %}
   </section>
 
+  {% if user == request.user %}
   <section class="mb-5">
     <h2>
       <button
@@ -85,5 +101,6 @@
       {% endif %}
     </div>
   </section>
+  {% endif %}
 </div>
 {% endblock %}
