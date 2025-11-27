@@ -12,7 +12,7 @@ is swallowed and generation continues.
 from faker import Faker
 from random import randint, random
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User
+from recipes.models import User, Tag
 
 
 user_fixtures = [
@@ -55,6 +55,8 @@ class Command(BaseCommand):
         """
         self.create_users()
         self.users = User.objects.all()
+        self.create_tags()
+
 
     def create_users(self):
         """
@@ -124,6 +126,16 @@ class Command(BaseCommand):
             first_name=data['first_name'],
             last_name=data['last_name'],
         )
+    
+    def create_tags(self):
+        """Construct default tags for the Tag Model"""
+        tags = ["Vegan", "Vegetarian", "Gluten-free", "Quick", "Easy", "Mediterranean", "Asian", "Indian", "Dairy-free"]
+        for tag in tags:
+            try:
+                Tag.objects.create(name=tag)
+            except:
+                pass
+        print("Tag seeding complete")
 
 def create_username(first_name, last_name):
     """
