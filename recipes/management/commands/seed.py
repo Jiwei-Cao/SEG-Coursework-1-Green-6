@@ -129,10 +129,20 @@ class Command(BaseCommand):
     
     def create_tags(self):
         """Construct default tags for the Tag Model"""
-        tags = ["Vegan", "Vegetarian", "Gluten-free", "Quick", "Easy", "Mediterranean", "Asian", "Indian", "Dairy-free"]
+        tags = [
+            {"name": "Vegan", "colour": "#2f88ff"}, 
+            {"name": "Vegetarian", "colour": "#0d96b6"},
+            {"name": "Gluten-free", "colour": "#d59d4d"},
+            {"name": "Quick", "colour:":"#b26459"},
+            {"name": "Easy", "colour": "#b26459"},
+            {"name": "Mediterranean", "colour": "#e9dfec"},
+            {"name": "Asian", "colour": "#b3a496"},
+            {"name": "Indian", "colour": "#82ae67"},
+            {"name": "Dairy-free", "colour": "#f67fcb"}
+        ]
         for tag in tags:
             try:
-                Tag.objects.create(name=tag)
+                Tag.objects.create(name=tag["name"], colour=tag["colour"])
             except:
                 pass
         print("Tag seeding complete")

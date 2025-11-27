@@ -17,15 +17,11 @@ class EditRecipeViewTest(TestCase):
             "user": self.user,
             "title": "Tomato Soup",
             "description": "Basic soup",
-            "ingredients": "Tomatoes\nSalt\nWater",
-            "method": "Boil tomatoes.\nBlend.\nServe."
         }
         self.recipe = Recipe.objects.create(
             user = self.recipe_data['user'],
             title = self.recipe_data['title'],
             description = self.recipe_data['description'],
-            ingredients = self.recipe_data['ingredients'],
-            method = self.recipe_data['method']
         )
         
         self.url = reverse('edit_recipe', args=[self.recipe.id])
@@ -51,8 +47,6 @@ class EditRecipeViewTest(TestCase):
 
         self.assertContains(response, self.recipe.title)
         self.assertContains(response, self.recipe.description)
-        self.assertContains(response, self.recipe.method)
-        self.assertContains(response, self.recipe.ingredients)
 
         self.assertTemplateUsed('edit_recipe.html')
     
@@ -61,8 +55,6 @@ class EditRecipeViewTest(TestCase):
         data = {
             'title': new_title,
             'description': self.recipe.description,
-            'ingredients': self.recipe.ingredients,
-            'method': self.recipe.method,
             'tags':[]
         }
 
@@ -100,8 +92,6 @@ class EditRecipeViewTest(TestCase):
         data = {
             'title': 'new_title',
             'description': self.recipe.description,
-            'ingredients': self.recipe.ingredients,
-            'method': self.recipe.method,
             'tags':[]
         }
 

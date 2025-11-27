@@ -17,7 +17,7 @@ class SearchRecipesForm(forms.Form):
             search_fields=['name__icontains'], 
             attrs={
                 'data-placeholder': 'Search tags',
-                'style':'width: 20%',
+                'style':'width: 100%',
                 'data-minimum-input-length':0}))
     ingredients = forms.CharField(
         label="Ingredients",
