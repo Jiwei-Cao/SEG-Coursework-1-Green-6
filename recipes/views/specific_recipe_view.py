@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
+from ..models import Recipe, Rating, RecipeIngredient, Ingredient
 from django.http import HttpResponseRedirect, Http404
 from math import floor
 import datetime
@@ -28,11 +29,36 @@ def get_recipe(request, recipe_id):
             return HttpResponseRedirect(request.path_info)
 
     form = CommentForm()
-    context = create_recipe_context(request.user, recipe)
+    ingredients = getIngredientsList(recipe_id=recipe_id)
+    context = create_recipe_context(request.user, recipe, ingredients)
     context["form"] = form
-    context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
+    #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
     return render(request, "specific_recipe.html", context)
 
+def getIngredientsList(recipe_id):
+    ingredients_dict_list = getIngredients(recipe_id=recipe_id)
+    ingredients_list = []
+    for ingredient_dict in ingredients_dict_list:
+        quantity = ingredient_dict.get("quantity")
+        unit = ingredient_dict.get("unit")
+        ingredient = ingredient_dict.get("ingredient")
+        ingredients_list.append("" + quantity + unit + " of " + ingredient)
+    return ingredients_list
+
+def getIngredients(recipe_id):
+    recipe_ingredient_instances = RecipeIngredient.objects.filter(recipe__id = recipe_id)
+    recipe_ingredients = []
+    for recipe_ingredient in recipe_ingredient_instances:
+        recipe_ingredient_dictionary = {
+            "quantity": str(recipe_ingredient.quantity),
+            "unit": str(recipe_ingredient.unit),
+            "ingredient": str(recipe_ingredient.ingredient)
+        }
+        recipe_ingredients.append(recipe_ingredient_dictionary)
+    return recipe_ingredients
+
+def is_rating_post(request):
+    return request.method == "POST" and request.POST.get("form_type") == "rating_form"
 
 def handle_rating_post(request, recipe):
     rating_value = request.POST.get("rating")
@@ -59,7 +85,8 @@ def calculate_star_distribution(average_rating):
     empty_stars = 5 - full_stars - half_star
     return full_stars, half_star, empty_stars
 
-def create_recipe_context(user, recipe):
+def create_recipe_context(user, recipe, ingredients):
+    ingredients = ingredients
     user_rating = get_user_rating(user, recipe)
     average_rating = recipe.average_rating or 0
     rating_count = recipe.rating_count or 0
@@ -67,6 +94,7 @@ def create_recipe_context(user, recipe):
 
     return {
         "recipe": recipe,
+        "ingredients": ingredients,
         "user_rating": user_rating,
         "average_rating": average_rating,
         "rating_count": rating_count,
@@ -74,29 +102,3 @@ def create_recipe_context(user, recipe):
         "half_star": half_star,
         "empty_stars": range(empty_stars),
     }
-
-
-# ----- Comment helpers -----
-@login_required
-def create_comment(request, recipe, form):
-    if form.is_valid():
-        try:
-            comment_text = form.cleaned_data['comment']
-            Comment.objects.create(
-                user=request.user,
-                recipe=recipe,
-                comment=comment_text,
-                date_published=datetime.datetime.now()
-            )
-        except Exception:
-            form.add_error(None, "Couldn't create this comment.")
-
-
-@login_required
-def delete_comment(request):
-    try:
-        comment_id = request.POST.get('comment_clicked')
-        comment = Comment.objects.get(pk=comment_id)
-        comment.delete()
-    except Comment.DoesNotExist:
-        raise Http404("Could not delete comment")

@@ -9,12 +9,18 @@
 <h2>Your Ingredients</h2>
 <p><b>Ingredients</b>:</p>
     {% for ingredient in ingredients %}
-      <div class="col-md-4">
-        {{ingredient.name}}
-      </div>
+      <tr>
+        <li>
+          {{ingredient}}
+          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <i class="bi bi-trash3-fill"></i>
+          </button>
+        </li>
+      </tr>
     {% endfor %}
 
-<h3>Add new ingredient</h3>
+<p> -----------------------------------------------------------------------------</p>
+<h4>Add new ingredient</h4>
 <form method="post">
     {% csrf_token %} 
     {{ form.as_p }}

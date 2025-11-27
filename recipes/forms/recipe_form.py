@@ -17,7 +17,7 @@ class RecipeForm(forms.ModelForm):
         ))
     class Meta:
         model = Recipe 
-        fields = ['title', 'description', 'ingredients', 'method','img','tags','public']
+        fields = ['title', 'description', 'img','tags','public']
         widgets = {
             'public': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

@@ -63,24 +63,10 @@
           </p>
 
           <h6 class="fw-bold">Ingredients:</h6>
-            {% for ingredient in ingredients %}
-              <div class="col-md-8">
-                {{ingredient}}
-              </div>
-            {% endfor %}
-            <div class="card mb-2">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <b>Method </b>
-                {% if recipe.user == user %}
-                <a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm btn-primary">Edit</a>
-                {% endif %}
-              </div>
-              <ul class="list-group list-group-flush">
-                {% for step in recipe.method_steps.all %}
-                <li class="list-group-item"><b>{{step.step_number}}</b>. {{step.method_text}}</li>
-                {% endfor %}
-              </ul>
-            </div>
+          <p class="mb-3">{{recipe.ingredients}}</p>
+
+          <h6 class="fw-bold">Method:</h6>
+          <p class="mb-3">{{recipe.method}}</p>
 
           {% if recipe.user != user %}
           <div class = "mt-4">
@@ -109,20 +95,18 @@
               </div>
             </form>
           </div>
-          {% endif %}
-          </div>
-          <br>
-          <div class="comment mb-3 d-flex flex-md-row gap-3">
-            <form action="{% url 'handle_comments' recipe.id %}" method="post" class="flex-grow-1 mx-3">
+          <div class="comment mb-3 d-flex flex-md-row gap-3"></div>
+            <form action="{% url 'get_recipe' recipe.pk %}" method="post" class="flex-grow-1">
               {% csrf_token %}
-               <input type="hidden" name="form_type" value="comment_form">
-               <!--{% include 'partials/bootstrap_form.html' with form=form %}-->
-                <input type="text" name="comment_text" class="form-control mb-2" placeholder="Add a comment"/>
-              <button type="submit" class="btn submit-button mt-2">
+              <input type="hidden" name="form_type" value="comment_form" />
+              {% include 'partials/bootstrap_form.html' with form=form %}
+              <button type="submit" class="btn submit-button">
                 Submit Comment
               </button>
             </form>
+          {% endif %}
           </div>
+
           <div class="d-flex justify-content-center mt-auto">
             <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
               >Back to Recipes</a>
@@ -169,7 +153,7 @@
           {% endif %}
         </div>
 
-      </div>
+      </div>-->
     </div>
   </div>
 </div>
