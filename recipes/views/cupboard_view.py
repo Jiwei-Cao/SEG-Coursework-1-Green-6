@@ -20,16 +20,18 @@ def cupboard(request):
             return HttpResponseRedirect(path)
     else:
         user_ingredients = UserIngredient.objects.all()
-        ingredients = []
+        ingredients_list = []
         for ingredient in user_ingredients:
             ingredient_line = str(ingredient)
-            ingredients.append(ingredient_line)
+            ingredients_dict = {"ingredient": ingredient, 
+                                "ingredient_line": ingredient_line}
+            ingredients_list.append(ingredients_dict)
         form = UserIngredientForm()
 
 
     context = {
         'form': form,
         'user': current_user,
-        'ingredients': ingredients
+        'ingredients_list': ingredients_list,
     }
     return render(request, 'cupboard.html', context)
