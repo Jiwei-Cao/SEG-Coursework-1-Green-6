@@ -48,7 +48,7 @@ def follow_user(request, user_id):
     if target != request.user:
         request.user.following.add(target) 
         
-    return redirect('user_search')
+    return redirect('user_profile', username=target.username)
 
 @login_required 
 def unfollow_user(request, user_id):
@@ -60,4 +60,4 @@ def unfollow_user(request, user_id):
     if target != request.user:
         request.user.following.remove(target)
 
-    return redirect('user_search')
+    return redirect('user_profile', username=target.username)
