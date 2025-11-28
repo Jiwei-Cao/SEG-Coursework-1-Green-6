@@ -18,9 +18,13 @@ def add_method(request, recipe_id):
 	elif is_delete_method_step_post(request):
 		delete_method_step(request, recipe)
 		return HttpResponseRedirect(request.path_info)
-	#elif is_clear_method_steps_post(request):
+	elif is_get_edit_method_step_post(request):
+		path = reverse('edit_method', kwargs={'recipe_id': recipe.pk, 'step_id' : request.POST.get('step_clicked')})
+		return HttpResponseRedirect(path)
+	#elif is_clear_method_post(request):
+		#clear_method_steps(request, recipe)
 		#return HttpResponseRedirect(request.path_info)
-	#elif is_save_method_post():
+	
 
 	form = MethodStepForm()
 
@@ -28,9 +32,6 @@ def add_method(request, recipe_id):
 	'recipe': recipe,
 	'form': form,
 	}
-
-	print(request.POST.get('operation'), "\n")
-	print("method count", MethodStep.objects.count(), "\n")
 
 	return render(request, 'add_method.html', context)
 
@@ -74,12 +75,13 @@ def delete_method_step(request, recipe):
         method_step.delete()
 
 
-'''
-def is_save_method_post(request):
-	return request.method == "POST" and request.POST.get("operation") == "save_form"
+def is_get_edit_method_step_post(request):
+	return request.method == "POST" and request.POST.get("operation") == "edit_step"
 
 
-def is_clear_method_steps_post(request):
-	return request.method == "POST" and request.POST.get("operation") == "clear_steps"
 
-'''
+
+
+#def clear_method_steps(request, recipe):
+#def is_clear_method_steps_post(request):
+	#return request.method == "POST" and request.POST.get("operation") == "clear_steps"

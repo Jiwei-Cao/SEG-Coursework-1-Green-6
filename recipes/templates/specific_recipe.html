@@ -41,29 +41,13 @@
           </p>
 
           <h6 class="fw-bold">Ingredients:</h6>
-          <ul class="list-group mb-3">
-            {% for ingredient in ingredients %}
-              <li class="list-group-item p-1">{{ ingredient }}</li>
-            {% endfor %}
-          </ul>
+          <p class="mb-3">{{recipe.ingredients}}</p>
 
-          <div class="card mb-3">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <b>Method</b>
-               {% if user == recipe.user %}
-              <a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm btn-primary">Edit</a>
-              {% endif %}
-            </div>
-            <ul class="list-group list-group-flush">
-              {% for step in recipe.method_steps.all %}
-                <li class="list-group-item p-2">
-                  <b>{{ step.step_number }}.</b> {{ step.method_text }}
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
+          <h6 class="fw-bold">Method:</h6>
+          <p class="mb-3">{{recipe.method}}</p>
+
           {% if recipe.user != user %}
-          <span class="fw-bold small mb-2">Your Rating:</span>
+          <span class="fw-bold small">Your Rating:</span>
           <div class="d-flex flex-column flex-md-row gap-3 mb-2">
             <form method="post" class="rating-form">
               {% csrf_token %}
@@ -91,8 +75,6 @@
             </form>
              
           </div>
-          {% endif %}
-          <span class="fw-bold small">Comment:</span>
           <form action="{% url 'handle_comments' recipe.id %}" method="post" class="mt-3 gap-2">
               {% csrf_token %}
                <input type="hidden" name="form_type" value="comment_form">
@@ -103,90 +85,62 @@
               </button>
              
               </div>
-            </form>
+
+          {% endif %}
           </div>
-          <div class="d-flex justify-content-center mt-2 mb-2">
-            <a href="{% url 'all_recipes' %}" class="btn link-button mb-3">Back to Recipes</a>
+
+          <div class="d-flex justify-content-center mt-auto">
+            <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
+              >Back to Recipes</a
+            >
           </div>
-           </div>
+        </div>
+      </div>
+      <!--<div class="col-md-4">
+        <div class="card-body d-flex flex-column pb-3">
+          <div
+            class="card-title d-flex justify-content-between align-items-center mb-2"
+          >
+            <h6 class="card-title mb-0">Comments</h6>
+
+      
+          </div>
+
+          <div class="comment-container">
+            {% for comment in comments %}
+              {% if comment.recipe == recipe %}
+              <div class="card" >
+                <div class="card-body">
+                  <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
+                    {% with user=comment.user%}
+                    <img src="{{ user.gravatar }}"class="rounded-circle" />
+                    {% endwith %}
+                      {{comment.user}} {% if comment.user == user %} (YOU) {% endif %}
+                    
+                  </span>
+                  
+                  <small class="card-subtitle mb-2 text-body-secondary">{{comment.date_published}}</small>
+                  <p class="card-text">{{comment.comment}}</p>
+                  {% if comment.user == user %} 
+                    <form action="{% url 'get_recipe' recipe.pk %}" method="post">
+                      {% csrf_token %}
+                      <input type="hidden" name="form_type" value="delete_comment_form">
+                      <input type="hidden" name="comment_clicked" value="{{comment.id}}">
+                      <button class="btn btn-sm submit-button" type='submit'>Delete</button>
+                    </form>
+                  {% endif %}
+                </div>
+              </div>
+              {% endif %}
+            {% endfor %}
           </div>
 
         </div>
-      </div>
+
+      </div>-->
     </div>
   </div>
-</div>
-<div class="container text-center mb-4">
-  <button class="btn btn-outline-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#commentCollapse">
-    Show Comments ({{ recipe.comments.all|length }})
-  </button>
-  <div class="collapse" id="commentCollapse">
-    {% if recipe.comments.all|length == 0 %}
-      <p class="text-muted text-center">No comments yet. {% if recipe.user != user %}Be the first to comment!{% endif %}</p>
-    {% else %}
-      <div class="d-flex justify-content-center mt-3">
-        <div class="card p-3" style="width: 80%;">
-          {% for comment in recipe.comments.all %}
-          <div class="border-bottom py-2">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
-                <img src="{{ comment.user.gravatar }}" class="rounded-circle" style="width:24px; height:24px;">
-                {{ comment.user }} {% if comment.user == user %}(YOU){% endif %}
-              </span>
-              <small class="text-body-secondary">{{ comment.date_published }}</small>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <p class="mb-0">{{ comment.comment }}</p>
-              {% if comment.user == user %}
-              <form action="{% url 'get_recipe' recipe.pk %}" method="post" class="ms-2">
-                {% csrf_token %}
-                <input type="hidden" name="form_type" value="delete_comment_form">
-                <input type="hidden" name="comment_clicked" value="{{ comment.id }}">
-                <button class="btn btn-sm btn-danger delete-button">Delete</button>
-              </form>
-              {% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
-  </div>
-<div class="container my-4 text-center mt-2">
-  <button class="btn btn-outline-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#commentCollapse">
-    Show Comments ({{ recipe.comments.all|length }})
-  </button>
-  <div class="collapse" id="commentCollapse">
-    {% if recipe.comments.all|length == 0 %}
-      <p class="text-muted text-center">No comments yet. {% if recipe.user != user %}Be the first to comment!{% endif %}</p>
-    {% else %}
-      <div class="d-flex justify-content-center mt-3">
-        <div class="card p-3" style="width: 80%;">
-          {% for comment in recipe.comments.all %}
-          <div class="border-bottom py-2">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
-                <img src="{{ comment.user.gravatar }}" class="rounded-circle" style="width:24px; height:24px;">
-                {{ comment.user }} {% if recipe.user == user %}(YOU){% endif %}
-              </span>
-              <small class="text-body-secondary">{{ comment.date_published }}</small>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <p class="mb-0">{{ comment.comment }}</p>
-              {% if comment.user == user %}
-              <form action="{% url 'get_recipe' recipe.pk %}" method="post" class="ms-2">
-                {% csrf_token %}
-                <input type="hidden" name="form_type" value="delete_comment_form">
-                <input type="hidden" name="comment_clicked" value="{{ comment.id }}">
-                <button class="btn btn-sm btn-danger delete-button">Delete</button>
-              </form>
-              {% endif %}
-            </div>
-            </div>
-            </div>
-            </div>
-             {% endfor%}
-             {% endif %}
-  </div>
-</div>
+
+
 {% endblock %}
+
