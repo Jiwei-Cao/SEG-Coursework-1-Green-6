@@ -19,6 +19,9 @@
       </form>
     </div>
     <p class="mb-1">{{recipe_list|length}} recipes</p>
+    {% if recipe_list|length == 0 %}
+    <p class = "mb-2">No recipes yet, come back later or create one yourself!</p>
+    {% endif %}
     <div
       class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
       ref="recipeGrid"

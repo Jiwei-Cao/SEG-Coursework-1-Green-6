@@ -1,5 +1,10 @@
 {% extends 'base_content.html' %} 
 {% block content %}
+<style>
+  .followers-exclusive-badge {
+  background: linear-gradient(145deg, #fad59d, #f1c5d7);
+}
+</style>
 <div class="container py-5">
   <div class="row text-center mb-3">
     <div class="rounded-4 mb-4 text-center hero-section">
@@ -32,6 +37,13 @@
               <h5 class="card-title" style="text-transform: uppercase">
                 {{recipe.title}}
               </h5>
+              <div class="d-flex flex-wrap gap-2 justify-content-center px-2 mb-3">
+                {% if recipe.public != True %}
+                <span class="badge followers-exclusive-badge flex-shrink-0"
+                  >Followers exclusive</span
+                >
+                {% endif %} 
+              </div>
               <p class="card-text rating mb-2">
                 {% for _ in recipe.full_stars %}
                 <i class="bi bi-star-fill full"></i>

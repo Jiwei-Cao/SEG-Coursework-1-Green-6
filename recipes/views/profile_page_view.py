@@ -26,7 +26,9 @@ def profile_page(request, username=None):
 
     rating_count = calculate_user_rating(profile_user,recipes)
 
-    full_stars,half_star, empty_stars = star_rating(current_user.rating)
+    full_stars,half_star, empty_stars = star_rating(profile_user.rating)
+
+    is_following = following(current_user,profile_user)
 
     favourite_recipe_ids = get_favourite_recipes_id(current_user)
     favourite_recipes = Recipe.objects.filter(pk__in=favourite_recipe_ids)
@@ -41,7 +43,6 @@ def profile_page(request, username=None):
         .first()                          
     )
     most_favourited_recipe_id = most_favourited_recipe.id if most_favourited_recipe else None
-    print("most favourite id" + str(most_favourited_recipe_id))
 
     if request.method == 'POST':
         handle_favourites_form_requests(request)
@@ -134,3 +135,6 @@ def unfavourite_recipe(request):
 
     # Remove relationship
     request.user.recipes_favourited.remove(recipe_id)
+
+def following(current_user, profile_user):
+    return  current_user != profile_user and current_user.following.filter(id=profile_user.id).exists()
