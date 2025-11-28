@@ -36,7 +36,11 @@
               {% csrf_token %}
               <input type="hidden" name="step_clicked" value="{{step.id}}">
               <button class="btn btn-sm submit-button" type="submit" name='operation' value='delete_step'>Delete</button>
+              <button type="submit" class="btn btn-sm submit-button" name="operation" value="edit_step">Edit</button>
             </form>
+
+            
+
         </div>
             <!--display and add delete button next to each-->
         {% endfor %}

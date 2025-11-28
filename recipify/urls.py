@@ -45,6 +45,7 @@ urlpatterns = [
     path('users/<str:username>/', views.profile_page, name='user_profile'),
     path('recipe/<int:recipe_id>/comment', views.handle_comments, name='handle_comments'),
     path('create_recipe/<int:recipe_id>/add_method/', views.add_method, name='add_method'),
+    path('create_recipe/<int:recipe_id>/add_method/<int:step_id>/edit', views.edit_method_step, name='edit_method'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
