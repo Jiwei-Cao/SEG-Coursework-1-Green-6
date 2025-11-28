@@ -1,0 +1,10 @@
+{% extends 'base_content.html' %}
+{% block content %}
+
+<h2>Edit Method Step</h2>
+<form action="{% url 'edit_method' recipe.pk method_step.pk %}"method="post" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="operation" value="save_changes">Save Changes</button>
+</form>
+{% endblock %}
