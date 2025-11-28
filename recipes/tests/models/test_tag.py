@@ -19,3 +19,17 @@ class TagModelTestCase(TestCase):
     
     def test_tag_str_method(self):
         self.assertEqual(str(self.tag), 'UniqueTag')
+    
+    def test_colour_field_default_value(self):
+        self.assertEqual(self.tag.colour, "#61D0FF")
+    
+    def test_valid_colour(self):
+        tag = Tag.objects.create(name="UniqueTag2", colour="#777777")
+        tag.full_clean()
+        tag.save()
+        self.assertEqual(tag.colour,"#777777")
+    
+    def test_invalid_colour_length(self):
+        with self.assertRaises(ValidationError):
+            tag = Tag.objects.create(name="UniqueTag2", colour="#2345678")
+            tag.full_clean()

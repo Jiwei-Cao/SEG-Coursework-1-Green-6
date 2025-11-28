@@ -14,15 +14,11 @@ class ToggleFavouriteViewTestCase(TestCase):
             "user": self.user,
             "title": "Tomato Soup",
             "description": "Basic soup",
-            "ingredients": "Tomatoes\nSalt\nWater",
-            "method": "Boil tomatoes.\nBlend.\nServe."
         }
         self.recipe = Recipe.objects.create(
             user = self.recipe_data['user'],
             title = self.recipe_data['title'],
             description = self.recipe_data['description'],
-            ingredients = self.recipe_data['ingredients'],
-            method = self.recipe_data['method']
         )
 
         self.url = reverse('toggle_favourite', args=[self.recipe.id])

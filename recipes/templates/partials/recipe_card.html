@@ -25,11 +25,11 @@
       {% endif %} {% endif %}
     </div>
     <p class="card-text">{{ recipe.description }}</p>
-    <div class="row">
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-2">
       {% for tag in recipe.tags.all %}
-      <div class="col-4">
-        <p>{{tag.name}}</p>
-      </div>
+        <span class="badge" style="background-color: {{tag.colour}}; border-radius: 45%; white-space: nowrap;">
+          {{tag.name}}
+        </span>
       {% endfor %}
     </div>
     <div
