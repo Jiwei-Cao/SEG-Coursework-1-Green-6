@@ -1,12 +1,55 @@
-{% extends 'base_content.html' %}
-{% block content %}
-{{ form.media.css }}
-<h2>Edit recipe</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Recipe</button>
+{% extends 'base_content.html' %} {% load widget_tweaks %} {% block content %}
+<div class="container mb-3">
+  {{ form.media.css }}
+  <h2>Edit Recipe</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %} 
+    {% for field in form %} 
+        {% if field.name != 'public' %}
+        <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">
+            {{ field.label }}
+        </label>
+
+        {% if form.is_bound %} 
+            {% if field.errors %} 
+                {% render_field field class="form-control is-invalid" %} 
+            {% else %} 
+                {% render_field field class="form-control is-valid" %} 
+            {% endif %} 
+        {% else %} 
+            {% render_field field class="form-control" %} 
+        {% endif %} 
+        {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+        {% endif %}
+
+        <div class="invalid-feedback">{{ field.errors }}</div>
+        </div>
+        {% endif %} 
+    {% endfor %}
+    <div class = "d-flex align-items-center mb-4">
+        <div class="form-check form-switch">
+            {% if form.is_bound %} 
+                {% if form.public.errors %} 
+                    {% render_field form.public class="form-check-input is-invalid" %} 
+                {% else %} 
+                    {% render_field form.public class="form-check-input is-valid" %} 
+                {% endif %}
+            {% else %} 
+                {% render_field form.public class="form-check-input" %} 
+            {% endif %}
+            <div class="invalid-feedback d-block">{{ form.public.errors }}</div>
+        </div>
+        <label class="form-check-label ms-2" for="{{ form.public.id_for_label }}" style="font-size:17px !important;">
+            Public
+        </label>
+    </div>
+
+
+    
+    <button type="submit" class="submit-button">Save Recipe</button>
 </form>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-{{ form.media.js }}
-{% endblock %}
+{{ form.media.js }} {% endblock %}

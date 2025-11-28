@@ -133,7 +133,7 @@ class Command(BaseCommand):
             {"name": "Vegan", "colour": "#2f88ff"}, 
             {"name": "Vegetarian", "colour": "#0d96b6"},
             {"name": "Gluten-free", "colour": "#d59d4d"},
-            {"name": "Quick", "colour:":"#b26459"},
+            {"name": "Quick", "colour":"#b26459"},
             {"name": "Easy", "colour": "#b26459"},
             {"name": "Mediterranean", "colour": "#e9dfec"},
             {"name": "Asian", "colour": "#b3a496"},
