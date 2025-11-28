@@ -32,6 +32,7 @@ urlpatterns = [
     path('profile_page/', views.profile_page, name='profile_page'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('create_recipe_ingredient/', views.create_recipe_ingredient, name='create_recipe_ingredient'),
+    path('cupboard/<int:ingredient_pk>/delete', views.delete_ingredient, name = 'delete_ingredient'),
     path('all_recipes/', views.browse_recipes, name='all_recipes'),
     path('recipe/<int:recipe_id>/', views.get_recipe, name="get_recipe"),
     path('user_search/', views.user_search, name="user_search"),

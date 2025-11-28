@@ -8,13 +8,34 @@
 <div class="container">
 <h2>Your Ingredients</h2>
 <p><b>Ingredients</b>:</p>
-    {% for ingredient in ingredients %}
+    {% for ingredient_item in ingredients_list %}
       <tr>
         <li>
-          {{ingredient}}
-          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+          {{ingredient_item.ingredient_line}}
+          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteIngredient-{{ingredient_item.ingredient.pk}}">
             <i class="bi bi-trash3-fill"></i>
           </button>
+          <!-- Modal -->
+          <div class="modal fade" id="deleteIngredient-{{ingredient_item.ingredient.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete {{ingredient_item.ingredient}}</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete this ingredient?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <form method="post" action="{% url 'delete_ingredient' ingredient_item.ingredient.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </li>
       </tr>
     {% endfor %}
