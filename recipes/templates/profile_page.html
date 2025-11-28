@@ -48,12 +48,12 @@ background-color: #dae5ebf2;
             {% if is_following %}
                 <form method="post" action="{% url 'unfollow_user' user.id %}">
                     {% csrf_token %}
-                    <button type="submit">Unfollow</button>
+                    <button type="submit" class = "unfollow-button">Unfollow</button>
                 </form>
             {% else %}
                 <form method="post" action="{% url 'follow_user' user.id %}">
                     {% csrf_token %}
-                    <button type="submit">Follow</button>
+                    <button type="submit" class = "follow-button">Follow</button>
                 </form>
             {% endif %}
         {% endif %}
