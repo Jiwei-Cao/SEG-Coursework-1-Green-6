@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from recipes.forms.ingredient_form import IngredientForm
-from ..models import Ingredient
+from recipes.forms.user_ingredient_form import UserIngredientForm
+from ..models import UserIngredient
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -9,7 +9,7 @@ from django.urls import reverse
 def cupboard(request):
     current_user = request.user
     if request.method == "POST":
-        form = IngredientForm(request.POST)
+        form = UserIngredientForm(request.POST)
         if form.is_valid():
             ingredient = form.save(commit=False)
             ingredient.user = request.user
@@ -19,8 +19,12 @@ def cupboard(request):
             path = reverse('cupboard') 
             return HttpResponseRedirect(path)
     else:
-        ingredients = Ingredient.objects.all()
-        form = IngredientForm()
+        user_ingredients = UserIngredient.objects.all()
+        ingredients = []
+        for ingredient in user_ingredients:
+            ingredient_line = str(ingredient)
+            ingredients.append(ingredient_line)
+        form = UserIngredientForm()
 
 
     context = {
@@ -29,20 +33,3 @@ def cupboard(request):
         'ingredients': ingredients
     }
     return render(request, 'cupboard.html', context)
-
-# def cupboard(request):
-#     if request.method == 'POST':
-#         form = IngredientForm(request.POST)
-
-#         if form.is_valid():
-#             ingredient = form.save(commit=False)
-#             ingredient.user = request.user
-#             ingredient.save()
-#             return redirect('dashboard')
-#     else:
-#         form = IngredientForm()
-#     context = {
-#         'form': form
-#         }
-
-#     return render(request, 'cupboard.html', context)

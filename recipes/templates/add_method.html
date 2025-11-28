@@ -1,0 +1,46 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class='container'>
+    <h2>Add a method to your recipe: {{recipe}}</h2>
+
+    <div class='method-form'>
+        <form action="{% url 'add_method' recipe.pk %}" method="post">
+
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-sm submit-button" type="submit" name='operation' value='add_step'>Add Step</button>
+        </form>
+        <br><a href="{% url 'get_recipe' recipe.pk %}" class="btn link-button mb-3"
+            >View Recipe</a
+          >
+        <!--form action="{% url 'add_method' recipe.pk %}" method="post">
+
+            {% csrf_token %}
+        
+            <button class="btn btn-sm submit-button" type="submit" name='operation' value='save_form'>Save Method to Recipe/View Recipe</button>
+            <button class="btn btn-sm submit-button" type="submit" name='operation' value='clear_steps'> Clear Steps </button>
+        </form-->
+    </div>
+
+    <hr>
+    <div class="added-methods">
+        <h4>Added Methods</h4>
+        {% for step in recipe.method_steps.all %}
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{step.step_number}}. Method Step</h5>
+                <p class="card-text">{{step.method_text}}</p>
+            </div>
+            <form action="{% url 'add_method' recipe.pk %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="step_clicked" value="{{step.id}}">
+              <button class="btn btn-sm submit-button" type="submit" name='operation' value='delete_step'>Delete</button>
+            </form>
+        </div>
+            <!--display and add delete button next to each-->
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

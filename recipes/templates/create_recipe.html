@@ -1,12 +1,34 @@
 {% extends 'base_content.html' %}
+{% load widget_tweaks %}
+
 {% block content %}
+<div class="container mb-3">
 {{ form.media.css }}
 <h2>Create a New Recipe</h2>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Recipe</button>
+    {% for field in form %}
+        {% if field.name != 'public' %}
+            <p>
+                {{ field.label_tag }}
+                {{ field }}
+            </p>
+        {% endif %}
+    {% endfor %}
+    <div class="d-flex align-items-center mb-3">
+        <label class="me-2 mb-0" for="{{ form.public.id_for_label }}">Public:</label>
+        <div class="form-check form-switch mb-0">
+            {% render_field form.public class="form-check-input" %}
+        </div>
+        <div class="valid-feedback ms-2">Looks good!</div>
+        <div class="invalid-feedback ms-2">{{ form.public.errors }}</div>
+    </div>
+
+
+    
+    <button type="submit">Save Recipe and Add Method</button>
 </form>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {{ form.media.js }}
 {% endblock %}
