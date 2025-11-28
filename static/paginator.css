@@ -3,15 +3,15 @@
 }
 
 .custom-paginator .page-item:first-child .page-link {
-    border-radius: 8px 8px 8px 8px; /* round left side */
+    border-radius: 8px 8px 8px 8px; 
 }
 
 .custom-paginator .page-item:last-child .page-link {
-    border-radius: 8px 8px 8px 8px; /* round left side */
+    border-radius: 8px 8px 8px 8px; 
 }
 
 .custom-paginator .page-link {
-    border-radius: 0; /* middle buttons flat */
+    border-radius: 0; 
 }
 
 

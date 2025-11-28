@@ -32,6 +32,7 @@ urlpatterns = [
     path('profile_page/', views.profile_page, name='profile_page'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('create_recipe_ingredient/', views.create_recipe_ingredient, name='create_recipe_ingredient'),
+    path('cupboard/<int:ingredient_pk>/delete', views.delete_ingredient, name = 'delete_ingredient'),
     path('all_recipes/', views.browse_recipes, name='all_recipes'),
     path('recipe/<int:recipe_id>/', views.get_recipe, name="get_recipe"),
     path('user_search/', views.user_search, name="user_search"),
@@ -43,6 +44,8 @@ urlpatterns = [
     path('recipe/<int:recipe_id>/delete', views.delete_recipe, name='delete_recipe'),
     path('recipe/<int:recipe_id>/edit', views.EditRecipeView.as_view(), name="edit_recipe"),
     path('users/<str:username>/', views.profile_page, name='user_profile'),
+    path('users/<str:username>/following/', views.following_list, name="following_list"),
+    path('users/<str:username>/followers/', views.followers_list, name="followers_list"),
     path('recipe/<int:recipe_id>/comment', views.handle_comments, name='handle_comments'),
     path('create_recipe/<int:recipe_id>/add_method/', views.add_method, name='add_method'),
 ]

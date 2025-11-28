@@ -26,7 +26,9 @@ def profile_page(request, username=None):
 
     rating_count = calculate_user_rating(profile_user,recipes)
 
-    full_stars,half_star, empty_stars = star_rating(current_user.rating)
+    full_stars,half_star, empty_stars = star_rating(profile_user.rating)
+
+    is_following = following(current_user,profile_user)
 
     favourite_recipe_ids = get_favourite_recipes_id(current_user)
     favourite_recipes = Recipe.objects.filter(pk__in=favourite_recipe_ids)
@@ -41,12 +43,19 @@ def profile_page(request, username=None):
         .first()                          
     )
     most_favourited_recipe_id = most_favourited_recipe.id if most_favourited_recipe else None
-    print("most favourite id" + str(most_favourited_recipe_id))
 
     if request.method == 'POST':
         handle_favourites_form_requests(request)
 
         return HttpResponseRedirect(request.path_info)
+
+    following_count = profile_user.following.count()
+    follower_count = profile_user.followers.count()
+
+    is_following = False
+
+    if profile_user != request.user:
+        is_following = profile_user.id in request.user.following.values_list('id', flat=True)
 
     return render(request, 'profile_page.html', {
         'user': profile_user,
@@ -55,11 +64,42 @@ def profile_page(request, username=None):
         'full_stars': range(full_stars),
         'half_star': half_star,
         'empty_stars': range(empty_stars),
+        'following_count': following_count,
+        'follower_count': follower_count,
+        'is_following': is_following,
         'favourite_recipes':  favourite_recipes,
         'user_favourited_recipe_ids': favourite_recipe_ids,
         'most_popular': most_popular_id,
         'most_favourite': most_favourited_recipe_id
         })
+
+@login_required
+def following_list(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    following = profile_user.following.all()
+
+    following_ids= set(request.user.following.values_list('id', flat=True))
+
+    return render(request, 'user_list.html', {
+        'title': f"{profile_user.username} is following",
+        'profile_user': profile_user,
+        'users': following,
+        'following_ids': following_ids,
+    })
+
+@login_required 
+def followers_list(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    followers = profile_user.followers.all()
+
+    following_ids = set(request.user.following.values_list('id', flat=True))
+
+    return render(request, 'user_list.html', {
+        'title': f"{profile_user.username}'s followers",
+        'profile_user': profile_user,
+        'users': followers,
+        'following_ids': following_ids,
+    })
 
 def calculate_user_rating(user,recipes):
     all_ratings = Rating.objects.filter(recipe__in=recipes)
@@ -95,3 +135,6 @@ def unfavourite_recipe(request):
 
     # Remove relationship
     request.user.recipes_favourited.remove(recipe_id)
+
+def following(current_user, profile_user):
+    return  current_user != profile_user and current_user.following.filter(id=profile_user.id).exists()

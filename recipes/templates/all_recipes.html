@@ -1,5 +1,6 @@
 {% extends 'base_content.html' %} 
 {% block content %}
+{% load widget_tweaks %}
 {{ form.media.css }}
 <div class="container">
   <div class="row mb-3">
@@ -11,14 +12,33 @@
         enctype="multipart/form-data"
       >
         {% csrf_token %} 
-        {% include 'partials/bootstrap_form.html' with form=form %}
+
+        <!--{% include 'partials/bootstrap_form.html' with form=form %}<!-->
+
+        <div class="row mb-3">
+          <div class="col-12">
+          {% render_field form.search_field class="form-control" %}
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-3">
+            {% render_field form.tags class="form-control" %}
+          </div>
+          <div class="col-md-3">
+            {% render_field form.order_by class="form-control" %}
+          </div>
+        </div>
+
         <div class="d-flex mb-3 gap-2 mt-2">
-          <input type="hidden" name="form_type" value="search_form" />
-          <input type="submit" value="Search" class="btn search-button"/>
+          <input type="submit" value="Search" class="btn btn-primary"/>
         </div>
       </form>
     </div>
     <p class="mb-1">{{recipe_list|length}} recipes</p>
+    {% if recipe_list|length == 0 %}
+    <p class = "mb-2">No recipes yet, come back later or create one yourself!</p>
+    {% endif %}
     <div
       class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
       ref="recipeGrid"

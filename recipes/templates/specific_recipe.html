@@ -1,86 +1,53 @@
-{% extends 'base_content.html' %} 
+{% extends 'base_content.html' %}
+{% load widget_tweaks %}
+
 {% block content %}
-<div class="container my-3 mt-5 d-flex justify-content-center">
+<div class="container my- d-flex justify-content-center">
   <div class="card mb-3 specific_recipe_card">
     <div class="row g-0">
       <div class="col-md-4">
-        <img
-          src="{{recipe.img.url}}"
-          class="img-fluid rounded-start specific-recipe-card-image"
-          alt="{{recipe.title}}"
-        />
+        <img src="{{ recipe.img.url }}" class="img-fluid rounded-start specific-recipe-card-image" alt="{{ recipe.title }}">
       </div>
       <div class="col-md-8">
         <div class="card-body d-flex flex-column pb-3">
-          <div
-            class="card-title d-flex justify-content-between align-items-center mb-2"
-          >
-            <h4 class="card-title mb-0">{{recipe.title}}</h4>
 
-            <div class="d-flex align-items-center gap-2">
-            <span
-              class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author"
-            >
-              <small>Author:</small>
-              <img src="{{ user.gravatar }}" class="rounded-circle" />
-              {{recipe.user}} {% if recipe.user == user %} (YOU) {% endif %}
-            </span>
-
-            {% if user == recipe.user %}
-              <a href="{% url 'edit_recipe' recipe.id %}">
-                <button type="button" class="btn btn-primary btn-sm">
-                  Edit Recipe
-                </button>
-              </a>
-              <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                Delete recipe
-              </button>
-            {% endif %}
-            </div>
+          <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap">
+            <h4 class="mb-0">{{ recipe.title }}</h4>
+              {% if recipe.user != user %}
+              <a href="{% url 'user_profile' recipe.user.username %}" style="text-decoration: none; color: inherit">
+              {% endif %}
+                <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
+                  <small>Author:</small>
+                  <img src="{{ recipe.user.gravatar }}" class="rounded-circle" style="width:24px; height:24px;">
+                  {{ recipe.user }}{% if recipe.user == user %} (YOU){% endif %}
+                </span>
+              {% if recipe.user != user %}</a>{% endif %}
+              {% if user == recipe.user %}
+              <div class="d-flex gap-2 ms-auto mt-3">
+                <a href="{% url 'edit_recipe' recipe.id %}" class="btn btn-primary btn-sm">Edit Recipe</a>
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete Recipe</button>
+              </div>
+              {% endif %}
           </div>
 
-          <p class="card-text fst-italic">{{recipe.description}}</p>
+          <p class="card-text fst-italic">{{ recipe.description }}</p>
 
-          <p class="card-text rating">
+          <p class="card-text rating mb-3">
             <span class="fw-bold">Rating: </span>
-            {% for _ in full_stars %}
-            <i class="bi bi-star-fill full"></i>
-            {% endfor %} {% if half_star %}
-            <i class="bi bi-star-half half"></i>
-            {% endif %} {% for _ in empty_stars %}
-            <i class="bi bi-star"></i>
-            {% endfor %} {{average_rating}} from {{rating_count}} rating(s)
+            {% for _ in full_stars %}<i class="bi bi-star-fill full"></i>{% endfor %}
+            {% if half_star %}<i class="bi bi-star-half half"></i>{% endif %}
+            {% for _ in empty_stars %}<i class="bi bi-star"></i>{% endfor %}
+            {{ average_rating }} from {{ rating_count }} rating(s)
           </p>
 
           <h6 class="fw-bold">Ingredients:</h6>
-            {% for ingredient in ingredients %}
-              <div class="col-md-8">
-                {{ingredient}}
-              </div>
-            {% endfor %}
-          <div>
-            <div class="card">
-              <div class="card-header">
-                <b>Method </b><a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm  btn-link">Edit</a>
-              </div>
-              <ul class="list-group list-group-flush">
-                {% for step in recipe.method_steps.all %}
-                <li class="list-group-item"><b>{{step.step_number}}</b>. {{step.method_text}}</li>
-                {% endfor %}
-              </ul>
-            </div>
+          <p class="mb-3">{{recipe.ingredients}}</p>
 
-
-          </div>
           <h6 class="fw-bold">Method:</h6>
-            {% for step in method %}
-              <div class="col-md-8">
-                {{step}}
-              </div>
-            {% endfor %}
+          <p class="mb-3">{{recipe.method}}</p>
 
           {% if recipe.user != user %}
-          <span class="fw-bold small">Your Rating:</span>
+          <span class="fw-bold small mb-2">Your Rating:</span>
           <div class="d-flex flex-column flex-md-row gap-3 mb-2">
             <form method="post" class="rating-form">
               {% csrf_token %}
@@ -107,40 +74,41 @@
               </div>
             </form>
           </div>
-          {% endif %}
-          <br>
-          <div class="comment mb-3 d-flex flex-md-row gap-3">
-            <form action="{% url 'handle_comments' recipe.id %}" method="post" class="flex-grow-1">
+          <div class="comment mb-3 d-flex flex-md-row gap-3"></div>
+            <form action="{% url 'get_recipe' recipe.pk %}" method="post" class="flex-grow-1">
               {% csrf_token %}
-               <input type="hidden" name="form_type" value="comment_form">
-               <!--{% include 'partials/bootstrap_form.html' with form=form %}-->
-                <input type="text" name="comment_text" class="form-control" placeholder="Add a comment"/>
+              <input type="hidden" name="form_type" value="comment_form" />
+              {% include 'partials/bootstrap_form.html' with form=form %}
               <button type="submit" class="btn submit-button">
                 Submit Comment
               </button>
+             
+              </div>
             </form>
-          
+          {% endif %}
           </div>
-
 
           <div class="d-flex justify-content-center mt-auto">
             <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
-              >Back to Recipes</a>
+              >Back to Recipes</a
+            >
           </div>
+
         </div>
       </div>
-      <div class="col-md-4">
+      <!--<div class="col-md-4">
         <div class="card-body d-flex flex-column pb-3">
           <div
-            class="card-title d-flex justify-content-between align-items-center mb-2">
+            class="card-title d-flex justify-content-between align-items-center mb-2"
+          >
             <h6 class="card-title mb-0">Comments</h6>
 
       
           </div>
 
           <div class="comment-container">
-            {% for comment in recipe.comments.all %}
-              
+            {% for comment in comments %}
+              {% if comment.recipe == recipe %}
               <div class="card" >
                 <div class="card-body">
                   <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
@@ -154,7 +122,7 @@
                   <small class="card-subtitle mb-2 text-body-secondary">{{comment.date_published}}</small>
                   <p class="card-text">{{comment.comment}}</p>
                   {% if comment.user == user %} 
-                    <form action="{% url 'handle_comments' recipe.pk %}" method="post">
+                    <form action="{% url 'get_recipe' recipe.pk %}" method="post">
                       {% csrf_token %}
                       <input type="hidden" name="form_type" value="delete_comment_form">
                       <input type="hidden" name="comment_clicked" value="{{comment.id}}">
@@ -163,15 +131,14 @@
                   {% endif %}
                 </div>
               </div>
-              
+              {% endif %}
             {% endfor %}
           </div>
 
         </div>
 
-      </div>
+      </div>-->
     </div>
   </div>
 </div>
-
 {% endblock %}

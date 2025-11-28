@@ -1,0 +1,16 @@
+{% extends 'base_content.html' %}
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+<ul>
+    {% for user in users %}
+        <li>
+            <a href="{% url 'user_profile' user.username %}">{{ user.username }}</a>
+        </li>
+    {% empty %}
+        <li>No users found</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

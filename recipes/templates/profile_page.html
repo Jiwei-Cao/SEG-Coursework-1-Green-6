@@ -6,6 +6,23 @@
     width: 150px;
     height: 150px;
   }
+  .follow-button, .unfollow-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+.follow-button{
+background-color: #dae5ebf2;
+}
+.unfollow-button{
+  background-color: #cccccce1;
+}
+.follow-button:hover, .unfollow-button:hover{
+  transform: scale(1.05);
+}
 </style>
 <div class="container">
   <section class="mb-4 border-bottom border-1 border-dark">
@@ -14,7 +31,32 @@
         <img src="{{ user.gravatar }}" class="pfp" />
       </div>
       <div class="col">
-        <h2 class="mb-0" style="font-weight:400 !important"><strong>{{ user.username}}</strong></h2>
+        <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
+
+        <p>
+          <a href="{% url 'following_list' user.username %}">
+            Following: {{ following_count }}
+          </a>
+        </p>
+        <p>
+          <a href="{% url 'followers_list' user.username %}">
+            Followers: {{ follower_count }}
+          </a>
+        </p>
+
+        {% if user != request.user %}
+            {% if is_following %}
+                <form method="post" action="{% url 'unfollow_user' user.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class = "unfollow-button">Unfollow</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'follow_user' user.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class = "follow-button">Follow</button>
+                </form>
+            {% endif %}
+        {% endif %}
         <p class = "rating mb-0">
           {% for _ in full_stars %}
           <i class="bi bi-star-fill full"></i>
@@ -57,6 +99,7 @@
     {% endif %}
   </section>
 
+  {% if user == request.user %}
   <section class="mb-5">
     <h2>
       <button
@@ -85,5 +128,6 @@
       {% endif %}
     </div>
   </section>
+  {% endif %}
 </div>
 {% endblock %}
