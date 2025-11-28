@@ -14,7 +14,32 @@
         <img src="{{ user.gravatar }}" class="pfp" />
       </div>
       <div class="col">
-        <h2 class="mb-0" style="font-weight:400 !important"><strong>{{ user.username}}</strong></h2>
+        <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
+
+        <p>
+          <a href="{% url 'following_list' user.username %}">
+            Following: {{ following_count }}
+          </a>
+        </p>
+        <p>
+          <a href="{% url 'followers_list' user.username %}">
+            Followers: {{ follower_count }}
+          </a>
+        </p>
+
+        {% if user != request.user %}
+            {% if is_following %}
+                <form method="post" action="{% url 'unfollow_user' user.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Unfollow</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'follow_user' user.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Follow</button>
+                </form>
+            {% endif %}
+        {% endif %}
         <p class = "rating mb-0">
           {% for _ in full_stars %}
           <i class="bi bi-star-fill full"></i>
