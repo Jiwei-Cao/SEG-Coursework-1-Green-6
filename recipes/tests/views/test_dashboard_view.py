@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from recipes.models import User, Recipe, Rating
+from recipes.views.dashboard_view import star_rating
 
 class DashBoardViewTestCase(TestCase):
     """Tests of the dashboard view."""
@@ -11,14 +12,15 @@ class DashBoardViewTestCase(TestCase):
         self.url = reverse('dashboard')
         self.user = User.objects.get(username='@johndoe')
         self.user2 = User.objects.get(username='@janedoe')
+        self.user3 = User.objects.get(username='@petrapickles')
         self.client.login(username=self.user.username, password='Password123')
 
         # create recipes
-        self.recipe1 = Recipe.objects.create(title="R1", description="desc", ingredients="ing", method="m", user=self.user)
-        self.recipe2 = Recipe.objects.create(title="R2", description="desc", ingredients="ing", method="m", user=self.user)
-        self.recipe3 = Recipe.objects.create(title="R3", description="desc", ingredients="ing", method="m", user=self.user)
-        self.recipe4 = Recipe.objects.create(title="R4", description="desc", ingredients="ing", method="m", user=self.user)
-        self.recipe5 = Recipe.objects.create(title="R5", description="desc", ingredients="ing", method="m", user=self.user)
+        self.recipe1 = Recipe.objects.create(title="R1", description="desc",  user=self.user)
+        self.recipe2 = Recipe.objects.create(title="R2", description="desc", user=self.user)
+        self.recipe3 = Recipe.objects.create(title="R3", description="desc", user=self.user)
+        self.recipe4 = Recipe.objects.create(title="R4", description="desc",  user=self.user)
+        self.recipe5 = Recipe.objects.create(title="R5", description="desc", user=self.user)
 
         # add ratings
         Rating.objects.create(user=self.user, recipe=self.recipe1, rating=5)
@@ -70,5 +72,56 @@ class DashBoardViewTestCase(TestCase):
         self.assertEqual(self.recipe4.rating_count, 1)
         self.assertEqual(self.recipe5.average_rating, 0)
         self.assertEqual(self.recipe5.rating_count, 0)
+
+    def test_star_rating_adds_dynamic_attributes(self):
+        """Before calling star_rating(), attributes shouldn't exist."""
+        self.assertFalse(hasattr(self.recipe5, "full_stars"))
+        self.assertFalse(hasattr(self.recipe5, "half_stars"))
+        self.assertFalse(hasattr(self.recipe5, "empty_stars"))
+
+        # apply star rating logic
+        star_rating(self.recipe5)
+
+        """After calling star_rating(), attributes are created."""
+        self.assertTrue(hasattr(self.recipe5, "full_stars"))
+        self.assertTrue(hasattr(self.recipe5, "half_stars"))
+        self.assertTrue(hasattr(self.recipe5, "empty_stars"))
+
+    def test_star_rating_zero(self):
+        star_rating(self.recipe5)
+
+        self.assertEqual(len(self.recipe5.full_stars),0)
+        self.assertEqual(self.recipe5.half_stars, 0)
+        self.assertEqual(len(self.recipe5.empty_stars),5)
+
+    def test_star_rating_full_star(self):
+        Rating.objects.create(user = self.user, recipe=self.recipe5, rating=4)
+
+        star_rating(self.recipe5)
+
+        self.assertEqual(len(self.recipe5.full_stars),4)
+        self.assertEqual(self.recipe5.half_stars, 0)
+        self.assertEqual(len(self.recipe5.empty_stars),1)
+
+    def test_star_rating_half_star(self):
+        Rating.objects.create(user = self.user, recipe=self.recipe5, rating=4)
+        Rating.objects.create(user = self.user2, recipe=self.recipe5, rating=3)
+
+        star_rating(self.recipe5)
+
+        self.assertEqual(len(self.recipe5.full_stars),3)
+        self.assertEqual(self.recipe5.half_stars, 1)
+        self.assertEqual(len(self.recipe5.empty_stars),1)
+
+    def test_star_rating_round_off(self):
+        Rating.objects.create(user = self.user, recipe=self.recipe5, rating=4)
+        Rating.objects.create(user = self.user2, recipe=self.recipe5, rating=5)
+        Rating.objects.create(user = self.user3, recipe=self.recipe5, rating=4)
+
+        star_rating(self.recipe5)
+
+        self.assertEqual(len(self.recipe5.full_stars),4)
+        self.assertEqual(self.recipe5.half_stars, 0)
+        self.assertEqual(len(self.recipe5.empty_stars),1)
 
     

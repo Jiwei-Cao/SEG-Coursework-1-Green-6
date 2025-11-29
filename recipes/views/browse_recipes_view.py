@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.db.models import Count
-from django.db.models import Q
+from django.db.models import Count, Avg, Q
 from django.core.paginator import Paginator
 
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
@@ -22,17 +21,7 @@ def browse_recipes(request):
             order_by = form.cleaned_data['order_by']
             searched_ingredients = form.cleaned_data['ingredients']
 
-            params = []
-            if search_val:
-                params.append(f'search_val={search_val}')
-            if selected_tags:
-                tag_ids = ','.join(str(tag.id) for tag in selected_tags)
-                params.append(f'tags={tag_ids}')
-            if order_by:
-                params.append(f'order_by={order_by}')
-            if searched_ingredients:
-                params.append(f'ingredients={searched_ingredients}')
-            query = '?' + '&'.join(params) if params else ''
+            query = add_params(search_val, selected_tags, order_by, searched_ingredients)
             
             path = reverse('all_recipes') + query
             return HttpResponseRedirect(path)
@@ -57,17 +46,7 @@ def browse_recipes(request):
         if tag_ids:
             recipe_list = recipe_list.filter(tags__id__in=tag_ids).distinct()
 
-        if order_by:
-            if order_by == 'favourites' or order_by == '-favourites':
-                recipe_list = recipe_list.annotate(fav_count = Count('favourites'))
-                if order_by == 'favourites':
-                    recipe_list = recipe_list.order_by('fav_count')
-                else:
-                    recipe_list = recipe_list.order_by('-fav_count')
-            else:
-                recipe_list = recipe_list.order_by(order_by)
-        else:
-            recipe_list = recipe_list.order_by('id')
+        recipe_list = check_order_by(order_by, recipe_list)
 
     paginator = Paginator(recipe_list, 12)
     page_number =request.GET.get('page')
@@ -84,3 +63,38 @@ def browse_recipes(request):
     }
 
     return render(request, 'all_recipes.html', context)
+
+def add_params(search_val, selected_tags, order_by, searched_ingredients):
+    params = []
+    if search_val:
+        params.append(f'search_val={search_val}')
+    if selected_tags:
+        tag_ids = ','.join(str(tag.id) for tag in selected_tags)
+        params.append(f'tags={tag_ids}')
+    if order_by:
+        params.append(f'order_by={order_by}')
+    if searched_ingredients:
+        params.append(f'ingredients={searched_ingredients}')
+    return '?' + '&'.join(params) if params else ''
+
+def check_order_by(order_by,recipe_list):
+    if order_by:
+        print(order_by)
+        recipe_list = check_order_by_type(order_by, recipe_list)
+    else:   
+        recipe_list = recipe_list.order_by('id')
+    return recipe_list
+
+def check_order_by_type(order_by, recipe_list):
+    if order_by == 'favourites' or order_by == '-favourites':
+        recipe_list = recipe_list.annotate(fav_count = Count('favourites'))
+        if order_by == 'favourites':
+            recipe_list = recipe_list.order_by('fav_count')
+        else:
+            recipe_list = recipe_list.order_by('-fav_count')
+    elif order_by == "rating" or order_by == "-rating":
+        recipe_list = recipe_list.annotate(avg_rating=Avg('rating__rating'))
+        recipe_list = recipe_list.order_by('-avg_rating' if order_by == 'rating' else 'avg_rating')
+    else:
+        recipe_list = recipe_list.order_by(order_by)
+    return recipe_list
