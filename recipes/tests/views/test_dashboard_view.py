@@ -79,7 +79,6 @@ class DashBoardViewTestCase(TestCase):
         self.assertFalse(hasattr(self.recipe5, "half_stars"))
         self.assertFalse(hasattr(self.recipe5, "empty_stars"))
 
-        # apply star rating logic
         star_rating(self.recipe5)
 
         """After calling star_rating(), attributes are created."""

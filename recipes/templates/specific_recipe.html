@@ -55,7 +55,7 @@
           <p class="card-text fst-italic">{{ recipe.description }}</p>
           <div class="d-flex flex-wrap  gap-2 mb-2">
             {% for tag in recipe.tags.all %}
-              <span class="badge" style="background-color: '{{ tag.colour }}'; border-radius: 45%; white-space: nowrap;"
+              <span class="badge" style="background-color: {{ tag.colour }}; border-radius: 45%; white-space: nowrap;"
 >
                 {{tag.name}}
               </span>
@@ -111,7 +111,7 @@
                   name="recipe_clicked"
                   value="{{ recipe.id }}"
                 />
-                <div class="star-rating d-flex flex-md-row gap-2">
+                <div class="star-rating d-flex flex-wrap flex-md-row gap-2">
                   <div class="d-flex gap-2 mr-3">
                     {% for i in "54321" %} <input type="radio" id="star{{ i }}"
                     name="rating" value="{{ i }}" 
@@ -145,7 +145,7 @@
                   name="comment_text"
                   class="form-control"
                   placeholder="Add a comment"
-                  style="width: 500px"
+                  style="max-width: 500px; width: 100%;"
                 />
                 <button type="submit" class="btn submit-button">
                   Submit Comment
@@ -192,7 +192,7 @@
                 class="rounded-circle"
                 style="width: 24px; height: 24px"
               />
-              {{ comment.user }} {% if recipe.user == user %}(YOU){% endif %}
+              {{ comment.user }} {% if comment.user == user %}(YOU){% endif %}
             </span>
             <small class="text-body-secondary"
               >{{ comment.date_published }}</small

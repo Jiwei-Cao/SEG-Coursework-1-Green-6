@@ -244,3 +244,44 @@ background-color: #dae5ebf2;
     font-size: 13px;
   }
 }
+/* Make main columns stack vertically */
+@media (max-width: 768px) {
+  .specific_recipe_card .row {
+    flex-direction: column;
+  }
+  .specific-recipe-card-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 576px) {
+  .container, .card {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  input.form-control {
+    width: 100% !important;
+  }
+
+  .comment .d-flex {
+    flex-direction: column !important;
+  }
+
+  .star-rating {
+    flex-direction: column !important;
+    align-items: flex-start;
+  }
+
+  .star-rating .d-flex {
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 0.8rem;
+    padding: 4px 6px;
+  }
+}
+
