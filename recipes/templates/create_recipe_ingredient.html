@@ -24,38 +24,8 @@
         </div>
     </div>
 
-    <button type="button" id="add-form">Add Another Recipe Ingredient</button>
-    <input type="submit" value="Save All">
+    <input type="submit" value="Submit changes">
 </form>
-
-<script>
-    // Click event handler for adding a new form
-    $('#add-form').click(function() {
-        let totalForms = $('#id_recipe_ingredient-TOTAL_FORMS');
-        let formIdx = totalForms.val();
-
-        let recipeId = window.location.pathname.split("/")[2];
-        console.log(recipeId);
-        $('#id_recipe_ingredient-__prefix__-recipe option[value=' + recipeId + ']').attr('selected', true);
-
-        let emptyFormHtml = $('#empty-form-template').html().replace(/__prefix__/g, formIdx);
-        $('#formset-wrapper').append(emptyFormHtml);
-        totalForms.val(parseInt(formIdx) + 1);
-    });
-
-    // Click event handler to remove a form
-    $('#formset-wrapper').on('click', '.remove-form', function() {
-        let totalForms = $('#id_recipe_ingredient-TOTAL_FORMS');
-        let formIdx = totalForms.val();
-
-        // Remove the selected form row
-        $(this).closest('.form-row').remove();
-        formIdx--; // Decrement the form index
-
-        // Update the management form's TOTAL_FORMS field
-        totalForms.val(parseInt(formIdx) + 1);
-    });
-</script>
 
 {{ form.media.js }}
 {% endblock %}
