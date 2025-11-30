@@ -29,32 +29,17 @@ def get_recipe(request, recipe_id):
             return HttpResponseRedirect(request.path_info)
 
     form = CommentForm()
-    ingredients = getIngredientsList(recipe_id=recipe_id)
+    ingredients = getIngredients(recipe_id=recipe_id)
     context = create_recipe_context(request.user, recipe, ingredients)
     context["form"] = form
     #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
     return render(request, "specific_recipe.html", context)
 
-def getIngredientsList(recipe_id):
-    ingredients_dict_list = getIngredients(recipe_id=recipe_id)
-    ingredients_list = []
-    for ingredient_dict in ingredients_dict_list:
-        quantity = ingredient_dict.get("quantity")
-        unit = ingredient_dict.get("unit")
-        ingredient = ingredient_dict.get("ingredient")
-        ingredients_list.append("" + quantity + unit + " of " + ingredient)
-    return ingredients_list
-
 def getIngredients(recipe_id):
     recipe_ingredient_instances = RecipeIngredient.objects.filter(recipe__id = recipe_id)
     recipe_ingredients = []
     for recipe_ingredient in recipe_ingredient_instances:
-        recipe_ingredient_dictionary = {
-            "quantity": str(recipe_ingredient.quantity),
-            "unit": str(recipe_ingredient.unit),
-            "ingredient": str(recipe_ingredient.ingredient)
-        }
-        recipe_ingredients.append(recipe_ingredient_dictionary)
+       recipe_ingredients.append(str(recipe_ingredient.quantity) + " " + str(recipe_ingredient.unit) +  " " + str(recipe_ingredient.ingredient))
     return recipe_ingredients
 
 def is_rating_post(request):

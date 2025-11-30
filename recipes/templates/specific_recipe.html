@@ -41,8 +41,11 @@
           </p>
 
           <h6 class="fw-bold">Ingredients:</h6>
-          <p class="mb-3">{{recipe.ingredients}}</p>
-
+            {% for ingredient in ingredients %}
+              <div class="col-md-8">
+                {{ingredient}}
+              </div>
+            {% endfor %}
           <div>
             <div class="card">
               <div class="card-header">
@@ -167,4 +170,3 @@
 
 
 {% endblock %}
-

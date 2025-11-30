@@ -1,0 +1,20 @@
+{% extends 'base_content.html' %}
+{% block content %}
+{{ form.media.css }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<h1>Manage Recipes</h1>
+{% for recipe in recipe_list %}
+        <a href='{%  url "manage_recipe_ingredient" recipe.id %}'>
+                Manage ingredients for recipe {{ recipe.title }}
+        </a>&nbsp;
+        <a href="{% url 'add_method' recipe.pk %}">
+            Manage method steps for recipe {{ recipe.title }}</a>
+        <br>
+    {% empty %}
+    <p>There are no recipes in this list.</p>
+
+{% endfor %}
+
+{{ form.media.js }}
+{% endblock %}
