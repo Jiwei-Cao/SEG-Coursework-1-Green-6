@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User, Tag
+from recipes.models import User, Tag, Recipe, MethodStep
 
 class Command(BaseCommand):
     """
@@ -33,3 +33,5 @@ class Command(BaseCommand):
 
         User.objects.filter(is_staff=False).delete()
         Tag.objects.all().delete()
+        Recipe.objects.all().delete()
+        MethodStep.objects.all().delete()
