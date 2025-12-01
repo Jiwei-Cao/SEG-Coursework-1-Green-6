@@ -6,6 +6,8 @@ from recipes.models import Recipe
 from recipes.models import User
 from recipes.models import MethodStep
 
+from recipes.forms import MethodStepForm
+
 import datetime
 
 class AddMethodViewTestCase(TestCase):
@@ -31,6 +33,13 @@ class AddMethodViewTestCase(TestCase):
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'add_method.html')
+
+        self.assertIn('form', response.context)
+        self.assertTrue(isinstance(response.context['form'], MethodStepForm))
+        self.assertFalse(response.context['form'].is_bound)
+
+        self.assertIn('recipe', response.context)
+        self.assertEqual(response.context['recipe'], self.recipe1)
 
 
     def test_create_valid_method_step_post(self):
@@ -125,19 +134,3 @@ class AddMethodViewTestCase(TestCase):
         self.assertEqual(after_recipe_method_steps_count, before_recipe_method_steps_count)
 
         self.assertEqual(response.status_code, 404)
-
-
-
- 
-    
-
-
-    '''
-    def test_add_method_step_with_duplicate_step_numbers_is_invalid(self):
-    
-    def test_add_method_step_with_0_step_number_is_invalid(self):
-        
-    def test_add_method_step_with_0_step_number_is_invalid(self):
-    
-    def test_add_too_many_method_steps(self):
-    '''
