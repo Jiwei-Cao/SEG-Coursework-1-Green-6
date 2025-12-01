@@ -7,8 +7,6 @@ from recipes.models import User
 from recipes.models import MethodStep
 from recipes.forms import MethodStepForm
 
-import datetime
-
 class EditMethodStepViewTestCase(TestCase):
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
@@ -43,7 +41,6 @@ class EditMethodStepViewTestCase(TestCase):
 
         self.assertIn('form', response.context)
         self.assertTrue(isinstance(response.context['form'], MethodStepForm))
-        #self.assertTrue(response.context['form'].is_bound)
 
         self.assertIn('recipe', response.context)
         self.assertEqual(response.context['recipe'], self.recipe1)
@@ -56,7 +53,6 @@ class EditMethodStepViewTestCase(TestCase):
         response = self.client.get(invalid_url, follow=True)
         self.assertEqual(response.status_code, 404)
         
-
 
     def test_save_valid_changes_post(self):
         before_method_step_objects_count = MethodStep.objects.count()
@@ -92,7 +88,6 @@ class EditMethodStepViewTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
-
     def test_save_method_step_with_same_step_number_as_another_is_invalid(self):
 
         self.form_input['step_number'] = 4
@@ -111,8 +106,6 @@ class EditMethodStepViewTestCase(TestCase):
         method_step = MethodStep.objects.get(pk = self.method_step1.pk)
         self.assertNotEqual(self.form_input['step_number'], method_step.step_number)
         self.assertNotEqual(self.form_input['method_text'], method_step.method_text)
-
-
 
 
     def test_save_method_step_with_no_change_to_step_number_is_valid(self):
@@ -134,13 +127,3 @@ class EditMethodStepViewTestCase(TestCase):
         method_step = MethodStep.objects.get(pk = self.method_step1.pk)
         self.assertEqual(self.form_input['step_number'], method_step.step_number)
         self.assertEqual(self.form_input['method_text'], method_step.method_text)
-
-
-
-
-    '''
-
-  self.assertIn('form', response.context)
-    form = response.context['form']
-    self.assertTrue(isinstance(form, BookForm))
-    self.assertTrue(form.is_bound)  '''
