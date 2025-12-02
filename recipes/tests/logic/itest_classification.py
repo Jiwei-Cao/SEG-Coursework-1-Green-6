@@ -1,21 +1,18 @@
 """Integration tests for the Recipe model. This isn't strictly a unit test as it depends on data being in the database"""
-from unittest import skipIf, skip
 
 import django
 import json
 import pytest
 
-django.setup()
-
-from recipes.models import Recipe, RecipeIngredient, Ingredient, User, Unit, MethodStep
+from recipes.models import Recipe, RecipeIngredient, Ingredient, User, Unit, MethodStep, Tag
 from django.test import TestCase
 from recipes.logic.classification import is_vegetarian, is_nut_free, is_gluten_free, is_vegan, is_dairy_free, \
     classify_recipe
 
-
+#pytest creates a test database as specified in test.recipify.settings specifically for testing and then tears it down
+@pytest.mark.django_db
 class RecipeModelTestCase(TestCase):
 
-    @pytest.mark.django_db
     def setUp(self):
         def handle(self, *args, **options):
             """
@@ -24,9 +21,29 @@ class RecipeModelTestCase(TestCase):
             Runs the full seeding workflow and stores ``self.users`` for any
             post-processing or debugging (not required for operation).
             """
-        # pytest ensures that all changes for the tests are rolled back at the end
+        hbh_user = User.objects.create_user(username='@hbh_test', email='hbh@example.com', password='Recipify!',
+                                        first_name='Haf', last_name='Bhudye', )
 
-        end_user = User.objects.get(username='@hbh')
+        end_user = User.objects.get(username='@hbh_test')
+
+        """Construct default tags for the Tag Model"""
+        tags = [
+            {"name": "Vegan", "colour": "#2f88ff"},
+            {"name": "Vegetarian", "colour": "#0d96b6"},
+            {"name": "Gluten-free", "colour": "#d59d4d"},
+            {"name": "Quick", "colour:":"#b26459"},
+            {"name": "Easy", "colour": "#b26459"},
+            {"name": "Mediterranean", "colour": "#e9dfec"},
+            {"name": "Asian", "colour": "#b3a496"},
+            {"name": "Indian", "colour": "#82ae67"},
+            {"name": "Dairy-free", "colour": "#f67fcb"}
+        ]
+        for tag in tags:
+            try:
+                Tag.objects.create(name=tag["name"], colour=tag["colour"])
+            except:
+                pass
+
 
         # Units
         kilograms = Unit.objects.create(name='kilograms', symbol='kgs', user=end_user)
@@ -129,7 +146,7 @@ class RecipeModelTestCase(TestCase):
 
         self.recipes = Recipe.objects.all()
 
-    # @skip
+
     def test_create_recipe(self):
 
         recipe_dictionary = {}

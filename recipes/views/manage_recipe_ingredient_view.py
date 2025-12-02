@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from recipes.forms.recipe_ingredient_form import RecipeIngredientFormSet
 from recipes.models import Recipe, RecipeIngredient
@@ -20,8 +21,8 @@ def manage_recipe_ingredient(request, recipe_id):
                 recipe_ingredient.recipe = recipe
                 recipe_ingredient.user = request.user
                 recipe_ingredient.save()
-
-            return redirect('dashboard')
+            path = reverse('manage_recipe_ingredient', kwargs={"recipe_id": f"{recipe.id}"}) 
+            return redirect(path)
 
     else:
         recipe_ingredient_formset = RecipeIngredientFormSet(queryset=RecipeIngredient.objects.filter(recipe=recipe), prefix='recipe_ingredient')
