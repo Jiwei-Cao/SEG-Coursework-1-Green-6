@@ -1,6 +1,6 @@
 """Unit tests for the Recipe model."""
 
-from recipes.models import Recipe, User
+from recipes.models import Recipe, User, Rating
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
@@ -61,6 +61,18 @@ class RecipeModelTestCase(TestCase):
         self.assertIn(user, self.recipe.favourites.all())
         self.recipe.favourites.remove(user)
         self.assertNotIn(user, self.recipe.favourites.all())
+
+    def test_no_rating_returns_zero(self):
+        self.assertFalse(self.recipe.rating_set.exists())
+        self.assertEqual(self.recipe.average_rating,0)
+
+    def test_average_calculated_correctly(self):
+        user = User.objects.create(username="@Janedoe")
+        Rating.objects.create(user, self.recipe, rating=4)
+        Rating.objects.create(user, self.recipe, rating=2)
+
+        self.assertTrue(self.recipe.rating_set.exists())
+        self.assertAlmostEqual(self.recipe.average_rating, 3.0)
 
 
     def _assert_recipe_is_valid(self):

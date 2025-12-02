@@ -1,10 +1,36 @@
 {% extends 'base_content.html' %}
+{% load widget_tweaks %}
 {% block content %}
-
+<div class="container mb-3">
 <h2>Edit Method Step</h2>
 <form action="{% url 'edit_method' recipe.pk method_step.pk %}"method="post" >
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" name="operation" value="save_changes">Save Changes</button>
+    {% for field in form %}
+        <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">
+                {{ field.label }}
+            </label>
+
+            {% if form.is_bound %}
+                {% if field.errors %}
+                    {% render_field field class="form-control is-invalid" %}
+                {% else %}
+                    {% render_field field class="form-control is-valid" %}
+                {% endif %}
+            {% else %}
+                {% render_field field class="form-control" %}
+            {% endif %}
+
+            {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+
+            <div class="invalid-feedback">
+                {{ field.errors }}
+            </div>
+        </div>
+    {% endfor %}
+    <button type="submit" name="operation" value="save_changes" class="submit-button">Save Changes</button>
 </form>
+</div>
 {% endblock %}

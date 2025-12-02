@@ -33,7 +33,7 @@
       {% endfor %}
     </div>
     <div
-      class="mt-auto d-flex flex-column flex-md-row justify-content-center gap-3"
+      class="mt-2 d-flex flex-column flex-md-row justify-content-center gap-3"
     >
       {% if recipe.user != user %}
       <form method="post" action="{% url 'toggle_favourite' recipe.id %}">
