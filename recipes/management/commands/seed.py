@@ -32,7 +32,8 @@ tag_fixtures = [
             {"name": "Mediterranean", "colour": "#e9dfec"},
             {"name": "Asian", "colour": "#b3a496"},
             {"name": "Indian", "colour": "#82ae67"},
-            {"name": "Dairy-free", "colour": "#f67fcb"}
+            {"name": "Dairy-free", "colour": "#f67fcb"},
+            {"name": "Nut-free", "colour":"#e8cc2b"}
         ]
 
 class Command(BaseCommand):

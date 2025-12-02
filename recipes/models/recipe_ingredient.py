@@ -11,5 +11,14 @@ class RecipeIngredient(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.recipe.update_tags()
+
+    def delete(self, *args, **kwargs):
+        recipe = self.recipe
+        super().delete(*args, **kwargs)
+        recipe.update_tags()
+
     def __str__(self):
         return str(self.recipe) + ": " + str(self.quantity) + " " + str(self.unit) + " of " + str(self.ingredient) 

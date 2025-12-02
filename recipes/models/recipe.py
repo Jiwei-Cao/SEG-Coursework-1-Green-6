@@ -16,6 +16,10 @@ class Recipe(models.Model):
     comments = models.ManyToManyField(Comment, blank=True, related_name='recipe_comments')
     method_steps = models.ManyToManyField(MethodStep, blank=True, related_name='recipe_method_steps')
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_tags()
+
     @property
     def average_rating(self):
         ratings = self.rating_set.all()
@@ -26,6 +30,36 @@ class Recipe(models.Model):
     @property
     def rating_count(self):
         return self.rating_set.count()
+    
+    def update_tags(self):
+        print("Okay updating tags big bro")
+        allergens = [
+            {
+            "category": "NT",
+            "tag_name": "Nut-free"
+            },
+            {
+            "category": "DR",
+            "tag_name": "Dairy-free"
+            },
+            {
+            "category": "GL",
+            "tag_name": "Gluten-free"
+            },
+            {
+            "category": "BT",
+            "tag_name": "Vegetarian"
+            }
+        ]
+        ingredients = self.recipeingredient_set.all()
+        for allergen in allergens:
+            contains_ingredient = ingredients.filter(ingredient__category=allergen["category"]).exists()
+            tag = Tag.objects.get(name=allergen["tag_name"])
+            if contains_ingredient:
+                self.tags.remove(tag)
+            else:
+                self.tags.add(tag)
+
 
     def __str__(self):
-        return self.title 
+        return self.title

@@ -6,8 +6,6 @@
             "user": 1,
             "title": "Tomato Soup",
             "description": "Basic soup",
-            "ingredients": "Tomatoes\nSalt\nWater",
-            "method": "Boil tomatoes.\nBlend.\nServe.",
             "created_at": "2025-11-21T12:00:00Z"
         }
     },
@@ -18,8 +16,6 @@
             "user": 1,
             "title": "Pancakes",
             "description": "Quick breakfast",
-            "ingredients": "Flour\nMilk\nEggs",
-            "method": "Mix.\nFry.\nFlip.",
             "created_at": "2025-11-21T12:00:00Z"
         }
     }
