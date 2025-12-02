@@ -3,7 +3,6 @@ from django.shortcuts import render, get_object_or_404
 from ..models import Recipe, Rating, RecipeIngredient, Ingredient
 from django.http import HttpResponseRedirect, Http404
 from math import floor
-import datetime
 
 from ..models import Recipe, Rating, Comment
 from ..forms import CommentForm  # assuming your CommentForm is defined

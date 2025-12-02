@@ -147,7 +147,7 @@
                   </span>
                   
                   <small class="card-subtitle mb-2 text-body-secondary">{{comment.date_published}}</small>
-                  <p class="card-text">{{comment.comment}}</p>
+                  <p class="card-text" >{{comment.comment}}</p>
                   {% if comment.user == user %} 
                     <form action="{% url 'handle_comments' recipe.pk %}" method="post">
                       {% csrf_token %}

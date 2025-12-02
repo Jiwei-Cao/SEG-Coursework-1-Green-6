@@ -7,6 +7,7 @@ from recipes.models import User
 from recipes.models import Comment
 
 import datetime
+from django.utils.timezone import make_aware
 
 class CommentsViewTestCase(TestCase):
 	
@@ -32,7 +33,7 @@ class CommentsViewTestCase(TestCase):
 		expected_redirect_url = reverse("get_recipe",  kwargs={"recipe_id": f"{self.recipe1.pk}"})
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
-	def test_get_comments_of_nonexistent_recipe(self): 
+	def test_get_comments_with_invalid_recipe_pk(self): 
 		invalid_url = reverse('handle_comments', kwargs= {'recipe_id' : '5'})
 		response = self.client.post(invalid_url, follow=True)
 		self.assertEqual(response.status_code, 404)
@@ -84,7 +85,7 @@ class CommentsViewTestCase(TestCase):
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
 	def test_delete_valid_comment(self):
-		comment = Comment(user=self.user, comment=self.form_input['comment_text'], date_published=datetime.datetime(2025,1,1))
+		comment = Comment(user=self.user, comment=self.form_input['comment_text'], date_published=make_aware(datetime.datetime(2025,1,1)))
 		comment.save()
 		self.recipe1.comments.add(comment)
 		before_comment_objects_count = Comment.objects.count()
