@@ -57,7 +57,7 @@ class Command(BaseCommand):
             RecipeIngredient.objects.all().delete()
             MethodStep.objects.all().delete()
 
-        end_user = User.objects.get(username='@hbh')
+        end_user = User.objects.get(username='@johndoe')
 
         # Units
         kilograms = Unit.objects.create(name='kilograms', symbol='kgs', user=end_user)
