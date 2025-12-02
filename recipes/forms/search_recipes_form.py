@@ -33,8 +33,8 @@ class SearchRecipesForm(forms.Form):
     	choices=[
     		('-created_at', 'Newest'),
     		('created_at', 'Oldest'),
-    		('rating', 'Highest rated'),
-    		('-rating', 'Lowest rated'),
+    		('-rating', 'Highest rated'),
+    		('rating', 'Lowest rated'),
     		('favourites', 'Most favourited'),
     		('-favourites', 'Least favourited')
         ],
