@@ -26,6 +26,9 @@
             {% render_field form.tags class="form-control" %}
           </div>
           <div class="col-md-3">
+            {% render_field form.ingredients class="form-control" %}
+          </div>
+          <div class="col-md-3">
             {% render_field form.order_by class="form-control" %}
           </div>
         </div>
@@ -43,7 +46,7 @@
       class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
       ref="recipeGrid"
     >
-      {% for recipe in page_obj %}
+      {% for recipe in recipe_list %}
       <div class="col-md-4">
         {% include "partials/recipe_card.html" with recipe=recipe showBadge=False %}
       </div>

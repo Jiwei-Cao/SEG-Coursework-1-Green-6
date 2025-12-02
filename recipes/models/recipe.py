@@ -13,7 +13,6 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     favourites = models.ManyToManyField(User,blank=True, related_name='recipes_favourited')
     public = models.BooleanField(default=True)
-
     comments = models.ManyToManyField(Comment, blank=True, related_name='recipe_comments')
     method_steps = models.ManyToManyField(MethodStep, blank=True, related_name='recipe_method_steps')
 
