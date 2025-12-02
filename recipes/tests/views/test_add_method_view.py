@@ -6,7 +6,7 @@ from recipes.models import Recipe
 from recipes.models import User
 from recipes.models import MethodStep
 
-import datetime
+from recipes.forms import MethodStepForm
 
 class AddMethodViewTestCase(TestCase):
 
@@ -27,10 +27,22 @@ class AddMethodViewTestCase(TestCase):
     def test_add_method_url(self):
         self.assertEqual(self.url, f"/create_recipe/{self.recipe1.pk}/add_method/")
 
-    def test_get_add_method_(self):
+    def test_get_add_method(self):
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'add_method.html')
+
+        self.assertIn('form', response.context)
+        self.assertTrue(isinstance(response.context['form'], MethodStepForm))
+        self.assertFalse(response.context['form'].is_bound)
+
+        self.assertIn('recipe', response.context)
+        self.assertEqual(response.context['recipe'], self.recipe1)
+
+    def test_get_add_method_step_with_invalid_recipe_pk(self):
+        invalid_url = reverse("add_method", kwargs={'recipe_id': 8})
+        response = self.client.get(invalid_url, follow=True)
+        self.assertEqual(response.status_code, 404)
 
 
     def test_create_valid_method_step_post(self):
@@ -127,17 +139,31 @@ class AddMethodViewTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+    def test_edit_method_post(self):
+        method_step = MethodStep.objects.create(step_number="2", method_text="test")
+        self.form_input['operation'] = 'edit_step'
+        self.form_input['step_clicked'] = method_step.pk
+        response = self.client.post(self.url, self.form_input, follow=True)
 
- 
-    
+        expected_redirect_url = reverse("edit_method", kwargs={'recipe_id': f"{self.recipe1.pk}", 'step_id' : f"{method_step.pk}"})
+        self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
-
-    '''
-    def test_add_method_step_with_duplicate_step_numbers_is_invalid(self):
-    
-    def test_add_method_step_with_0_step_number_is_invalid(self):
+    def  test_create_method_step_post_with_duplicate_step_numbers_is_invalid(self):
         
-    def test_add_method_step_with_0_step_number_is_invalid(self):
-    
-    def test_add_too_many_method_steps(self):
-    '''
+        method_step1 = MethodStep.objects.create(step_number="1", method_text="test_method")
+        self.recipe1.method_steps.add(method_step1)
+
+        before_method_steps_objects_count = MethodStep.objects.count()
+        before_recipe_method_steps_count = self.recipe1.method_steps.all().count()
+        
+        self.form_input['operation'] = 'add_step'
+        response = self.client.post(self.url, self.form_input, follow=True)
+
+        after_method_steps_objects_count = MethodStep.objects.count()
+        after_recipe_method_steps_count = self.recipe1.method_steps.all().count()
+
+        self.assertEqual(after_method_steps_objects_count, before_method_steps_objects_count)
+        self.assertEqual(after_recipe_method_steps_count, before_recipe_method_steps_count)
+        
+        expected_redirect_url = reverse("add_method",  kwargs={"recipe_id": f"{self.recipe1.pk}"})
+        self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)

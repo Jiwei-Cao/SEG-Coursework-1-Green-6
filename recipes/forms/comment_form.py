@@ -8,6 +8,7 @@ class CommentForm(forms.Form):
             "placeholder": "Write your comment...",
             "rows": 2
         }),
-        required=True
+        required=True,
+        max_length=500,
     )
     #comment = forms.CharField(label="Comment", required=True)
