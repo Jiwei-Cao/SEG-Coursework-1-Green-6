@@ -171,7 +171,8 @@
     data-bs-toggle="collapse"
     data-bs-target="#commentCollapse"
   >
-    Show Comments ({{ recipe.comments.all|length }})
+    <!--Show Comments ({{ recipe.comments.all|length }})-->
+    Show Comments ({{ recipe_comments_count }})
   </button>
   <div class="collapse" id="commentCollapse">
     {% if recipe.comments.all|length == 0 %}
@@ -201,30 +202,201 @@
           </div>
           <div class="d-flex justify-content-between align-items-center">
             <p class="mb-0">{{ comment.comment }}</p>
-            {% if comment.user == user %}
-            <form
-              action="{% url 'get_recipe' recipe.pk %}"
-              method="post"
-              class="ms-2"
-            >
-              {% csrf_token %}
-              <input
-                type="hidden"
-                name="form_type"
-                value="delete_comment_form"
-              />
-              <input
-                type="hidden"
-                name="comment_clicked"
-                value="{{ comment.id }}"
-              />
-              <button class="btn btn-sm btn-danger delete-button">
+            <div class=" d-flex align-items-center">
+
+              <div class="mb-3">
+                <button class="btn btn-sm btn-secondary"data-bs-toggle="collapse" data-bs-target="#show-reply-box{{comment.pk}}" aria-expanded="false" aria-controls="show-reply-box">
+                  Show Replies ({{comment.replies.all.count}})
+                </button>
+
+              </div>
+
+              {% if comment.user == user %}
+              <div class="ms-2 mb-3">
+              <button type="button" class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#delete-comment-{{comment.pk}}">
                 Delete
               </button>
-            </form>
-            {% endif %}
+            </div>
+
+              <!-- Modal -->
+              <div class="modal fade" id="delete-comment-{{comment.pk}}" tabindex="-1" aria-labelledby="deleteComment" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Comment: {{comment.comment}}</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Are you sure you'd like to permanently delete this comment?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-sm btn-secondary delete-button" data-bs-dismiss="modal">Close</button>
+                      <form action="{% url 'handle_comments' recipe.pk %}"  method="post" class="ms-2">
+                        {% csrf_token %}
+                        
+                        <input type="hidden" name="form_type"  value="delete_comment_form" />
+                        <input type="hidden"  name="comment_clicked" value="{{ comment.id }}"  />
+                        <button class="btn btn-sm btn-danger delete-button">
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--form
+                action="{% url 'handle_comments' recipe.pk %}"
+                method="post"
+                class="ms-2">
+                {% csrf_token %}
+                
+                <input
+                  type="hidden"
+                  name="form_type"
+                  value="delete_comment_form"
+                />
+                <input
+                  type="hidden"
+                  name="comment_clicked"
+                  value="{{ comment.id }}"
+                />
+                <button class="btn btn-sm btn-danger delete-button">
+                  Delete
+                </button>
+              </form-->
+
+
+
+              {% endif %}
           </div>
-        </div>
+          </div>
+
+          
+
+        <div class=" justify-content-end collapse" id="show-reply-box{{comment.pk}}">
+
+          
+
+          <div class="row justify-content-end ">
+
+              {% for reply in comment.replies.all %}
+        
+              <div class=" p-3 col-11">
+                  <div class="border-bottom py-2 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
+                    <img src="{{ comment.user.gravatar }}"
+                      class="rounded-circle"
+                      style="width: 24px; height: 24px" />
+                    {{ reply.user }} {% if reply.user == user %}(YOU){% endif %}
+                  </span>
+                  <small class="text-body-secondary"
+                    >{{ reply.date_published }}</small>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <p class="mb-0">{{ reply.comment }}</p>
+                  {% if reply.user == user %}
+
+              <!--form action="{% url 'handle_comments' recipe.pk %}"
+                method="post"
+                class="ms-2">
+                {% csrf_token %}
+                
+                <input
+                  type="hidden"
+                  name="form_type"
+                  value="delete_reply_form"
+                />
+                <input
+                  type="hidden"
+                  name="parent_comment"
+                  value="{{ comment.id }}"
+                />
+                <input
+                  type="hidden"
+                  name="reply_clicked"
+                  value="{{ reply.id }}"
+                />
+                <button class="btn btn-sm btn-danger delete-button">
+                  Delete
+                </button>
+              </form-->
+              <button type="button" class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#delete-reply-{{reply.pk}}">
+                Delete
+              </button>
+
+
+              <!-- Modal -->
+              <div class="modal fade" id="delete-reply-{{reply.pk}}" tabindex="-1" aria-labelledby="delete-reply-{{reply.pk}}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Comment: {{reply.comment}}</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Are you sure you'd like to permanently delete this comment?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-sm btn-secondary delete-button" data-bs-dismiss="modal">Close</button>
+                      <form action="{% url 'handle_comments' recipe.pk %}" method="post" class="ms-2">
+                        {% csrf_token %}
+          
+                        <input type="hidden" name="form_type" value="delete_reply_form" />
+                        <input type="hidden" name="parent_comment"value="{{ comment.id }}"/>
+                        <input type="hidden" name="reply_clicked" value="{{ reply.id }}"/>
+                        <button class="btn btn-sm btn-danger delete-button">
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              {% endif %}
+                </div>
+              </div>
+              </div>
+              {% endfor %}
+
+            
+          </div>
+            <!--div class=" row justify-content-end">
+            <div class="col-2 mb-1 ms-2">
+              <button class="btn btn-sm btn-secondary"data-bs-toggle="collapse" data-bs-target="#reply-box{{comment.pk}}" aria-expanded="false" aria-controls="reply-box">
+                  Reply
+                </button>
+            </div>
+          </div-->
+          <div class="row ms-2">
+              <form action="{% url 'handle_comments' recipe.pk %}"
+                method="post"
+                class="ms-2 " id="reply-box{{comment.pk}}" >
+                  {% csrf_token %}
+                  <input
+                  type="hidden"
+                  name="form_type"
+                  value="reply_comment_form"/>
+                <input
+                  type="hidden"
+                  name="parent_comment"
+                  value="{{ comment.id }}"/>
+
+                  <div class="input-group input-group-sm mb-3">
+                    <input type="text" name="comment_text" class="form-control" placeholder="Reply to {{comment.user}}'s comment" aria-label="reply-text" aria-describedby="basic-addon2"/>
+                    <button class="btn btn-primary" type="submit" id="button-addon2">Submit</button>
+                  </div>
+              </form>
+            
+          </div>
+
+     
+          </div>
+            </div>
+            
+          
         {% endfor%}
       </div>
     </div>
