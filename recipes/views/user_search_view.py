@@ -11,20 +11,22 @@ def user_search(request):
     users = User.objects.exclude(id=request.user.id)
 
     if query:
-        filtered = users.filter(
+        users = users.filter(
             Q(username__icontains=query) |
             Q(first_name__icontains=query) |
             Q(last_name__icontains=query)
         )           
-        top_users = (
-            filtered
-            .annotate(follower_count=Count("followers"))
-            .order_by("-follower_count")[:10]
-        )
         has_query = True
     else:
-        top_users = users.order_by("?")[:10]
+
         has_query = False
+    top_users = (
+        users
+        .exclude(id__in=request.user.following.values_list('id', flat=True))
+        .annotate(follower_count=Count("followers"))
+        .order_by("-follower_count")[:10])
+    for user in top_users:
+        user.follow_summary = get_follower_summary(user, request.user)
 
     following_ids = set(request.user.following.values_list('id', flat=True))
 
@@ -61,3 +63,27 @@ def unfollow_user(request, user_id):
         request.user.following.remove(target)
 
     return redirect('user_profile', username=target.username)
+
+def get_follower_summary(user, current_user):
+    all_followers = list(user.followers.all())
+
+    if not all_followers:
+        return ""
+
+    displayed_followers = []
+
+    mutual_followers = [f for f in all_followers if f in current_user.following.all()]
+    for f in mutual_followers[:2 - len(displayed_followers)]:
+        displayed_followers.append(f.username)
+        all_followers.remove(f)
+
+    for f in all_followers[:3 - len(displayed_followers)]:
+        displayed_followers.append(f.username)
+
+    # 4. Calculate remaining count
+    remaining_count = len(user.followers.all()) - len(displayed_followers)
+
+    if remaining_count > 0:
+        return f"Followed by {', '.join(displayed_followers)} + {remaining_count} others"
+    else:
+        return f"Followed by {', '.join(displayed_followers)}"

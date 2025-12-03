@@ -35,12 +35,20 @@ background-color: #dae5ebf2;
 
         <div class = "d-flex gap-3 mb-1">
           <span> <span class = "fw-bold">{{recipes|length}} </span>recipes</span>
+          {% if follower_count != 0 %}
           <a href="{% url 'followers_list' user.username %}" style="color: inherit;">
-            <span class = "fw-bold"> {{ follower_count }} </span> followers
+            <span class = "fw-bold"> {{ follower_count }}</span> followers
           </a>
+          {% else %}
+          <span><span class = "fw-bold"> {{ follower_count }}</span> followers</span>
+          {% endif %}
+          {% if following_count != 0 %}
           <a href="{% url 'following_list' user.username %}" style="color: inherit;">
             <span class = "fw-bold">{{ following_count }}</span> following
           </a>
+          {% else %}
+          <span><span class = "fw-bold"> {{ following_count }}</span> following</span>
+          {% endif %}
         </div>
 
         {% if user != request.user %}
