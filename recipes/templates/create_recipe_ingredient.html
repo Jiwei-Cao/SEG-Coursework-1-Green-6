@@ -1,28 +1,56 @@
 {% extends 'base_content.html' %}
+{% load widget_tweaks %}
 {% block content %}
 {{ form.media.css }}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<div class="container mb-3">
-    <h1>Recipe Ingredient</h1>
-</div>
-<div class="container mb-3">
+
+<div class="container">
+    <h1 class="mb-4">Recipe Ingredients</h1>
+
     <form method="post">
         {% csrf_token %}
 
         {{ formset.management_form }}
-        <div id="formset-wrapper">
+        <div id="formset-wrapper" class="row g-3">
             {% for form in formset %}
-            <div class="form-row">
-                {{ form.as_table }}
+
+
+            <div class="col-12 border rounded shadow-sm p-3 mb-3 position-relative">
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+                <div class="row g-4 d-flex align-items-center">
+                    
+                    <div class="col-md-4">
+                        {{ form.ingredient.label_tag }}
+                        {{ form.ingredient|add_class:"form-control" }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.quantity.label_tag}}
+                        {{ form.quantity|add_class:"form-control" }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.unit.label_tag }}
+                        {{ form.unit|add_class:"form-control" }}
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-center align-items-center">
+                        {% if form.DELETE %}
+                            <div class="form-check">
+                                {{ form.DELETE }}
+                                <label class="form-check-label text-danger">Remove</label>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
 
-        <input type="submit" value="Save all changes">
+        <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn submit-button">Save All Changes</button>
+            <a href="{% url 'all_recipes' %}" class="btn link-button">Back to Recipes</a>
+        </div>
     </form>
 </div>
-<div class="d-flex justify-content-center mt-auto">
-    <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
-    >Back to Recipes</a>
-</div>
+
 {% endblock %}

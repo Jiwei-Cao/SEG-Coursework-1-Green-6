@@ -8,7 +8,7 @@ class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes_created')
     title = models.CharField(max_length=100)
     description = models.TextField()
-    img = models.ImageField(upload_to='images/', blank=True, default='images/default.webp')
+    img = models.ImageField(upload_to='images/', blank=True, default='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS10b9Qpi-UdObaCziWGF5IuvZFF8bKuQ6bow&s')
     tags = models.ManyToManyField(Tag,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     favourites = models.ManyToManyField(User,blank=True, related_name='recipes_favourited')

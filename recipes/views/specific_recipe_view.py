@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, reverse
 from ..models import Recipe, Rating, RecipeIngredient, Ingredient
 from django.http import HttpResponseRedirect, Http404
 from math import floor
@@ -13,6 +13,8 @@ def get_recipe(request, recipe_id):
 
     multiplier = int(request.GET.get('multiplier',1))
 
+    previous_url = request.META.get('HTTP_REFERER', reverse('all_recipes'))
+
     if request.method == "POST":
         form_type = request.POST.get("form_type")
 
@@ -22,17 +24,15 @@ def get_recipe(request, recipe_id):
 
         elif form_type == "comment_form":
             form = CommentForm(request.POST)
-            create_comment(request, recipe, form)
             return HttpResponseRedirect(request.path_info)
 
         elif form_type == "delete_comment_form":
-            delete_comment(request)
             return HttpResponseRedirect(request.path_info)
 
     form = CommentForm()
     ingredients = getIngredients(recipe_id=recipe_id, multiplier=multiplier)
     print(ingredients)
-    context = create_recipe_context(request.user, recipe, ingredients, multiplier)
+    context = create_recipe_context(request.user, recipe, ingredients, multiplier, previous_url)
     context["form"] = form
     #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
     return render(request, "specific_recipe.html", context)
@@ -73,7 +73,7 @@ def calculate_star_distribution(average_rating):
     empty_stars = 5 - full_stars - half_star
     return full_stars, half_star, empty_stars
 
-def create_recipe_context(user, recipe, ingredients, multiplier):
+def create_recipe_context(user, recipe, ingredients, multiplier, previous_url):
     ingredients = ingredients
     user_rating = get_user_rating(user, recipe)
     average_rating = recipe.average_rating or 0
@@ -89,5 +89,6 @@ def create_recipe_context(user, recipe, ingredients, multiplier):
         "full_stars": range(full_stars),
         "half_star": half_star,
         "empty_stars": range(empty_stars),
-        "multiplier": multiplier
+        "multiplier": multiplier,
+        "previous_url": previous_url
     }

@@ -70,7 +70,7 @@ class Command(BaseCommand):
         tablespoons.save()
         litres = Unit.objects.get_or_create(name='litres', symbol='ltrs', user=end_user)[0]
         litres.save()
-        grams = Unit.objects.get_or_create(name='grams', symbol='kgs', user=end_user)[0]
+        grams = Unit.objects.get_or_create(name='grams', symbol='gs', user=end_user)[0]
         grams.save()
         units = Unit.objects.get_or_create(name='units', symbol='units', user=end_user)[0]
         units.save()

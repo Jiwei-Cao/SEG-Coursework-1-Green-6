@@ -1,4 +1,31 @@
 {% extends 'base_content.html' %} {% load widget_tweaks %} {% block content %}
+<style>
+  .edit-button{
+    background-color: rgb(42, 163, 249);
+    color: white !important;
+    text-decoration: none;
+  }
+  .edit-button:hover{
+    text-decoration: none;
+    background-color: rgb(28, 116, 205);
+  }
+  a.submit-button, .submit-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  background-color: #b7e1f7f2;
+  font-size: 13px;
+}
+
+a.submit-button:hover, .submit-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  background-color: #9ecee9f6;
+}
+</style>
 <div class="container mb-3">
   <h2>Add a method to your recipe: {{ recipe }}</h2>
 
@@ -69,7 +96,7 @@
           >
             Delete
           </button>
-          <button type="submit" class="btn btn-sm btn-primary" name="operation" value="edit_step">Edit</button>
+          <button type="submit" class="btn btn-sm edit-button" name="operation" value="edit_step">Edit</button>
         </form>
       </div>
       <div class="card-body p-2 pt-0">

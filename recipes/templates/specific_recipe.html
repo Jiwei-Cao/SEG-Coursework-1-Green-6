@@ -1,23 +1,19 @@
 {% extends 'base_content.html' %} {% load widget_tweaks %} {% block content %}
 <style>
-  a.btn {
-    text-decoration: none !important;
-    color: inherit !important;
-  }
-  a.btn-primary{
+  .edit-button{
+    background-color: rgb(42, 163, 249);
     color: white !important;
+    text-decoration: none;
+  }
+  .edit-button:hover{
+    text-decoration: none;
+    background-color: rgb(28, 116, 205);
+  }
+  a.quantity-button:hover{
+    transform: scale(1.05)
   }
   a.quantity-button{
-    cursor: pointer;
     transition: transform 0.2s ease;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    color: rgb(240, 234, 234) !important;
-    background-color: darkolivegreen;
-    align-self: center;
-  }
-  .quantity-button.active{
-    transform: scale(1.05);
-    background-color: rgb(129, 161, 75);
   }
 </style>
 <div class="container my- d-flex justify-content-center">
@@ -59,7 +55,7 @@
             <div class="d-flex gap-2 ms-auto mt-3 mb-2">
               <a
                 href="{% url 'edit_recipe' recipe.id %}"
-                class="btn btn-primary btn-sm"
+                class="btn edit-button btn-sm"
                 >Edit Recipe</a
               >
               <button
@@ -104,7 +100,7 @@
                   <a href="?multiplier=4" class="btn quantity-button {% if multiplier == 4 %}active{% endif %}">4x</a>
                 
                 {% if user == recipe.user %}
-                <a href="{% url 'manage_recipe_ingredient' recipe.pk %}" class="btn btn-sm btn-primary">
+                <a href="{% url 'manage_recipe_ingredient' recipe.pk %}" class="btn btn-sm edit-button">
                   Edit
                 </a>
                 {% endif %}
@@ -122,7 +118,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <b>Method </b>
                 {% if user == recipe.user %}
-                <a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm  btn-primary">Edit</a>
+                <a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm  edit-button">Edit</a>
                 {% endif %}
               </div>
               <ul class="list-group list-group-flush">
@@ -188,8 +184,8 @@
           {% endif %}
           
           <div class="d-flex justify-content-center mt-2 mb-2">
-            <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
-              >Back to Recipes</a
+            <a href="{{ previous_url }}" class="btn link-button mb-3"
+              >Back</a
             >
           </div>
         </div>
@@ -237,7 +233,7 @@
             <p class="mb-0">{{ comment.comment }}</p>
             {% if comment.user == user %}
             <form
-              action="{% url 'get_recipe' recipe.pk %}"
+              action="{% url 'handle_comments' recipe.pk %}"
               method="post"
               class="ms-2"
             >
