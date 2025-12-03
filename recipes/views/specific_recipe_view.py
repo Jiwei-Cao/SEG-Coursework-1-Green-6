@@ -30,7 +30,6 @@ def get_recipe(request, recipe_id):
 
 
     recipe_comments_count = count_recipe_comments(recipe)
-
     form = CommentForm()
     ingredients = getIngredients(recipe_id=recipe_id)
     context = create_recipe_context(request.user, recipe, ingredients)

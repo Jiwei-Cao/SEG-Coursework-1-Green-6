@@ -72,10 +72,11 @@ def handle_create_reply_post(request):
 
 def create_reply_comment(request):
 	try:
-		reply = Comment(user = request.user, comment=request.POST.get('comment_text'), date_published=make_aware(datetime.datetime.now()))
+		reply = Comment(user=request.user, comment=request.POST.get('comment_text'), date_published=make_aware(datetime.datetime.now()))
 		reply.save()
 		parent_comment = Comment.objects.get(pk=request.POST.get('parent_comment'))
 		parent_comment.replies.add(reply)
+		
 	except:
 		raise Http404(f"Could not create reply comment")
 		return HttpResponseNotFound()
