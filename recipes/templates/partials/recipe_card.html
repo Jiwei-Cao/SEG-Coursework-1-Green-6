@@ -27,13 +27,13 @@
     <p class="card-text">{{ recipe.description }}</p>
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-2">
       {% for tag in recipe.tags.all %}
-        <span class="badge" style="background-color: {{tag.colour}}; border-radius: 45%; white-space: nowrap;">
+        <span class="badge" style="background-color: {{tag.colour}};">
           {{tag.name}}
         </span>
       {% endfor %}
     </div>
     <div
-      class="mt-auto d-flex flex-column flex-md-row justify-content-center gap-3"
+      class="mt-2 d-flex flex-column flex-md-row justify-content-center gap-3"
     >
       {% if recipe.user != user %}
       <form method="post" action="{% url 'toggle_favourite' recipe.id %}">

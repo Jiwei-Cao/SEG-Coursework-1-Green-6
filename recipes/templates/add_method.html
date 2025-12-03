@@ -36,7 +36,9 @@
         Add Step
       </button>
     </form>
-
+    <br>
+      <a href="{% url 'manage_recipe_ingredient' recipe.pk %}" class="btn link-button mb-3"
+            >Add ingredients</a>
     <br />
     <a href="{% url 'get_recipe' recipe.pk %}" class="btn link-button mb-3"
       >View Recipe</a

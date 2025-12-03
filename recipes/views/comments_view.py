@@ -2,7 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from ..models import Recipe, Comment
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
+
 import datetime
+from django.utils.timezone import make_aware
+
 from django.urls import reverse
 
 @login_required
@@ -34,7 +37,7 @@ def validate_comment_request(request):
 
 def create_comment(request, recipe):
 	try:
-		comment = Comment(user=request.user, comment=request.POST.get('comment_text'), date_published=datetime.datetime.now())
+		comment = Comment(user=request.user, comment=request.POST.get('comment_text'), date_published=make_aware(datetime.datetime.now()))
 		comment.save()
 		recipe.comments.add(comment)
 	except:

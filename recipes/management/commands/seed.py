@@ -10,9 +10,11 @@ is swallowed and generation continues.
 
 
 from faker import Faker
+from faker.providers import company
+from faker_food import FoodProvider
 from random import randint, random
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User, Tag
+from recipes.models import User, Tag, MethodStep, Recipe
 
 
 user_fixtures = [
@@ -21,6 +23,17 @@ user_fixtures = [
     {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
 ]
 
+tag_fixtures = [
+            {"name": "Vegan", "colour": "#2f88ff"}, 
+            {"name": "Vegetarian", "colour": "#0d96b6"},
+            {"name": "Gluten-free", "colour": "#d59d4d"},
+            {"name": "Quick", "colour":"#b26459"},
+            {"name": "Easy", "colour": "#b26459"},
+            {"name": "Mediterranean", "colour": "#e9dfec"},
+            {"name": "Asian", "colour": "#b3a496"},
+            {"name": "Indian", "colour": "#82ae67"},
+            {"name": "Dairy-free", "colour": "#f67fcb"}
+        ]
 
 class Command(BaseCommand):
     """
@@ -38,6 +51,7 @@ class Command(BaseCommand):
     """
 
     USER_COUNT = 200
+    RECIPE_COUNT = 30
     DEFAULT_PASSWORD = 'Password123'
     help = 'Seeds the database with sample data'
 
@@ -45,6 +59,8 @@ class Command(BaseCommand):
         """Initialize the command with a locale-specific Faker instance."""
         super().__init__(*args, **kwargs)
         self.faker = Faker('en_GB')
+        self.faker.add_provider(FoodProvider)
+        self.faker.add_provider(company.Provider)
 
     def handle(self, *args, **options):
         """
@@ -56,6 +72,7 @@ class Command(BaseCommand):
         self.create_users()
         self.users = User.objects.all()
         self.create_tags()
+        self.create_recipes()
 
 
     def create_users(self):
@@ -129,23 +146,40 @@ class Command(BaseCommand):
     
     def create_tags(self):
         """Construct default tags for the Tag Model"""
-        tags = [
-            {"name": "Vegan", "colour": "#2f88ff"}, 
-            {"name": "Vegetarian", "colour": "#0d96b6"},
-            {"name": "Gluten-free", "colour": "#d59d4d"},
-            {"name": "Quick", "colour:":"#b26459"},
-            {"name": "Easy", "colour": "#b26459"},
-            {"name": "Mediterranean", "colour": "#e9dfec"},
-            {"name": "Asian", "colour": "#b3a496"},
-            {"name": "Indian", "colour": "#82ae67"},
-            {"name": "Dairy-free", "colour": "#f67fcb"}
-        ]
-        for tag in tags:
+        for tag in tag_fixtures:
             try:
                 Tag.objects.create(name=tag["name"], colour=tag["colour"])
             except:
                 pass
         print("Tag seeding complete")
+        
+    def create_recipes(self):
+        for i in range(self.RECIPE_COUNT):
+            for user in user_fixtures:
+                data={}
+                data["user"] = User.objects.get(username=user["username"])
+                data["title"] = self.faker.dish()
+                data["description"] = self.faker.dish_description()
+                data["tags"] = self.create_tag_list()
+                data["method"] = self.create_method()
+                create_recipe(data)
+
+    def create_tag_list(self):
+        num_tags = self.faker.random_int(0,len(tag_fixtures))
+        tags = []
+        for i in range(num_tags):
+            tag = Tag.objects.get(name=tag_fixtures[i]["name"])
+            tags.append(tag)
+        return tags
+    
+    def create_method(self):
+        num_steps = self.faker.random_int(1,20)
+        method_steps = []
+        for i in range(1,num_steps):
+            method_text = f"Add {self.faker.measurement()} {self.faker.ingredient()}."
+            method_steps.append(MethodStep.objects.create(method_text=method_text, step_number=i))
+        return method_steps
+                
 
 def create_username(first_name, last_name):
     """
@@ -172,3 +206,12 @@ def create_email(first_name, last_name):
         str: An email in the form ``{firstname}.{lastname}@example.org``.
     """
     return first_name + '.' + last_name + '@example.org'
+
+def create_recipe(data):
+    recipe = Recipe.objects.create(
+        user = data["user"],
+        title = data["title"],
+        description = data["description"]
+        )
+    recipe.tags.set(data["tags"])
+    recipe.method_steps.set(data["method"])

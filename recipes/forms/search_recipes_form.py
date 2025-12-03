@@ -1,5 +1,5 @@
 from django import forms
-from recipes.models import Tag
+from recipes.models import Tag, Ingredient
 from django_select2.forms import ModelSelect2MultipleWidget
 
 class SearchRecipesForm(forms.Form):
@@ -19,18 +19,22 @@ class SearchRecipesForm(forms.Form):
                 'data-placeholder': 'Search tags',
                 'style':'width: 100%',
                 'data-minimum-input-length':0}))
-    ingredients = forms.CharField(
-        label="Ingredients",
-        max_length="64",
+    ingredients = forms.ModelMultipleChoiceField(
+        queryset=Ingredient.objects.all(),
         required=False,
-        widget=forms.TextInput(
-            {'placeholder':"Search by ingredients"}))
+        widget=ModelSelect2MultipleWidget(
+            model=Ingredient,
+            search_fields=['name__icontains'],
+            attrs={
+                'data-placeholder': 'Search by ingredients',
+                'style': 'width: 20%',
+                'data-minimum-input-length': 0}))
     order_by = forms.ChoiceField(
     	choices=[
     		('-created_at', 'Newest'),
     		('created_at', 'Oldest'),
-    		('rating', 'Highest rated'),
-    		('-rating', 'Lowest rated'),
+    		('-rating', 'Highest rated'),
+    		('rating', 'Lowest rated'),
     		('favourites', 'Most favourited'),
     		('-favourites', 'Least favourited')
         ],
