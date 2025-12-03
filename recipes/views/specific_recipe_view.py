@@ -11,6 +11,8 @@ from ..forms import CommentForm  # assuming your CommentForm is defined
 def get_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
 
+    multiplier = int(request.GET.get('multiplier',1))
+
     if request.method == "POST":
         form_type = request.POST.get("form_type")
 
@@ -28,17 +30,19 @@ def get_recipe(request, recipe_id):
             return HttpResponseRedirect(request.path_info)
 
     form = CommentForm()
-    ingredients = getIngredients(recipe_id=recipe_id)
-    context = create_recipe_context(request.user, recipe, ingredients)
+    ingredients = getIngredients(recipe_id=recipe_id, multiplier=multiplier)
+    print(ingredients)
+    context = create_recipe_context(request.user, recipe, ingredients, multiplier)
     context["form"] = form
     #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
     return render(request, "specific_recipe.html", context)
 
-def getIngredients(recipe_id):
+def getIngredients(recipe_id, multiplier):
     recipe_ingredient_instances = RecipeIngredient.objects.filter(recipe__id = recipe_id)
     recipe_ingredients = []
     for recipe_ingredient in recipe_ingredient_instances:
-       recipe_ingredients.append(str(recipe_ingredient.quantity) + " " + str(recipe_ingredient.unit) +  " " + str(recipe_ingredient.ingredient))
+       quantity = recipe_ingredient.quantity * multiplier
+       recipe_ingredients.append(str(quantity) + " " + str(recipe_ingredient.unit) +  " " + str(recipe_ingredient.ingredient))
     return recipe_ingredients
 
 def is_rating_post(request):
@@ -69,7 +73,7 @@ def calculate_star_distribution(average_rating):
     empty_stars = 5 - full_stars - half_star
     return full_stars, half_star, empty_stars
 
-def create_recipe_context(user, recipe, ingredients):
+def create_recipe_context(user, recipe, ingredients, multiplier):
     ingredients = ingredients
     user_rating = get_user_rating(user, recipe)
     average_rating = recipe.average_rating or 0
@@ -85,4 +89,5 @@ def create_recipe_context(user, recipe, ingredients):
         "full_stars": range(full_stars),
         "half_star": half_star,
         "empty_stars": range(empty_stars),
+        "multiplier": multiplier
     }

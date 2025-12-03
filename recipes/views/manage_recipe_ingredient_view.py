@@ -27,6 +27,6 @@ def manage_recipe_ingredient(request, recipe_id):
     else:
         recipe_ingredient_formset = RecipeIngredientFormSet(queryset=RecipeIngredient.objects.filter(recipe=recipe), prefix='recipe_ingredient')
 
-    return render(request, 'create_recipe_ingredient.html', {'formset': recipe_ingredient_formset})
+    return render(request, 'create_recipe_ingredient.html', {'recipe': recipe,'formset': recipe_ingredient_formset})
 
 

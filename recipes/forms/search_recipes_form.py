@@ -8,7 +8,7 @@ class SearchRecipesForm(forms.Form):
         max_length="64",
         required=False, 
         widget=forms.TextInput(
-            {'placeholder':'Enter your search here'}))
+            {'placeholder':'Enter recipe title here'}))
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(), 
         required=False, 

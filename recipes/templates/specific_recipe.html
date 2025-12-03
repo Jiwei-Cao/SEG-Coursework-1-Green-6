@@ -1,4 +1,25 @@
 {% extends 'base_content.html' %} {% load widget_tweaks %} {% block content %}
+<style>
+  a.btn {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+  a.btn-primary{
+    color: white !important;
+  }
+  a.quantity-button{
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    color: rgb(240, 234, 234) !important;
+    background-color: darkolivegreen;
+    align-self: center;
+  }
+  .quantity-button.active{
+    transform: scale(1.05);
+    background-color: rgb(129, 161, 75);
+  }
+</style>
 <div class="container my- d-flex justify-content-center">
   <div class="card mb-3 specific_recipe_card">
     <div class="row g-0">
@@ -12,7 +33,7 @@
       <div class="col-md-8">
         <div class="card-body d-flex flex-column pb-3">
           <div
-            class="d-flex justify-content-between align-items-start mb-2 flex-wrap"
+            class="d-flex justify-content-between align-items-start mb-0"
           >
             <h4 class="mb-0">{{ recipe.title }}</h4>
             {% if recipe.user != user %}
@@ -33,8 +54,9 @@
                 {{ recipe.user }}{% if recipe.user == user %} (YOU){% endif %}
               </span>
               {% if recipe.user != user %}</a>{% endif %} 
+              </div>
               {% if user == recipe.user %}
-            <div class="d-flex gap-2 ms-auto mt-3">
+            <div class="d-flex gap-2 ms-auto mt-3 mb-2">
               <a
                 href="{% url 'edit_recipe' recipe.id %}"
                 class="btn btn-primary btn-sm"
@@ -50,13 +72,12 @@
               </button>
             </div>
             {% endif %}
-          </div>
+          
 
           <p class="card-text fst-italic">{{ recipe.description }}</p>
           <div class="d-flex flex-wrap  gap-2 mb-2">
             {% for tag in recipe.tags.all %}
-              <span class="badge" style="background-color: {{ tag.colour }}; border-radius: 45%; white-space: nowrap;"
->
+              <span class="badge" style="background-color: {{tag.colour}};">
                 {{tag.name}}
               </span>
             {% endfor %}
@@ -73,10 +94,21 @@
             <i class="bi bi-star"></i>
             {%endfor %} {{ average_rating }} from {{ rating_count }} rating(s)
           </p>
-          <div>
-            <div class="card">
-              <div class="card-header">
-                <b>Ingredients: </b><a href="{% url 'manage_recipe_ingredient' recipe.pk %}" class="btn btn-sm  btn-link">Edit</a>
+          <div class = "mb-2">
+            <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <b>Ingredients: </b>
+                <div class = "d-flex align-items-end justify-content-end gap-2">
+                  <a href="?multiplier=1" class="btn quantity-button {% if multiplier == 1 %}active{% endif %}">1x</a>
+                  <a href="?multiplier=2" class="btn quantity-button {% if multiplier == 2 %}active{% endif %}">2x</a>
+                  <a href="?multiplier=4" class="btn quantity-button {% if multiplier == 4 %}active{% endif %}">4x</a>
+                
+                {% if user == recipe.user %}
+                <a href="{% url 'manage_recipe_ingredient' recipe.pk %}" class="btn btn-sm btn-primary">
+                  Edit
+                </a>
+                {% endif %}
+                </div>
               </div>
               <ul class="list-group list-group-flush">
                 {% for ingredient in ingredients %}
@@ -86,9 +118,12 @@
             </div>
           </div>    
           <div>
-            <div class="card">
-              <div class="card-header">
-                <b>Method </b><a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm  btn-link">Edit</a>
+            <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <b>Method </b>
+                {% if user == recipe.user %}
+                <a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm  btn-primary">Edit</a>
+                {% endif %}
               </div>
               <ul class="list-group list-group-flush">
                 {% for step in recipe.method_steps.all %}
@@ -102,7 +137,7 @@
           {% if recipe.user != user %}
           <div class = "mx-2 mt-4">
             <span class="fw-bold small">Your Rating:</span>
-            <div class="d-flex flex-column flex-md-row gap-3">
+            <div class="d-flex flex-column flex-md-row gap-2 mt-1">
               <form method="post" class="rating-form">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="rating_form" />
@@ -127,32 +162,31 @@
                 </div>
               </form>
             </div>
+            <div class="comment mb-4">
+              <form
+                action="{% url 'handle_comments' recipe.id %}"
+                method="post"
+                class="mt-2 gap-2"
+              >
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="comment_form" />
+                <div class="d-flex gap-2">
+                  <input
+                    type="text"
+                    name="comment_text"
+                    class="form-control flex-grow-1"
+                    placeholder="Add a comment"
+                  
+                  />
+                  <button type="submit" class="btn submit-button">
+                    Submit Comment
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-
           {% endif %}
-          <br />
-          <div class="comment mb-3 d-flex flex-md-row gap-3">
-            <form
-              action="{% url 'handle_comments' recipe.id %}"
-              method="post"
-              class="mt-2 gap-2"
-            >
-              {% csrf_token %}
-              <input type="hidden" name="form_type" value="comment_form" />
-              <div class="d-flex gap-2">
-                <input
-                  type="text"
-                  name="comment_text"
-                  class="form-control"
-                  placeholder="Add a comment"
-                  style="max-width: 500px; width: 100%;"
-                />
-                <button type="submit" class="btn submit-button">
-                  Submit Comment
-                </button>
-              </div>
-            </form>
-          </div>
+          
           <div class="d-flex justify-content-center mt-2 mb-2">
             <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
               >Back to Recipes</a

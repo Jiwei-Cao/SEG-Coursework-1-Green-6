@@ -147,10 +147,15 @@ class Command(BaseCommand):
     def create_tags(self):
         """Construct default tags for the Tag Model"""
         for tag in tag_fixtures:
-            try:
-                Tag.objects.create(name=tag["name"], colour=tag["colour"])
-            except:
-                pass
+            obj, created = Tag.objects.get_or_create(
+                name=tag["name"],
+                defaults={"colour": tag["colour"]}
+            )
+
+        # If the tag already existed, update its colour
+            if not created:
+                obj.colour = tag["colour"]
+                obj.save()
         print("Tag seeding complete")
         
     def create_recipes(self):

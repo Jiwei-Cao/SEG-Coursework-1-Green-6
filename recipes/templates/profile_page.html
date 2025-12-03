@@ -31,31 +31,32 @@ background-color: #dae5ebf2;
         <img src="{{ user.gravatar }}" class="pfp" />
       </div>
       <div class="col">
-        <h2 class="mb-0"><strong>{{ user.username}}</strong></h2>
+        <h2 class="mb-2"><strong>{{ user.username}}</strong></h2>
 
-        <p>
-          <a href="{% url 'following_list' user.username %}">
-            Following: {{ following_count }}
+        <div class = "d-flex gap-3 mb-1">
+          <span> <span class = "fw-bold">{{recipes|length}} </span>recipes</span>
+          <a href="{% url 'followers_list' user.username %}" style="color: inherit;">
+            <span class = "fw-bold"> {{ follower_count }} </span> followers
           </a>
-        </p>
-        <p>
-          <a href="{% url 'followers_list' user.username %}">
-            Followers: {{ follower_count }}
+          <a href="{% url 'following_list' user.username %}" style="color: inherit;">
+            <span class = "fw-bold">{{ following_count }}</span> following
           </a>
-        </p>
+        </div>
 
         {% if user != request.user %}
+        <div class = "mt-3">
             {% if is_following %}
                 <form method="post" action="{% url 'unfollow_user' user.id %}">
                     {% csrf_token %}
-                    <button type="submit" class = "unfollow-button">Unfollow</button>
+                    <button type="submit" class = "unfollow-button"><i class = "bi bi-dash"></i>Unfollow</button>
                 </form>
             {% else %}
                 <form method="post" action="{% url 'follow_user' user.id %}">
                     {% csrf_token %}
-                    <button type="submit" class = "follow-button">Follow</button>
+                    <button type="submit" class = "follow-button"><i class = "bi bi-plus"></i>Follow</button>
                 </form>
             {% endif %}
+            </div>
         {% endif %}
         <p class = "rating mb-0">
           {% for _ in full_stars %}
@@ -85,7 +86,6 @@ background-color: #dae5ebf2;
     {% endif %}
   {% else %}
   <section class="mb-5">
-    <p>{{recipes|length}} recipes</p>
     <div
       class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
       ref="recipeGrid"
