@@ -21,11 +21,7 @@ def add_method(request, recipe_id):
 	elif is_get_edit_method_step_post(request):
 		path = reverse('edit_method', kwargs={'recipe_id': recipe.pk, 'step_id' : request.POST.get('step_clicked')})
 		return HttpResponseRedirect(path)
-	#elif is_clear_method_post(request):
-		#clear_method_steps(request, recipe)
-		#return HttpResponseRedirect(request.path_info)
 	
-
 	form = MethodStepForm()
 
 	context = {
@@ -77,11 +73,3 @@ def delete_method_step(request, recipe):
 
 def is_get_edit_method_step_post(request):
 	return request.method == "POST" and request.POST.get("operation") == "edit_step"
-
-
-
-
-
-#def clear_method_steps(request, recipe):
-#def is_clear_method_steps_post(request):
-	#return request.method == "POST" and request.POST.get("operation") == "clear_steps"

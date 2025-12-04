@@ -30,6 +30,7 @@ urlpatterns = [
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('profile_page/', views.profile_page, name='profile_page'),
+    path('profile_page/<str:username>/', views.profile_page, name='profile_page'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('cupboard/<int:ingredient_pk>/delete', views.delete_ingredient, name = 'delete_ingredient'),
     path('all_recipes/', views.browse_recipes, name='all_recipes'),
@@ -49,6 +50,7 @@ urlpatterns = [
     path('create_recipe/<int:recipe_id>/add_method/', views.add_method, name='add_method'),
     path('manage_recipes', views.manage_recipes, name='manage_recipes'),
     path('manage_recipe_ingredient/<int:recipe_id>/', views.manage_recipe_ingredient, name='manage_recipe_ingredient'),
+    path('create_recipe/<int:recipe_id>/add_method/<int:step_id>/edit/',views.edit_method_step,name='edit_method'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

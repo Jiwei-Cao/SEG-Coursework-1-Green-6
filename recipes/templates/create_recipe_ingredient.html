@@ -48,7 +48,7 @@
 
         <div class="d-flex justify-content-between mt-4">
             <button type="submit" class="btn submit-button">Save All Changes</button>
-            <a href="{% url 'all_recipes' %}" class="btn link-button">Back to Recipes</a>
+            <a href="{% url 'get_recipe' recipe.id%}" class="btn link-button">Check out your final recipe card</a>
         </div>
     </form>
 </div>

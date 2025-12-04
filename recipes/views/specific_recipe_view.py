@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, reverse
-from ..models import Recipe, Rating, RecipeIngredient, Ingredient
-from django.http import HttpResponseRedirect, Http404
+from ..models import Recipe, Rating, RecipeIngredient
+from django.http import HttpResponseRedirect
 from math import floor
 
-from ..models import Recipe, Rating, Comment
-from ..forms import CommentForm  # assuming your CommentForm is defined
+from ..models import Recipe, Rating
+from ..forms import CommentForm 
 
 @login_required
 def get_recipe(request, recipe_id):
@@ -15,26 +15,21 @@ def get_recipe(request, recipe_id):
 
     previous_url = request.META.get('HTTP_REFERER', reverse('all_recipes'))
 
-    if request.method == "POST":
-        form_type = request.POST.get("form_type")
+    if request.method == "POST" and request.POST.get("form_type")=="rating_form":
+        handle_rating_post(request, recipe)
+        return HttpResponseRedirect(request.path_info)
 
-        if form_type == "rating_form":
-            handle_rating_post(request, recipe)
-            return HttpResponseRedirect(request.path_info)
+    if request.method == "POST" and request.POST.get("form_type")=="comment_form":
+        CommentForm(request.POST)
+        return HttpResponseRedirect(request.path_info)
 
-        elif form_type == "comment_form":
-            form = CommentForm(request.POST)
-            return HttpResponseRedirect(request.path_info)
-
-        elif form_type == "delete_comment_form":
-            return HttpResponseRedirect(request.path_info)
+    if request.method == "POST" and request.POST.get("form_type")== "delete_comment_form":
+        return HttpResponseRedirect(request.path_info)
 
     form = CommentForm()
     ingredients = getIngredients(recipe_id=recipe_id, multiplier=multiplier)
-    print(ingredients)
     context = create_recipe_context(request.user, recipe, ingredients, multiplier, previous_url)
     context["form"] = form
-    #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
     return render(request, "specific_recipe.html", context)
 
 def getIngredients(recipe_id, multiplier):
@@ -42,7 +37,9 @@ def getIngredients(recipe_id, multiplier):
     recipe_ingredients = []
     for recipe_ingredient in recipe_ingredient_instances:
        quantity = recipe_ingredient.quantity * multiplier
-       recipe_ingredients.append(str(quantity) + " " + str(recipe_ingredient.unit) +  " " + str(recipe_ingredient.ingredient))
+       unit = str(recipe_ingredient.unit) if recipe_ingredient.unit else ""
+       ingredient = str(recipe_ingredient.ingredient)
+       recipe_ingredients.append(f"{quantity:.2f} {unit} {ingredient}")
     return recipe_ingredients
 
 def is_rating_post(request):
@@ -56,12 +53,13 @@ def handle_rating_post(request, recipe):
         rating_value = int(rating_value)
     except ValueError:
         return
-    if 1 <= rating_value <= 5:
-        Rating.objects.update_or_create(
-            user=request.user,
-            recipe=recipe,
-            defaults={'rating': rating_value}
-        )
+    if not 1 <= rating_value <= 5:
+        return
+    Rating.objects.update_or_create(
+        user=request.user,
+        recipe=recipe,
+        defaults={'rating': rating_value}
+    )
 
 def get_user_rating(user, recipe):
     rating = Rating.objects.filter(user=user, recipe=recipe).first()
@@ -74,7 +72,6 @@ def calculate_star_distribution(average_rating):
     return full_stars, half_star, empty_stars
 
 def create_recipe_context(user, recipe, ingredients, multiplier, previous_url):
-    ingredients = ingredients
     user_rating = get_user_rating(user, recipe)
     average_rating = recipe.average_rating or 0
     rating_count = recipe.rating_count or 0

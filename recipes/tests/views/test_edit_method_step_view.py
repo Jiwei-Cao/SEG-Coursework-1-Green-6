@@ -32,7 +32,7 @@ class EditMethodStepViewTestCase(TestCase):
 
 
     def test_edit_method_step_url(self):
-        self.assertEqual(self.url, f"/create_recipe/{self.recipe1.pk}/add_method/{self.method_step1.pk}/edit")
+        self.assertEqual(self.url, f"/create_recipe/{self.recipe1.pk}/add_method/{self.method_step1.pk}/edit/")
 
     def test_get_edit_method_step(self):
         response = self.client.get(self.url, follow=True)

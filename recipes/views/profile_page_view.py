@@ -17,10 +17,7 @@ def profile_page(request, username=None):
     """
     current_user = request.user
 
-    if username is None:
-        profile_user = request.user
-    else:
-        profile_user = get_object_or_404(User, username=username)
+    profile_user = current_user if username is None else get_object_or_404(User, username=username)
 
     recipes = Recipe.objects.filter(user=profile_user)
 
@@ -28,21 +25,11 @@ def profile_page(request, username=None):
 
     full_stars,half_star, empty_stars = star_rating(profile_user.rating)
 
-    is_following = following(current_user,profile_user)
-
     favourite_recipe_ids = get_favourite_recipes_id(current_user)
     favourite_recipes = Recipe.objects.filter(pk__in=favourite_recipe_ids)
 
-    most_popular_recipe = recipes.order_by('-rating').first()
-    most_popular_id = most_popular_recipe.id if most_popular_recipe else None
-
-    most_favourited_recipe = (
-        recipes
-        .annotate(fav_count=Count('favourites'))
-        .order_by('-fav_count', '-created_at')
-        .first()                          
-    )
-    most_favourited_recipe_id = most_favourited_recipe.id if most_favourited_recipe else None
+    most_popular_id = get_most_popular(recipes)
+    most_favourited_recipe_id = get_most_favourite(recipes)
 
     if request.method == 'POST':
         handle_favourites_form_requests(request)
@@ -52,10 +39,7 @@ def profile_page(request, username=None):
     following_count = profile_user.following.count()
     follower_count = profile_user.followers.count()
 
-    is_following = False
-
-    if profile_user != request.user:
-        is_following = profile_user.id in request.user.following.values_list('id', flat=True)
+    is_following = following(current_user,profile_user)
 
     return render(request, 'profile_page.html', {
         'user': profile_user,
@@ -138,3 +122,16 @@ def unfavourite_recipe(request):
 
 def following(current_user, profile_user):
     return  current_user != profile_user and current_user.following.filter(id=profile_user.id).exists()
+
+def get_most_popular(recipes):
+    recipe = recipes.order_by('-rating').first()
+    return recipe.id if recipe else None
+
+def get_most_favourite(recipes):
+    recipe = (
+         recipes
+        .annotate(fav_count=Count('favourites'))
+        .order_by('-fav_count', '-created_at')
+        .first() 
+    )
+    return recipe.id if recipe else None

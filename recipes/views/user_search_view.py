@@ -10,6 +10,7 @@ def user_search(request):
 
     users = User.objects.exclude(id=request.user.id)
 
+    has_query = False
     if query:
         users = users.filter(
             Q(username__icontains=query) |
@@ -17,18 +18,16 @@ def user_search(request):
             Q(last_name__icontains=query)
         )           
         has_query = True
-    else:
-
-        has_query = False
+    following_ids = set(request.user.following.values_list('id', flat=True))
+    
     top_users = (
         users
         .exclude(id__in=request.user.following.values_list('id', flat=True))
         .annotate(follower_count=Count("followers"))
         .order_by("-follower_count")[:10])
+    
     for user in top_users:
         user.follow_summary = get_follower_summary(user, request.user)
-
-    following_ids = set(request.user.following.values_list('id', flat=True))
 
     context = {
         "query": query,
@@ -70,20 +69,19 @@ def get_follower_summary(user, current_user):
     if not all_followers:
         return ""
 
-    displayed_followers = []
+    current_following = set(current_user.following.all())
 
-    mutual_followers = [f for f in all_followers if f in current_user.following.all()]
-    for f in mutual_followers[:2 - len(displayed_followers)]:
-        displayed_followers.append(f.username)
-        all_followers.remove(f)
+    mutual_followers = [f.username for f in all_followers if f in current_following]
 
-    for f in all_followers[:3 - len(displayed_followers)]:
-        displayed_followers.append(f.username)
+    non_mutal = [f.username for f in all_followers if f not in current_following]
 
-    # 4. Calculate remaining count
-    remaining_count = len(user.followers.all()) - len(displayed_followers)
+    ordered = mutual_followers + non_mutal
+
+    displayed_followers = ordered[:3]
+
+    remaining_count = len(all_followers) - len(displayed_followers)
 
     if remaining_count > 0:
         return f"Followed by {', '.join(displayed_followers)} + {remaining_count} others"
-    else:
-        return f"Followed by {', '.join(displayed_followers)}"
+    
+    return f"Followed by {', '.join(displayed_followers)}"
