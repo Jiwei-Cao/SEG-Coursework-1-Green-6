@@ -21,7 +21,8 @@ class CommentsViewTestCase(TestCase):
 		self.url = reverse("handle_comments", kwargs={'recipe_id': f"{self.recipe1.pk}"})
 
 		self.form_input = {
-				'comment_text': 'testing',
+				#'comment_text': 'testing',
+				'comment': 'testing',
 				'form_type': 'comment_form',
 		}
 
@@ -55,7 +56,7 @@ class CommentsViewTestCase(TestCase):
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 	
 	def test_create_comment_blank_text(self):
-		self.form_input['comment_text'] = ''
+		self.form_input['comment'] = ''
 
 		before_comment_objects_count = Comment.objects.count()
 		before_recipe_comments_count = self.recipe1.comments.all().count()
@@ -71,7 +72,7 @@ class CommentsViewTestCase(TestCase):
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
 	def test_create_comment_with_overly_long_text(self):
-		self.form_input['comment_text'] = 'x' * 501
+		self.form_input['comment'] = 'x' * 501
 
 		before_comment_objects_count = Comment.objects.count()
 		before_recipe_comments_count = self.recipe1.comments.all().count()
@@ -165,7 +166,7 @@ class CommentsViewTestCase(TestCase):
 
 		self.form_input['form_type'] = "reply_comment_form"
 		self.form_input['parent_comment'] = parent_comment.pk
-		self.form_input['comment_text'] = ''
+		self.form_input['comment'] = ''
 
 		before_comment_objects_count = Comment.objects.count()
 		before_comment_replies_count = parent_comment.replies.all().count()
@@ -187,7 +188,7 @@ class CommentsViewTestCase(TestCase):
 
 		self.form_input['form_type'] = "reply_comment_form"
 		self.form_input['parent_comment'] = parent_comment.pk
-		self.form_input['comment_text'] = 'x'*600
+		self.form_input['comment'] = 'x'*600
 
 		before_comment_objects_count = Comment.objects.count()
 		before_comment_replies_count = parent_comment.replies.all().count()
@@ -207,7 +208,7 @@ class CommentsViewTestCase(TestCase):
 		parent_comment = self.test_comment
 		parent_comment.save()
 
-		reply = Comment(user=self.user, comment=self.form_input['comment_text'], date_published=make_aware(datetime.datetime(2025,1,1)))
+		reply = Comment(user=self.user, comment=self.form_input['comment'], date_published=make_aware(datetime.datetime(2025,1,1)))
 		reply.save()
 
 		parent_comment.replies.add(reply)

@@ -8,3 +8,5 @@ class Comment(models.Model):
     
     replies = models.ManyToManyField("self", symmetrical=False, blank=True, related_name='comment_replies')
    
+    class Meta:
+        ordering = ('date_published',)

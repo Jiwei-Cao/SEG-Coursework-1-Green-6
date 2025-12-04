@@ -140,13 +140,35 @@
               {% csrf_token %}
               <input type="hidden" name="form_type" value="comment_form" />
               <div class="d-flex gap-2">
-                <input
+                <!--input
                   type="text"
                   name="comment_text"
                   class="form-control"
                   placeholder="Add a comment"
                   style="max-width: 500px; width: 100%;"
-                />
+                /-->
+                
+                {% for field in form %}
+                  <div class="mb-3">
+                    {% if form.is_bound %} 
+                    {% if field.errors %} 
+                    {% render_field field class="form-control is-invalid" %} 
+                    {% else %} 
+                    {% render_field field class="form-control is-valid" %} 
+                    {% endif %} 
+                    {% else %} 
+                    {% render_field field class="form-control" %} 
+                    {% endif %} 
+                    {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+
+                    <div class="invalid-feedback">{{ field.errors }}</div>
+                  </div>
+                  {% endfor %}
+
+
+
                 <button type="submit" class="btn submit-button">
                   Submit Comment
                 </button>
@@ -244,29 +266,6 @@
                   </div>
                 </div>
               </div>
-              <!--form
-                action="{% url 'handle_comments' recipe.pk %}"
-                method="post"
-                class="ms-2">
-                {% csrf_token %}
-                
-                <input
-                  type="hidden"
-                  name="form_type"
-                  value="delete_comment_form"
-                />
-                <input
-                  type="hidden"
-                  name="comment_clicked"
-                  value="{{ comment.id }}"
-                />
-                <button class="btn btn-sm btn-danger delete-button">
-                  Delete
-                </button>
-              </form-->
-
-
-
               {% endif %}
           </div>
           </div>
@@ -297,30 +296,6 @@
                   <p class="mb-0">{{ reply.comment }}</p>
                   {% if reply.user == user %}
 
-              <!--form action="{% url 'handle_comments' recipe.pk %}"
-                method="post"
-                class="ms-2">
-                {% csrf_token %}
-                
-                <input
-                  type="hidden"
-                  name="form_type"
-                  value="delete_reply_form"
-                />
-                <input
-                  type="hidden"
-                  name="parent_comment"
-                  value="{{ comment.id }}"
-                />
-                <input
-                  type="hidden"
-                  name="reply_clicked"
-                  value="{{ reply.id }}"
-                />
-                <button class="btn btn-sm btn-danger delete-button">
-                  Delete
-                </button>
-              </form-->
               <button type="button" class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#delete-reply-{{reply.pk}}">
                 Delete
               </button>
@@ -363,13 +338,6 @@
 
             
           </div>
-            <!--div class=" row justify-content-end">
-            <div class="col-2 mb-1 ms-2">
-              <button class="btn btn-sm btn-secondary"data-bs-toggle="collapse" data-bs-target="#reply-box{{comment.pk}}" aria-expanded="false" aria-controls="reply-box">
-                  Reply
-                </button>
-            </div>
-          </div-->
           <div class="row ms-2">
               <form action="{% url 'handle_comments' recipe.pk %}"
                 method="post"
@@ -385,7 +353,27 @@
                   value="{{ comment.id }}"/>
 
                   <div class="input-group input-group-sm mb-3">
-                    <input type="text" name="comment_text" class="form-control" placeholder="Reply to {{comment.user}}'s comment" aria-label="reply-text" aria-describedby="basic-addon2"/>
+                    <!--input type="text" name="comment_text" class="form-control" placeholder="Reply to {{comment.user}}'s comment" aria-label="reply-text" aria-describedby="basic-addon2"/-->
+
+                    {% for field in form %}
+                      <div class="p-2 col-11">
+                        {% if form.is_bound %} 
+                        {% if field.errors %} 
+                        {% render_field field class="form-control is-invalid" %} 
+                        {% else %} 
+                        {% render_field field class="form-control is-valid" %} 
+                        {% endif %} 
+                        {% else %} 
+                        {% render_field field class="form-control" placeholder="Write a reply..." rows=1 %} 
+                        {% endif %} 
+                        {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+
+                    <div class="invalid-feedback">{{ field.errors }}</div>
+                  </div>
+                  {% endfor %}
+
                     <button class="btn btn-primary" type="submit" id="button-addon2">Submit</button>
                   </div>
               </form>

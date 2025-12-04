@@ -17,16 +17,6 @@ def get_recipe(request, recipe_id):
         if form_type == "rating_form":
             handle_rating_post(request, recipe)
             return HttpResponseRedirect(request.path_info)
-        '''
-        elif form_type == "comment_form":
-            form = CommentForm(request.POST)
-            create_comment(request, recipe, form)
-            return HttpResponseRedirect(request.path_info)
-
-        elif form_type == "delete_comment_form":
-            delete_comment(request)
-            return HttpResponseRedirect(request.path_info)
-        '''
 
 
     recipe_comments_count = count_recipe_comments(recipe)

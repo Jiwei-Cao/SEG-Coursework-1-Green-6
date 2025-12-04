@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from ..models import Recipe, Comment
+from ..forms import CommentForm
+
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
 
 import datetime
@@ -29,20 +31,13 @@ def is_create_comment_post(request):
     return request.method == "POST" and request.POST.get("form_type") == "comment_form"
 
 def handle_create_comment_post(request, recipe):
-	if validate_comment_request(request):
-		create_comment(request, recipe)
+	form = CommentForm(request.POST)
+	if(form.is_valid()):
+		create_comment(request, recipe, form)
 
-def validate_comment_request(request):
-	comment_text = request.POST.get('comment_text', '')
-	if (comment_text == '') or (len(comment_text) > 500):
-		return False
-	else:
-		return True 
-
-
-def create_comment(request, recipe):
+def create_comment(request, recipe, form):
 	try:
-		comment = Comment(user=request.user, comment=request.POST.get('comment_text'), date_published=make_aware(datetime.datetime.now()))
+		comment = Comment(user=request.user, comment=form.cleaned_data['comment'], date_published=make_aware(datetime.datetime.now()))
 		comment.save()
 		recipe.comments.add(comment)
 	except:
@@ -67,12 +62,13 @@ def is_reply_comment_post(request):
 	return request.method == "POST" and request.POST.get("form_type") == "reply_comment_form"
 
 def handle_create_reply_post(request):
-	if validate_comment_request(request):
-		create_reply_comment(request)
+	form = CommentForm(request.POST)
+	if(form.is_valid()):
+		create_reply_comment(request, form)
 
-def create_reply_comment(request):
+def create_reply_comment(request, form):
 	try:
-		reply = Comment(user=request.user, comment=request.POST.get('comment_text'), date_published=make_aware(datetime.datetime.now()))
+		reply = Comment(user=request.user, comment=form.cleaned_data['comment'], date_published=make_aware(datetime.datetime.now()))
 		reply.save()
 		parent_comment = Comment.objects.get(pk=request.POST.get('parent_comment'))
 		parent_comment.replies.add(reply)
