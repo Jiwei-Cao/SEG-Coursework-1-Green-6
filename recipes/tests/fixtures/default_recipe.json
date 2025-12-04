@@ -1,26 +1,78 @@
 [
-    {
-        "model": "recipes.recipe",
-        "pk": 1,
-        "fields": {
-            "user": 1,
-            "title": "Tomato Soup",
-            "description": "Basic soup",
-            "ingredients": "Tomatoes\nSalt\nWater",
-            "method": "Boil tomatoes.\nBlend.\nServe.",
-            "created_at": "2025-11-21T12:00:00Z"
-        }
-    },
-    {
-        "model": "recipes.recipe",
-        "pk": 2,
-        "fields": {
-            "user": 1,
-            "title": "Pancakes",
-            "description": "Quick breakfast",
-            "ingredients": "Flour\nMilk\nEggs",
-            "method": "Mix.\nFry.\nFlip.",
-            "created_at": "2025-11-21T12:00:00Z"
-        }
+  {
+    "model": "recipes.recipe",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "title": "Tomato Soup",
+      "description": "Basic soup",
+      "created_at": "2025-11-21T12:00:00Z"
     }
+  },
+  {
+    "model": "recipes.recipe",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "title": "Pancakes",
+      "description": "Quick breakfast",
+      "created_at": "2025-11-21T12:00:00Z"
+    }
+  },
+  {
+    "model": "recipes.ingredient",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "name": "Flour"
+    }
+  },
+  {
+    "model": "recipes.ingredient",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "name": "Tomatoes"
+    }
+  },
+  {
+    "model": "recipes.unit",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "name": "kgs",
+      "symbol": "kgs"
+    }
+  },
+  {
+    "model": "recipes.unit",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "name": "pieces",
+      "symbol": "pcs"
+    }
+  },
+  {
+    "model": "recipes.recipeingredient",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "recipe": 1,
+      "ingredient": 2,
+      "unit": 2,
+      "quantity": 3
+    }
+  },
+  {
+    "model": "recipes.recipeingredient",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "recipe": 2,
+      "ingredient": 1,
+      "unit": 1,
+      "quantity": 2
+    }
+  }
 ]

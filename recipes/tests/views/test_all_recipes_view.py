@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from recipes.models import User, Recipe
+from recipes.models import User, Recipe, Ingredient, Unit, RecipeIngredient
 
 class AllRecipesPageViewTest(TestCase):
     fixtures = [
@@ -10,21 +10,28 @@ class AllRecipesPageViewTest(TestCase):
     def setUp(self):
         self.url = reverse('all_recipes')
         self.user = User.objects.get(username='@johndoe')
-        self.recipe1 = Recipe.objects.create(
-            title="Chocolate Cake",
-            description="Delicious chocolate dessert",
-            ingredients="Chocolate, Flour",
-            img = "image/chocolate-cake.jpeg",
-            method="Bake",
-            user=self.user
+        self.recipe1 = Recipe.objects.create(title="Test Recipe", description="desc", user=self.user)
+        self.ingredient1,_ = Ingredient.objects.get_or_create(name="Flour",user=self.user)
+        self.unit,_ = Unit.objects.get_or_create(name="kgs",symbol="kgs",user=self.user)
+
+        self.recipe_ingredient = RecipeIngredient.objects.create(
+            user=self.user,
+            recipe = self.recipe1,
+            ingredient = self.ingredient1,
+            unit = self.unit,
+            quantity=2
         )
-        self.recipe2 = Recipe.objects.create(
-            title="Apple Pie",
-            description="Classic apple pie",
-            img = "image/apple-pie.jpeg",
-            ingredients="Apple, Flour",
-            method="Bake",
-            user=self.user
+
+        self.recipe2 = Recipe.objects.create(title="Tomato souop", description="desc", user=self.user)
+        self.ingredient2,_ = Ingredient.objects.get_or_create(name="Tomato",user=self.user)
+
+
+        self.recipe_ingredient = RecipeIngredient.objects.create(
+            user=self.user,
+            recipe = self.recipe2,
+            ingredient = self.ingredient2,
+            unit = self.unit,
+            quantity=1
         )
 
     

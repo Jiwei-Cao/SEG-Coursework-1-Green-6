@@ -3,7 +3,7 @@ from django.urls import reverse
 
 from recipes.forms import SearchRecipesForm
 from recipes.models import Recipe
-from recipes.models import User
+from recipes.models import User, Ingredient, Unit, RecipeIngredient
 
 
 class BrowseRecipesTestCase(TestCase):
@@ -15,8 +15,28 @@ class BrowseRecipesTestCase(TestCase):
 		self.client.login(username=self.user.username, password='Password123')
 		self.url = reverse("all_recipes")
 
-		self.recipe1 =  Recipe.objects.create(user=self.user, title="123",description="123",ingredients="123",method="123")
-		self.recipe2 =  Recipe.objects.create(user=self.user, title="456",description="abc",ingredients="456",method="abc")
+		self.recipe1 = Recipe.objects.create(title="Test Recipe", description="desc", user=self.user)
+		self.ingredient1,_ = Ingredient.objects.get_or_create(name="Flour",user=self.user)
+		self.unit,_ = Unit.objects.get_or_create(name="kgs",symbol="kgs",user=self.user)
+		
+		self.recipe_ingredient = RecipeIngredient.objects.create(
+            user=self.user,
+            recipe = self.recipe1,
+            ingredient = self.ingredient1,
+            unit = self.unit,
+            quantity=2
+        )
+		
+		self.recipe2 = Recipe.objects.create(title="Tomato souop", description="desc", user=self.user)
+		self.ingredient2,_ = Ingredient.objects.get_or_create(name="Tomato",user=self.user)
+		
+		self.recipe_ingredient = RecipeIngredient.objects.create(
+            user=self.user,
+            recipe = self.recipe2,
+            ingredient = self.ingredient2,
+            unit = self.unit,
+            quantity=1
+        )
 
 		self.recipe_list = [self.recipe1, self.recipe2]
 

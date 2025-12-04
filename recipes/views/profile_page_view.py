@@ -68,6 +68,7 @@ def following_list(request, username):
         'title': f"{profile_user.username} is following",
         'profile_user': profile_user,
         'users': following,
+        'current_user': request.user,
         'following_ids': following_ids,
     })
 
@@ -82,6 +83,7 @@ def followers_list(request, username):
         'title': f"{profile_user.username}'s followers",
         'profile_user': profile_user,
         'users': followers,
+        'current_user': request.user,
         'following_ids': following_ids,
     })
 

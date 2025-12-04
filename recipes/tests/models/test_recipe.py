@@ -38,13 +38,13 @@ class RecipeModelTestCase(TestCase):
         self.recipe.description = ''
         self._assert_recipe_is_invalid()
 
-    def test_ingredients_must_not_be_blank(self):
+    def test_ingredients_can_be_blank(self):
         self.recipe.ingredients = ''
-        self._assert_recipe_is_invalid()
+        self._assert_recipe_is_valid()
 
-    def test_method_must_not_be_blank(self):
+    def test_method_can_be_blank(self):
         self.recipe.method = ''
-        self._assert_recipe_is_invalid()
+        self._assert_recipe_is_valid()
 
     def test_str_returns_title(self):
         self.recipe.title = "My Recipe Title"
@@ -67,9 +67,10 @@ class RecipeModelTestCase(TestCase):
         self.assertEqual(self.recipe.average_rating,0)
 
     def test_average_calculated_correctly(self):
-        user = User.objects.create(username="@Janedoe")
-        Rating.objects.create(user, self.recipe, rating=4)
-        Rating.objects.create(user, self.recipe, rating=2)
+        user = User.objects.create(username="@Janedoe", email="janedoe@example.com")
+        user1 = User.objects.create(username="@Happy", email="happy@example.com")
+        Rating.objects.create(user=user, recipe=self.recipe, rating=4)
+        Rating.objects.create(user=user1, recipe=self.recipe, rating=2)
 
         self.assertTrue(self.recipe.rating_set.exists())
         self.assertAlmostEqual(self.recipe.average_rating, 3.0)

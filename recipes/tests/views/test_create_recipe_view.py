@@ -59,5 +59,5 @@ class CreateRecipeViewTestCase(TestCase):
         self.assertEqual(recipe.user, self.user)
         self.assertEqual(recipe.description, self.form_input['description'])
 
-        expected_url = reverse('manage_recipe_ingredient', kwargs={'recipe_id': recipe.id})
+        expected_url = reverse('add_method', kwargs={'recipe_id': recipe.id})
         self.assertRedirects(response, expected_url, status_code=302, target_status_code=200)
