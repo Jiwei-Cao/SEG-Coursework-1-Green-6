@@ -19,5 +19,5 @@ from .add_method_view import *
 from .create_recipe_ingredient_view import *
 from .delete_ingredient_view import *
 from .edit_method_step_view import *
-from .manage_recipes_view import *
+#from .manage_recipes_view import *
 from .manage_recipe_ingredient_view import *

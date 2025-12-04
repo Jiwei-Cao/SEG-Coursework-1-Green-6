@@ -47,7 +47,7 @@ urlpatterns = [
     path('users/<str:username>/followers/', views.followers_list, name="followers_list"),
     path('recipe/<int:recipe_id>/comment', views.handle_comments, name='handle_comments'),
     path('create_recipe/<int:recipe_id>/add_method/', views.add_method, name='add_method'),
-    path('manage_recipes', views.manage_recipes, name='manage_recipes'),
+    #path('manage_recipes', views.manage_recipes, name='manage_recipes'),
     path('manage_recipe_ingredient/<int:recipe_id>/', views.manage_recipe_ingredient, name='manage_recipe_ingredient'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
