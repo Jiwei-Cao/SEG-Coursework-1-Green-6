@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from recipes.tests.helpers import reverse_with_next
-from recipes.models import User, Recipe, Rating
+from recipes.models import User, Recipe, Rating, Comment
+from django.utils.timezone import make_aware
+import datetime
 
 class SpecificRecipeViewTestCase(TestCase):
     """Tests of the specific recipe view."""
@@ -15,7 +17,7 @@ class SpecificRecipeViewTestCase(TestCase):
 
         # create a recipe
         self.recipe = Recipe.objects.create(title="Test Recipe", description="desc", user=self.user) #ingredients="ing", method="m",
-
+        
         self.url = reverse("get_recipe", args=[self.recipe.id])
         # add ratings
         Rating.objects.create(user=self.user, recipe=self.recipe, rating=4)
@@ -68,6 +70,7 @@ class SpecificRecipeViewTestCase(TestCase):
     
     def test_no_ratings(self):
         """Test view behavior when there are no ratings."""
+
         new_recipe = Recipe.objects.create(title="No Rating Recipe", description="desc", user=self.user) #ingredients="ing", method="m", 
         new_url = reverse("get_recipe", args=[new_recipe.id])
 
@@ -94,3 +97,13 @@ class SpecificRecipeViewTestCase(TestCase):
 
         rating = Rating.objects.get(user=self.user, recipe=self.recipe)
         self.assertEqual(rating.rating, 4)
+
+    def test_counting_recipe_comments(self):
+        parent_comment = Comment.objects.create(user=self.user, comment="test comment", date_published=make_aware(datetime.datetime(2025,4,1)))
+        self.recipe.comments.add(parent_comment)
+        reply = Comment.objects.create(user=self.user, comment="test reply", date_published=make_aware(datetime.datetime(2025,1,1)))
+        parent_comment.replies.add(reply)
+
+        response = self.client.get(self.url)
+        self.assertIn('recipe_comments_count', response.context)
+        self.assertEqual(response.context['recipe_comments_count'], 2)

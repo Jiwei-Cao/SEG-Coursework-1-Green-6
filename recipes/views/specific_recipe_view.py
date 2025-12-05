@@ -18,19 +18,13 @@ def get_recipe(request, recipe_id):
             handle_rating_post(request, recipe)
             return HttpResponseRedirect(request.path_info)
 
-        elif form_type == "comment_form":
-            form = CommentForm(request.POST)
-            create_comment(request, recipe, form)
-            return HttpResponseRedirect(request.path_info)
 
-        elif form_type == "delete_comment_form":
-            delete_comment(request)
-            return HttpResponseRedirect(request.path_info)
-
+    recipe_comments_count = count_recipe_comments(recipe)
     form = CommentForm()
     ingredients = getIngredients(recipe_id=recipe_id)
     context = create_recipe_context(request.user, recipe, ingredients)
     context["form"] = form
+    context['recipe_comments_count'] = recipe_comments_count
     #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
     return render(request, "specific_recipe.html", context)
 
@@ -86,3 +80,12 @@ def create_recipe_context(user, recipe, ingredients):
         "half_star": half_star,
         "empty_stars": range(empty_stars),
     }
+
+def count_recipe_comments(recipe):
+    counter = 0
+    parent_comments = recipe.comments.all()
+    for parent_comment in parent_comments:
+        counter = counter + parent_comment.replies.count()
+
+    counter = counter + recipe.comments.count()
+    return counter

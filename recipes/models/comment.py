@@ -6,4 +6,7 @@ class Comment(models.Model):
     comment = models.CharField(blank=False, max_length=500)
     date_published = models.DateTimeField()
     
+    replies = models.ManyToManyField("self", symmetrical=False, blank=True, related_name='comment_replies')
    
+    class Meta:
+        ordering = ('date_published',)

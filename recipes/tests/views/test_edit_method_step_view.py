@@ -72,7 +72,6 @@ class EditMethodStepViewTestCase(TestCase):
         self.assertEqual(self.form_input['step_number'], method_step.step_number)
         self.assertEqual(self.form_input['method_text'], method_step.method_text)
     
-
     def test_post_with_invalid_method_step_pk(self):
         invalid_url = reverse("edit_method", kwargs={'recipe_id': f"{self.recipe1.pk}", 'step_id' : 8})
         before_method_step_objects_count = MethodStep.objects.count()
@@ -86,7 +85,6 @@ class EditMethodStepViewTestCase(TestCase):
         self.assertEqual(after_recipe_method_steps_count, before_recipe_method_steps_count)
 
         self.assertEqual(response.status_code, 404)
-
 
     def test_save_method_step_with_same_step_number_as_another_is_invalid(self):
 
