@@ -13,6 +13,7 @@ def create_recipe(request):
             recipe.user = request.user 
             recipe.save()
             form.save_m2m()
+            recipe.update_tags()
             path = reverse('add_method', kwargs={"recipe_id": f"{recipe.id}"}) 
             return redirect(path)
     else:

@@ -1,6 +1,6 @@
 """Unit tests for the Recipe model."""
 
-from recipes.models import Recipe, User, Rating
+from recipes.models import Recipe, User, Rating, Tag, Ingredient, RecipeIngredient, Unit
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
@@ -14,6 +14,11 @@ class RecipeModelTestCase(TestCase):
 
     def setUp(self):
         self.recipe = Recipe.objects.get(pk=1)
+        self.user = User.objects.create(username="@janedoe", email="janedoe@example.com")
+        Tag.objects.create(name="Gluten-free")
+        Tag.objects.create(name="Dairy-free")
+        Tag.objects.create(name="Nut-free")
+        Tag.objects.create(name="Vegetarian")
 
     def test_valid_recipe(self):
         self._assert_recipe_is_valid()
@@ -38,14 +43,6 @@ class RecipeModelTestCase(TestCase):
         self.recipe.description = ''
         self._assert_recipe_is_invalid()
 
-    # def test_ingredients_must_not_be_blank(self):
-    #     self.recipe.ingredients = ''
-    #     self._assert_recipe_is_invalid()
-
-    # def test_method_must_not_be_blank(self):
-    #     self.recipe.method = ''
-    #     self._assert_recipe_is_invalid()
-
     def test_str_returns_title(self):
         self.recipe.title = "My Recipe Title"
         self.assertEqual(str(self.recipe), "My Recipe Title")
@@ -67,13 +64,55 @@ class RecipeModelTestCase(TestCase):
         self.assertEqual(self.recipe.average_rating,0)
 
     def test_average_calculated_correctly(self):
-        user = User.objects.create(username="@Janedoe")
-        Rating.objects.create(user, self.recipe, rating=4)
-        Rating.objects.create(user, self.recipe, rating=2)
+        user2 = User.objects.create(username="@Johndoe", email="johndoe@example.com")
+        Rating.objects.create(user=self.user, recipe=self.recipe, rating=4)
+        Rating.objects.create(user=user2, recipe=self.recipe, rating=2)
 
         self.assertTrue(self.recipe.rating_set.exists())
         self.assertAlmostEqual(self.recipe.average_rating, 3.0)
 
+    def test_tags_added_automatically(self):
+        recipe = Recipe.objects.create(title="new", user=self.user, description="desc")
+        gluten_free_tag = Tag.objects.get(name="Gluten-free")
+        dairy_free_tag = Tag.objects.get(name="Dairy-free")
+        nut_free_tag = Tag.objects.get(name="Nut-free")
+        vegetarian_tag = Tag.objects.get(name="Vegetarian")
+        self.assertIn(gluten_free_tag, recipe.tags.all())
+        self.assertIn(dairy_free_tag, recipe.tags.all())
+        self.assertIn(nut_free_tag, recipe.tags.all())
+        self.assertIn(vegetarian_tag, recipe.tags.all())
+
+    def test_tag_removed_on_allergen_added(self):
+        recipe = Recipe.objects.create(title="new", user=self.user, description="desc")
+        dairy_free_tag = Tag.objects.get(name="Dairy-free")
+        milk_ingredient = Ingredient.objects.create(user=self.user, name="milk", category="DR")
+        litre_unit = Unit.objects.create(user=self.user, name="litres", symbol="L")
+        recipe_ingredient = RecipeIngredient.objects.create(
+            user=self.user, 
+            recipe=recipe, 
+            quantity=1, 
+            unit=litre_unit, 
+            ingredient=milk_ingredient)
+        self.assertIn(recipe_ingredient,recipe.recipeingredient_set.all())
+        self.assertNotIn(dairy_free_tag,recipe.tags.all())
+
+    def test_tag_added_on_allergen_removed(self):
+        recipe = Recipe.objects.create(title="new", user=self.user, description="desc")
+        dairy_free_tag = Tag.objects.get(name="Dairy-free")
+        milk_ingredient = Ingredient.objects.create(user=self.user, name="milk", category="DR")
+        litre_unit = Unit.objects.create(user=self.user, name="litres", symbol="L")
+        recipe_ingredient = RecipeIngredient.objects.create(
+            user=self.user, 
+            recipe=recipe, 
+            quantity=1, 
+            unit=litre_unit, 
+            ingredient=milk_ingredient)
+        self.assertIn(recipe_ingredient,recipe.recipeingredient_set.all())
+        self.assertNotIn(dairy_free_tag,recipe.tags.all())
+        count = len(recipe.recipeingredient_set.all())
+        recipe_ingredient.delete()
+        self.assertEqual(count-1,len(recipe.recipeingredient_set.all()))
+        self.assertIn(dairy_free_tag, recipe.tags.all())    
 
     def _assert_recipe_is_valid(self):
         try:
