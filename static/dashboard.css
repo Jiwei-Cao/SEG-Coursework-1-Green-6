@@ -36,7 +36,7 @@
 /*
 * Button styling
 */
-.link-button {
+a.link-button {
   border: none;
   border-radius: 20px;
   padding: 0.5rem 1.2rem;
@@ -44,9 +44,11 @@
   transition: transform 0.2s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   background-color: #dae5ebf2;
+  text-decoration: none !important;
+  color: inherit !important;
 }
 
-.link-button:hover {
+a.link-button:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   background-color: #dae5ebc5;
@@ -98,5 +100,7 @@
   .link-button {
     padding: 0.4rem 1rem;
     font-size: 13px;
+    text-decoration: none;
+    color: inherit;
   }
 }

@@ -32,7 +32,8 @@ tag_fixtures = [
             {"name": "Mediterranean", "colour": "#e9dfec"},
             {"name": "Asian", "colour": "#b3a496"},
             {"name": "Indian", "colour": "#82ae67"},
-            {"name": "Dairy-free", "colour": "#f67fcb"}
+            {"name": "Dairy-free", "colour": "#f67fcb"},
+            {"name": "Nut-free", "colour":"#e8cc2b"}
         ]
 
 class Command(BaseCommand):
@@ -147,10 +148,15 @@ class Command(BaseCommand):
     def create_tags(self):
         """Construct default tags for the Tag Model"""
         for tag in tag_fixtures:
-            try:
-                Tag.objects.create(name=tag["name"], colour=tag["colour"])
-            except:
-                pass
+            obj, created = Tag.objects.get_or_create(
+                name=tag["name"],
+                defaults={"colour": tag["colour"]}
+            )
+
+        # If the tag already existed, update its colour
+            if not created:
+                obj.colour = tag["colour"]
+                obj.save()
         print("Tag seeding complete")
         
     def create_recipes(self):

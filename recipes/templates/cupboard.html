@@ -1,18 +1,24 @@
 {% extends 'base_content.html' %}
-{% block title %}
-
-<h1>{{user.username}}'s Cupboard</h1>
-{% endblock %}
-
+{% load widget_tweaks %} 
 {% block content %}
 <div class="container">
-<h2>Your Ingredients</h2>
-<p><b>Ingredients</b>:</p>
-    {% for ingredient_item in ingredients_list %}
-      <tr>
-        <li>
-          {{ingredient_item.ingredient_line}}
-          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteIngredient-{{ingredient_item.ingredient.pk}}">
+<h2 class = "mb-4">Your Ingredients <i class="bi bi-basket"></i></h2>
+<div class="card shadow-sm mb-4">
+  <div class="card-body p-0">
+    <ul class="list-group list-group-flush">
+
+      {% for ingredient_item in ingredients_list %}
+        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+          
+          <span class="fw-medium">
+            {{ ingredient_item.ingredient_line }}
+          </span>
+
+          <button 
+            class="btn btn-sm btn-outline-danger" 
+            data-bs-toggle="modal" 
+            data-bs-target="#deleteIngredient-{{ ingredient_item.ingredient.pk }}"
+          >
             <i class="bi bi-trash3-fill"></i>
           </button>
           <!-- Modal -->
@@ -20,7 +26,7 @@
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete {{ingredient_item.ingredient}}</h1>
+                  <h6 class="modal-title fs-5" id="staticBackdropLabel">Delete {{ingredient_item.ingredient}}</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -36,16 +42,41 @@
               </div>
             </div>
           </div>
-        </li>
-      </tr>
+      </li>
+      {% empty %}
+          <p class = "text-muted text-center"> No ingredient in cupboard yet. Add some ingredient here <i class="bi bi-arrow-90deg-down"></i></p>
     {% endfor %}
-
-<p> -----------------------------------------------------------------------------</p>
+  </ul>
+  </div>
+  </div>
 <h4>Add new ingredient</h4>
 <form method="post">
     {% csrf_token %} 
-    {{ form.as_p }}
-    <button type="submit">Add Ingredient</button>
+    {% for field in form %} 
+        {% if field.name != 'public' %}
+        <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">
+            {{ field.label }}
+        </label>
+
+        {% if form.is_bound %} 
+            {% if field.errors %} 
+                {% render_field field class="form-control is-invalid" %} 
+            {% else %} 
+                {% render_field field class="form-control is-valid" %} 
+            {% endif %} 
+        {% else %} 
+            {% render_field field class="form-control" %} 
+        {% endif %} 
+        {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+        {% endif %}
+
+        <div class="invalid-feedback">{{ field.errors }}</div>
+        </div>
+        {% endif %} 
+    {% endfor %}
+    <button type="submit" class = "submit-button">Add Ingredient</button>
 </form>
 </div>
 {% endblock %}

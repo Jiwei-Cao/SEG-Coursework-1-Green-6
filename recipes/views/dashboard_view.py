@@ -58,6 +58,12 @@ def get_features():
             "link": "all_recipes",
         },
         {
+            "title": "Find other users",
+            "icon": "bi-person-add",
+            "description": "Find other passionate recipe creators and follow them to acccess follower-exclusive recipes",
+            "link": "user_search",
+        },
+        {
             "title": "Create Your Recipe",
             "icon": "bi-file-earmark-text",
             "description": "Create and store your own recipe",

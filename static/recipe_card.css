@@ -32,6 +32,7 @@
   transition: transform 0.2s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   font-size: 15px;
+  transform: translateY(8px);
 }
 
 .favourite-button {
@@ -39,7 +40,7 @@
 }
 
 .favourite-button:hover {
-  transform: scale(1.05);
+  transform: scale(1.05) translateY(8px);
   background-color: rgb(225, 146, 190);
 }
 
@@ -52,7 +53,7 @@
 }
 
 .unfavourite-button:hover {
-  transform: scale(1.05);
+  transform: scale(1.05) translateY(8px);
   background-color: rgb(225, 146, 190);
 }
 
@@ -128,7 +129,7 @@
   height: 100%;
 }
 
-.submit-button {
+a.submit-button, .submit-button {
   border: none;
   border-radius: 20px;
   padding: 0.5rem 1.2rem;
@@ -136,10 +137,9 @@
   transition: transform 0.2s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   background-color: #b7e1f7f2;
-  font-size: 13px;
 }
 
-.submit-button:hover {
+a.submit-button:hover, .submit-button:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   background-color: #9ecee9f6;
@@ -208,6 +208,35 @@
 .popular-badge:hover,
 .public-badge:hover {
   transform: scale(1.1);
+}
+
+a.quantity-button{
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  color: rgb(240, 234, 234) !important;
+  background-color: darkolivegreen;
+  align-self: center;
+  transition: transform 0.2s ease;
+}
+.quantity-button.active{
+  transform: scale(1.05);
+  background-color: rgb(129, 161, 75);
+}
+
+a.quantity-button:hover{
+    transform: scale(1.05)
+}
+
+
+.edit-button{
+  background-color: rgb(42, 163, 249);
+  color: white !important;
+  text-decoration: none;
+}
+.edit-button:hover{
+  text-decoration: none;
+  background-color: rgb(28, 116, 205);
 }
 
 

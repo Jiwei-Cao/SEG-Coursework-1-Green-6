@@ -11,13 +11,36 @@ class UserIngredient(models.Model):
     HERBS = "HB"
     BUTCHERY = "BT"
     SEAFOOD = "SF"
+    EGG = "EG"
+    DAIRY = "DR"
+    NUT = "NT"
+    GLUTEN = "GL"
+    ALCOHOL = "AL"
+    FRUIT = "FR"
+    PULSES = "PS"
+    GRAINS = "GR"
+    WATER = "WT"
+    ALLUM = "AL"
+    MINERALS = "ML"
+    CHOICES = ()
     CATEGORY_OPTIONS = {
         NONE: "None",
         VEGETABLE: "Vegetable",
         SPICE: "Spice",
         HERBS: "Herbs",
         BUTCHERY: "Butchery",
-        SEAFOOD: "Seafood"
+        SEAFOOD: "Seafood",
+        EGG: "Egg",
+        DAIRY: "Dairy",
+        NUT: "Nut",
+        GLUTEN: "Gluten",
+        ALCOHOL: "Alcohol",
+        FRUIT: "Fruit",
+        PULSES: "Pulses",
+        GRAINS: "Grains",
+        WATER: "Water",
+        ALLUM: "Allum",
+        MINERALS: "Minerals",
     }
     category = models.CharField(
         max_length=2,
@@ -28,4 +51,4 @@ class UserIngredient(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.quantity) + str(self.unit) + " of " + self.name
+        return str(self.quantity) +  " " + str(self.unit) + " of " + self.name

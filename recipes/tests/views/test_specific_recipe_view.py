@@ -1,7 +1,12 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 from recipes.tests.helpers import reverse_with_next
-from recipes.models import User, Recipe, Rating
+from recipes.models import User, Recipe, Rating, Comment
+from django.utils.timezone import make_aware
+import datetime
+from recipes.models import User, Recipe, Rating, RecipeIngredient, Unit, Ingredient, Comment
+from recipes.views import getIngredients
 
 class SpecificRecipeViewTestCase(TestCase):
     """Tests of the specific recipe view."""
@@ -13,8 +18,18 @@ class SpecificRecipeViewTestCase(TestCase):
         self.user2 = User.objects.get(username='@janedoe')
         self.client.login(username=self.user.username, password='Password123')
 
-        # create a recipe
-        self.recipe = Recipe.objects.create(title="Test Recipe", description="desc", ingredients="ing", method="m", user=self.user)
+        self.recipe = Recipe.objects.create(title="Test Recipe", description="desc", user=self.user)
+        self.ingredient,_ = Ingredient.objects.get_or_create(name="Flour",user=self.user)
+        self.unit,_ = Unit.objects.get_or_create(name="kgs",symbol="kgs",user=self.user)
+
+        self.recipe_ingredient = RecipeIngredient.objects.create(
+            user=self.user,
+            recipe = self.recipe,
+            ingredient = self.ingredient,
+            unit = self.unit,
+            quantity=2
+        )
+
 
         self.url = reverse("get_recipe", args=[self.recipe.id])
         # add ratings
@@ -68,7 +83,7 @@ class SpecificRecipeViewTestCase(TestCase):
     
     def test_no_ratings(self):
         """Test view behavior when there are no ratings."""
-        new_recipe = Recipe.objects.create(title="No Rating Recipe", description="desc", ingredients="ing", method="m", user=self.user)
+        new_recipe = Recipe.objects.create(title="No Rating Recipe", description="desc", user=self.user)
         new_url = reverse("get_recipe", args=[new_recipe.id])
 
         response = self.client.get(new_url)
@@ -94,3 +109,16 @@ class SpecificRecipeViewTestCase(TestCase):
 
         rating = Rating.objects.get(user=self.user, recipe=self.recipe)
         self.assertEqual(rating.rating, 4)
+
+    def test_counting_recipe_comments(self):
+        parent_comment = Comment.objects.create(user=self.user, comment="test comment", date_published=make_aware(datetime.datetime(2025,4,1)))
+        self.recipe.comments.add(parent_comment)
+        reply = Comment.objects.create(user=self.user, comment="test reply", date_published=make_aware(datetime.datetime(2025,1,1)))
+        parent_comment.replies.add(reply)
+
+        response = self.client.get(self.url)
+        self.assertIn('recipe_comments_count', response.context)
+        self.assertEqual(response.context['recipe_comments_count'], 2)
+    def test_get_ingredients_returns_correct_list(self):
+        result = getIngredients(self.recipe.id, multiplier=3)
+        self.assertEqual(result,["6.00 kgs Flour"])

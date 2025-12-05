@@ -1,0 +1,29 @@
+[
+    {
+        "model": "recipes.ingredient",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "name": "Tomato",
+            "category": "VG"
+        }
+    },
+    {
+        "model":"recipes.ingredient",
+        "pk":2,
+        "fields":{
+            "user":2,
+            "name":"Beef",
+            "category":"BT"
+        }   
+    },
+    {
+        "model":"recipes.ingredient",
+        "pk":3,
+        "fields":{
+            "user":3,
+            "name":"Paprika",
+            "category":"SP"
+        }
+    }
+]

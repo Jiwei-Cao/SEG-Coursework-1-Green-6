@@ -4,8 +4,9 @@ from .recipe import *
 from .tag import *
 from .ingredient import *
 from .unit import *
-from .recipe_ingredient import *
+from .recipeingredient import *
 from .comment import *
 from .rating import *
 from .method_step import *
-from .user_ingredient import *
+from .useringredient import *
+from .unit import *

@@ -16,21 +16,21 @@ class CommentFormTestCase(TestCase):
         }
 
     def test_form_has_necessary_fields(self):
-    	form = CommentForm()
-    	self.assertIn('comment', form.fields)
-    	self.assertTrue(isinstance(form.fields['comment'], forms.CharField))
-   
+        form = CommentForm()
+        self.assertIn('comment', form.fields)
+        self.assertTrue(isinstance(form.fields['comment'], forms.CharField))
+
     def test_valid_comment_form_is_valid(self):
-    	form = CommentForm(data=self.form_input)
-    	self.assertTrue(form.is_valid)
+        form = CommentForm(data=self.form_input)
+        self.assertTrue(form.is_valid)
 
     def test_blank_form_is_invalid(self):
-    	self.form_input['comment'] = ''
-    	form = CommentForm(data=self.form_input)
-    	self.assertFalse(form.is_valid())
+        self.form_input['comment'] = ''
+        form = CommentForm(data=self.form_input)
+        self.assertFalse(form.is_valid())
 
     def test_overly_long_comment_form_is_invalid(self):
-    	self.form_input['comment'] = 'x'*600
-    	form = CommentForm(data=self.form_input)
-    	self.assertFalse(form.is_valid())
+        self.form_input['comment'] = 'x'*600
+        form = CommentForm(data=self.form_input)
+        self.assertFalse(form.is_valid())
 

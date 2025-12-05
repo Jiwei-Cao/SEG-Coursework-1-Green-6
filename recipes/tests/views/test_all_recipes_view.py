@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from recipes.models import User, Recipe
+from recipes.models import User, Recipe, Ingredient, Unit, RecipeIngredient
 
 class AllRecipesPageViewTest(TestCase):
     fixtures = [
@@ -13,17 +13,17 @@ class AllRecipesPageViewTest(TestCase):
         self.recipe1 = Recipe.objects.create(
             title="Chocolate Cake",
             description="Delicious chocolate dessert",
-            ingredients="Chocolate, Flour",
+            # ingredients="Chocolate, Flour",
             img = "image/chocolate-cake.jpeg",
-            method="Bake",
+            # method="Bake",
             user=self.user
         )
         self.recipe2 = Recipe.objects.create(
             title="Apple Pie",
             description="Classic apple pie",
             img = "image/apple-pie.jpeg",
-            ingredients="Apple, Flour",
-            method="Bake",
+            # ingredients="Apple, Flour",
+            # method="Bake",
             user=self.user
         )
 
