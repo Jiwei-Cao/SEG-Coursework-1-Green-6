@@ -1,25 +1,19 @@
 from django.test import TestCase
 from django.urls import reverse
-from recipes.models import User, Ingredient
+from recipes.models import User, UserIngredient, Unit
 
 class CupboardPageViewTest(TestCase):
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
-        'recipes/tests/fixtures/other_users.json'
+        'recipes/tests/fixtures/other_users.json',
+        'recipes/tests/fixtures/default_units.json',
+        'recipes/tests/fixtures/default_user_ingredients.json'
     ]
     def setUp(self):
         self.url = reverse('cupboard')
         self.user = User.objects.get(username='@johndoe')
-        self.ingredient1 = Ingredient.objects.create(
-            name="fish",
-            category= Ingredient.SEAFOOD,
-            user=self.user
-        )
-        self.ingredient2 = Ingredient.objects.create(
-            name="paprika",
-            category = Ingredient.SPICE,
-            user=self.user
-        )
+        self.unit = Unit.objects.get(name = 'tablespoon')
+        self.user_ingredient= UserIngredient.objects.get(name='Tomato')
 
     
     def test_cupboard_page_url(self):
@@ -30,8 +24,9 @@ class CupboardPageViewTest(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'cupboard.html')
-        self.assertIn(self.ingredient1, response.context['ingredients'])
-        self.assertIn(self.ingredient2, response.context['ingredients'])
+        self.ingredients_list = response.context.get('ingredients_list')
+        self.ingredient = self.ingredients_list[0].get('ingredient')
+        self.assertEqual(self.user_ingredient, self.ingredient)
 
         user = response.context['user']
         self.assertTrue(isinstance(user, User))
@@ -40,6 +35,6 @@ class CupboardPageViewTest(TestCase):
     def test_ingredients_exists_in_page(self):
         self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(self.url)
-        ingredients = response.context.get('ingredients')
+        ingredients = response.context.get('ingredients_list')
         self.assertIsNotNone(ingredients)
         self.assertTrue(len(ingredients) >= 0)

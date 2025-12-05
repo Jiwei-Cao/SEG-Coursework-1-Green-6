@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Recipe, Ingredient, Unit, RecipeIngredient, UserIngredient
+from .models import User, Recipe, Ingredient, Unit, RecipeIngredient, UserIngredient, Comment
 
 # Register your models here.
 
@@ -18,3 +18,4 @@ admin.site.register(Ingredient)
 admin.site.register(Unit)
 admin.site.register(RecipeIngredient)
 admin.site.register(UserIngredient)
+admin.site.register(Comment)
