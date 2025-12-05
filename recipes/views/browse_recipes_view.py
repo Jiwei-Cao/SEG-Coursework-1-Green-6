@@ -106,7 +106,7 @@ def apply_ordering(qs, order_by):
 
 def order_by_favourites(qs, order_by):
     qs = qs.annotate(fav_count=Count('favourites'))
-    return qs.order_by('fav_count' if order_by == 'favourites' else '-fav_count')
+    return qs.order_by('-fav_count' if order_by == 'favourites' else 'fav_count')
 
 
 def order_by_rating(qs, order_by):
