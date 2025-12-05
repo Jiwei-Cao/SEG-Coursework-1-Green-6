@@ -38,6 +38,7 @@ class SearchRecipesForm(forms.Form):
     		('favourites', 'Most favourited'),
     		('-favourites', 'Least favourited')
         ],
+        initial='-created_at',
     	required=False
     )
 
