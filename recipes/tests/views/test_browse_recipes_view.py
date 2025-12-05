@@ -15,8 +15,8 @@ class BrowseRecipesTestCase(TestCase):
 		self.client.login(username=self.user.username, password='Password123')
 		self.url = reverse("all_recipes")
 
-		self.recipe1 =  Recipe.objects.create(user=self.user, title="123",description="123",ingredients="123",method="123")
-		self.recipe2 =  Recipe.objects.create(user=self.user, title="456",description="abc",ingredients="456",method="abc")
+		self.recipe1 =  Recipe.objects.create(user=self.user, title="123",description="123") #,ingredients="123",method="123"
+		self.recipe2 =  Recipe.objects.create(user=self.user, title="456",description="abc") #,ingredients="456",method="abc"
 
 		self.recipe_list = [self.recipe1, self.recipe2]
 

@@ -1,0 +1,24 @@
+[
+    {
+        "model":"recipes.recipeingredient",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "recipe": 1,
+            "quantity":5,
+            "unit": 1,
+            "ingredient": 1
+        }
+    },
+    {
+        "model":"recipes.recipeingredient",
+        "pk":2,
+        "fields":{
+            "user":1,
+            "recipe":1,
+            "quantity":2,
+            "unit":2,
+            "ingredient":2
+        }   
+    }
+]

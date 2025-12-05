@@ -1,0 +1,20 @@
+[
+    {
+        "model": "recipes.unit",
+        "pk":1,
+        "fields":{
+            "user":1,
+            "name":"tablespoon",
+            "symbol":"tbsp"
+        }
+    },
+    {
+        "model":"recipes.unit",
+        "pk":2,
+        "fields":{
+            "user":1,
+            "name":"kilogram",
+            "symbol":"kg"
+        }
+    }
+]

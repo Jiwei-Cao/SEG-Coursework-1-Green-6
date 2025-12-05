@@ -1,0 +1,12 @@
+[
+    {
+        "model":"recipes.useringredient",
+        "pk":1,
+        "fields":{
+            "user": 1,
+            "name": "Tomato",
+            "quantity":5,
+            "unit": 1
+        }
+    }
+]
