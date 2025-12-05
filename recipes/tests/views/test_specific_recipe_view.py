@@ -14,7 +14,7 @@ class SpecificRecipeViewTestCase(TestCase):
         self.client.login(username=self.user.username, password='Password123')
 
         # create a recipe
-        self.recipe = Recipe.objects.create(title="Test Recipe", description="desc", ingredients="ing", method="m", user=self.user)
+        self.recipe = Recipe.objects.create(title="Test Recipe", description="desc", user=self.user) #ingredients="ing", method="m",
 
         self.url = reverse("get_recipe", args=[self.recipe.id])
         # add ratings
@@ -68,7 +68,7 @@ class SpecificRecipeViewTestCase(TestCase):
     
     def test_no_ratings(self):
         """Test view behavior when there are no ratings."""
-        new_recipe = Recipe.objects.create(title="No Rating Recipe", description="desc", ingredients="ing", method="m", user=self.user)
+        new_recipe = Recipe.objects.create(title="No Rating Recipe", description="desc", user=self.user) #ingredients="ing", method="m", 
         new_url = reverse("get_recipe", args=[new_recipe.id])
 
         response = self.client.get(new_url)

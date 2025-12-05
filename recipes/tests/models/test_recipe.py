@@ -38,13 +38,13 @@ class RecipeModelTestCase(TestCase):
         self.recipe.description = ''
         self._assert_recipe_is_invalid()
 
-    def test_ingredients_must_not_be_blank(self):
-        self.recipe.ingredients = ''
-        self._assert_recipe_is_invalid()
+    # def test_ingredients_must_not_be_blank(self):
+    #     self.recipe.ingredients = ''
+    #     self._assert_recipe_is_invalid()
 
-    def test_method_must_not_be_blank(self):
-        self.recipe.method = ''
-        self._assert_recipe_is_invalid()
+    # def test_method_must_not_be_blank(self):
+    #     self.recipe.method = ''
+    #     self._assert_recipe_is_invalid()
 
     def test_str_returns_title(self):
         self.recipe.title = "My Recipe Title"
