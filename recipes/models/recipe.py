@@ -32,7 +32,6 @@ class Recipe(models.Model):
         return self.rating_set.count()
     
     def update_tags(self):
-        print("Okay updating tags big bro")
         allergens = [
             {
             "category": "NT",
