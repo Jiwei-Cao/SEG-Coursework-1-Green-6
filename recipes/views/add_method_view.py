@@ -21,7 +21,7 @@ def add_method(request, recipe_id):
 			return handle_delete_method_step(request, recipe)
 		elif operation == "edit_step":
 			step_id = request.POST.get('step_clicked')
-			path = reverse('edit_method', kwargs={'recipe_id': recipe.pk, 'step_id': step_id})
+			path = reverse('edit_method_step', kwargs={'recipe_id': recipe.pk, 'step_id': step_id})
 			
 			return HttpResponseRedirect(path)
 		
