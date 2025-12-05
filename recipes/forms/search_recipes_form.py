@@ -5,10 +5,10 @@ from django_select2.forms import ModelSelect2MultipleWidget
 class SearchRecipesForm(forms.Form):
     search_field = forms.CharField( 
         label="Search", 
-        max_length="64",
+        max_length=64,
         required=False, 
         widget=forms.TextInput(
-            {'placeholder':'Enter your search here'}))
+            {'placeholder':'Enter recipe title here'}))
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(), 
         required=False, 
@@ -33,8 +33,8 @@ class SearchRecipesForm(forms.Form):
     	choices=[
     		('-created_at', 'Newest'),
     		('created_at', 'Oldest'),
-    		('-rating', 'Highest rated'),
-    		('rating', 'Lowest rated'),
+    		('rating', 'Highest rated'),
+    		('-rating', 'Lowest rated'),
     		('favourites', 'Most favourited'),
     		('-favourites', 'Least favourited')
         ],

@@ -2,7 +2,16 @@
 {% block content %}
 {% load widget_tweaks %}
 {{ form.media.css }}
-<div class="container">
+<style>
+  @media screen and (max-width: 768px) {
+    .container{
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+</style>
+<div class="container px-3 px-md-0">
   <div class="row mb-3">
     <h1>Recipes</h1>
     <div class="row">
@@ -34,7 +43,7 @@
         </div>
 
         <div class="d-flex mb-3 gap-2 mt-2">
-          <input type="submit" value="Search" class="btn btn-primary"/>
+          <input type="submit" value="Search" class="btn search-button"/>
         </div>
       </form>
     </div>
@@ -47,7 +56,7 @@
       ref="recipeGrid"
     >
       {% for recipe in recipe_list %}
-      <div class="col-md-4">
+      <div class="col-md-4 mb-2">
         {% include "partials/recipe_card.html" with recipe=recipe showBadge=False %}
       </div>
       {% endfor %}

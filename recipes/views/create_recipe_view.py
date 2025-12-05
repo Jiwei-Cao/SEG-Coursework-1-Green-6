@@ -5,18 +5,18 @@ from recipes.forms import RecipeForm
 
 @login_required
 def create_recipe(request):
-    if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.user = request.user 
-            recipe.save()
-            form.save_m2m()
-            recipe.update_tags()
-            path = reverse('add_method', kwargs={"recipe_id": f"{recipe.id}"}) 
-            return redirect(path)
-    else:
+    if request.method != 'POST':
         form = RecipeForm()
+        return render(request, 'create_recipe.html', {'form': form})
+    
+    form = RecipeForm(request.POST, request.FILES)
 
-    return render(request, 'create_recipe.html', {'form': form})
+    if not form.is_valid():
+        return render(request, 'create_recipe.html', {'form': form})
+
+    recipe = form.save(commit=False)
+    recipe.user = request.user 
+    recipe.save()
+    form.save_m2m()
+    path = reverse('add_method', kwargs={"recipe_id": f"{recipe.id}"}) 
+    return redirect(path)

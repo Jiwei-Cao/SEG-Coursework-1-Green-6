@@ -4,6 +4,8 @@ from django.urls import reverse
 from recipes.forms import SearchRecipesForm
 from recipes.models import Recipe, User, Ingredient, Tag, RecipeIngredient, Unit
 
+from recipes.models import Recipe
+from recipes.models import User, Ingredient, Unit, RecipeIngredient
 
 
 class BrowseRecipesTestCase(TestCase):

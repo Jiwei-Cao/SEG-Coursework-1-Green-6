@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from recipes.models import User, Recipe
+from recipes.models import User, Recipe, Ingredient, Unit, RecipeIngredient
 
 class AllRecipesPageViewTest(TestCase):
     fixtures = [

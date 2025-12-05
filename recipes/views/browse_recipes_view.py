@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Count, Avg, Q
 from django.core.paginator import Paginator
-
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -12,117 +11,108 @@ from recipes.models import Recipe, RecipeIngredient
 
 @login_required
 def browse_recipes(request):
-    recipe_list = Recipe.objects.filter(Q(public=True)|Q(user__followers=request.user)|Q(user=request.user)).distinct()
     if request.method == "POST":
-        form = SearchRecipesForm(request.POST)
-        if form.is_valid():
-            search_val = form.cleaned_data['search_field']
-            selected_tags = form.cleaned_data['tags']
-            order_by = form.cleaned_data['order_by']
-            ingredient_ids_as_str = form.cleaned_data['ingredients']
+        return redirect_with_params(request)
 
-            params = []
-            if search_val:
-                params.append(f'search_val={search_val}')
-            if selected_tags:
-                tag_ids = ','.join(str(tag.id) for tag in selected_tags)
-                params.append(f'tags={tag_ids}')
-            if order_by:
-                params.append(f'order_by={order_by}')
-            if ingredient_ids_as_str:
-                ingredient_ids_as_str = ','.join(str(ingredient.id) for ingredient in ingredient_ids_as_str)
-                params.append(f'ingredients={ingredient_ids_as_str}')
+    recipe_list = get_base_queryset(request)
+    form, search_val, tag_ids, ingredient_ids, order_by = get_params(request)
 
-            query = '?' + '&'.join(params) if params else ''
-            
-            path = reverse('all_recipes') + query
-            return HttpResponseRedirect(path)
-        else:
-            return HttpResponseRedirect(reverse('all_recipes'))
-    else:
-        search_val = request.GET.get('search_val', '')
-        tag_ids = request.GET.get('tags','')
-        initial_data = {'search_field': search_val}
-        order_by = request.GET.get('order_by','')
-        initial_data['order_by'] = order_by
-        if tag_ids:
-            tag_ids = [int (tag_id) for tag_id in tag_ids.split(',')]
-            initial_data['tags'] = tag_ids
+    recipe_list = apply_filters(recipe_list, search_val, tag_ids, ingredient_ids, order_by)
 
-        ingredient_ids_as_str = request.GET.get('ingredients', '')
-        if ingredient_ids_as_str:
-            ingredient_ids = [int (ingredient_id) for ingredient_id in ingredient_ids_as_str.split(',')]
-            initial_data['ingredients'] = ingredient_ids
+    page_obj = paginate_queryset(recipe_list, request.GET.get('page'))
 
-        form = SearchRecipesForm(initial=initial_data)
-
-        if search_val != '':
-            recipe_list = recipe_list.filter(title__contains=search_val)
-
-        if tag_ids:
-            recipe_list = recipe_list.filter(tags__id__in=tag_ids).distinct()
-
-        recipe_list = check_order_by(order_by, recipe_list)
-
-        if ingredient_ids_as_str != '':
-            # Get ALL recipe ids that match the ingredients that are being searched for
-            recipe_ids_by_ingredients = generate_recipe_ids_by_ingredients(ingredient_ids_as_str)
-            #Filter the list so far by the recipe ids from the previous call; this acts like an intersection of sets
-            recipe_list = recipe_list.filter(id__in=recipe_ids_by_ingredients)
-
-    paginator = Paginator(recipe_list, 12)
-    page_number =request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    context = {
+    return render(request, 'all_recipes.html', {
         'recipe_list': recipe_list,
         'page_obj': page_obj,
         'search_val': search_val,
-        'form' : form
-    }
+        'form': form
+    })
 
-    return render(request, 'all_recipes.html', context)
+def redirect_with_params(request):
+    form = SearchRecipesForm(request.POST)
+    if not form.is_valid():
+        return HttpResponseRedirect(reverse('all_recipes'))
+
+    params = build_query_params(
+        form.cleaned_data['search_field'],
+        form.cleaned_data['tags'],
+        form.cleaned_data['order_by'],
+        form.cleaned_data['ingredients']
+    )
+    return HttpResponseRedirect(reverse('all_recipes') + params)
 
 
-def generate_recipe_ids_by_ingredients(str_ingredient_ids):
-    ingredient_ids = [int(ingredient_id) for ingredient_id in str_ingredient_ids.split(',')]
-    filtered_recipe_ingredients = RecipeIngredient.objects.filter(ingredient__in=ingredient_ids)
-    filtered_recipe_ids = []
-    for ingredient in filtered_recipe_ingredients:
-        filtered_recipe_ids.append(ingredient.recipe.id)
-    return filtered_recipe_ids
+def get_params(request):
+    search_val = request.GET.get('search_val', '')
+    tag_ids = [int(t) for t in request.GET.get('tags', '').split(',') if t]
+    ingredient_ids = [int(i) for i in request.GET.get('ingredients', '').split(',') if i]
+    order_by = request.GET.get('order_by', '')
 
-def add_params(search_val, selected_tags, order_by, searched_ingredients):
+    form = SearchRecipesForm(initial={
+        'search_field': search_val,
+        'tags': tag_ids,
+        'ingredients': ingredient_ids,
+        'order_by': order_by
+    })
+    return form, search_val, tag_ids, ingredient_ids, order_by
+
+
+def build_query_params(search_val, tags, order_by, ingredients):
     params = []
     if search_val:
-        params.append(f'search_val={search_val}')
-    if selected_tags:
-        tag_ids = ','.join(str(tag.id) for tag in selected_tags)
-        params.append(f'tags={tag_ids}')
+        params.append(f"search_val={search_val}")
+    if tags:
+        params.append("tags=" + ",".join(str(t.id) for t in tags))
     if order_by:
-        params.append(f'order_by={order_by}')
-    if searched_ingredients:
-        params.append(f'ingredients={searched_ingredients}')
-    return '?' + '&'.join(params) if params else ''
+        params.append(f"order_by={order_by}")
+    if ingredients:
+        params.append("ingredients=" + ",".join(str(i.id) for i in ingredients))
+    return "?" + "&".join(params) if params else ""
 
-def check_order_by(order_by,recipe_list):
-    if order_by:
-        print(order_by)
-        recipe_list = check_order_by_type(order_by, recipe_list)
-    else:   
-        recipe_list = recipe_list.order_by('id')
-    return recipe_list
+def get_base_queryset(request):
+    return Recipe.objects.filter(
+        Q(public=True) |
+        Q(user__followers=request.user) |
+        Q(user=request.user)
+    ).distinct()
 
-def check_order_by_type(order_by, recipe_list):
-    if order_by == 'favourites' or order_by == '-favourites':
-        recipe_list = recipe_list.annotate(fav_count = Count('favourites'))
-        if order_by == 'favourites':
-            recipe_list = recipe_list.order_by('fav_count')
-        else:
-            recipe_list = recipe_list.order_by('-fav_count')
-    elif order_by == "rating" or order_by == "-rating":
-        recipe_list = recipe_list.annotate(avg_rating=Avg('rating__rating'))
-        recipe_list = recipe_list.order_by('-avg_rating' if order_by == 'rating' else 'avg_rating')
-    else:
-        recipe_list = recipe_list.order_by(order_by)
-    return recipe_list
+
+def apply_filters(qs, search_val, tag_ids, ingredient_ids, order_by):
+    if search_val:
+        qs = qs.filter(title__icontains=search_val)
+    if tag_ids:
+        qs = qs.filter(tags__id__in=tag_ids).distinct()
+    if ingredient_ids:
+        recipe_ids = get_recipes_by_ingredients(ingredient_ids)
+        qs = qs.filter(id__in=recipe_ids)
+    return apply_ordering(qs, order_by)
+
+
+def get_recipes_by_ingredients(ingredient_ids):
+    return RecipeIngredient.objects.filter(
+        ingredient__in=ingredient_ids
+    ).values_list('recipe_id', flat=True).distinct()
+
+
+def apply_ordering(qs, order_by):
+    if not order_by:
+        return qs.order_by('id')
+    if order_by in ('favourites', '-favourites'):
+        return order_by_favourites(qs, order_by)
+    if order_by in ('rating', '-rating'):
+        return order_by_rating(qs, order_by)
+    return qs.order_by(order_by)
+
+
+def order_by_favourites(qs, order_by):
+    qs = qs.annotate(fav_count=Count('favourites'))
+    return qs.order_by('-fav_count' if order_by == 'favourites' else 'fav_count')
+
+
+def order_by_rating(qs, order_by):
+    qs = qs.annotate(avg_rating=Avg('rating__rating'))
+    return qs.order_by('-avg_rating' if order_by == 'rating' else 'avg_rating')
+
+
+def paginate_queryset(qs, page_number):
+    return Paginator(qs, 12).get_page(page_number)

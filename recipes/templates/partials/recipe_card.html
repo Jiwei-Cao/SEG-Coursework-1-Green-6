@@ -1,10 +1,11 @@
 <div class="card shadow text-center individual_recipe_card align-items-center">
   {% if recipe.img %}
   <img
-    src="{{ recipe.img.url }}"
+    src="{% if recipe.img %}{{ recipe.img.url }}{% else %}https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS10b9Qpi-UdObaCziWGF5IuvZFF8bKuQ6bow&s{% endif %}"
     alt="{{ recipe.title }}"
     class="recipe-image"
   />
+
   {% endif %}
 
   <div class="card-body d-flex flex-column mb-2">
@@ -46,7 +47,6 @@
         <button
           type="submit"
           class="btn unfavourite-button w-auto"
-          style="transform: translateY(8px)"
         >
           Unfavourite <i class="bi bi-heartbreak-fill"></i>
         </button>
@@ -54,7 +54,6 @@
         <button
           type="submit"
           class="btn favourite-button w-auto"
-          style="transform: translateY(8px)"
         >
           Favourite <i class="bi bi-heart"></i>
         </button>

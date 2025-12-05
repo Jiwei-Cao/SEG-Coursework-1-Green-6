@@ -30,6 +30,7 @@ urlpatterns = [
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('profile_page/', views.profile_page, name='profile_page'),
+    path('profile_page/<str:username>/', views.profile_page, name='profile_page'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('cupboard/<int:ingredient_pk>/delete', views.delete_ingredient, name = 'delete_ingredient'),
     path('all_recipes/', views.browse_recipes, name='all_recipes'),
