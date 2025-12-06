@@ -51,9 +51,11 @@ class Recipe(models.Model):
             }
         ]
         ingredients = self.recipeingredient_set.all()
+
         for allergen in allergens:
             contains_ingredient = ingredients.filter(ingredient__category=allergen["category"]).exists()
-            tag = Tag.objects.get(name=allergen["tag_name"])
+            tag, _ = Tag.objects.get_or_create(name=allergen["tag_name"])
+
             if contains_ingredient:
                 self.tags.remove(tag)
             else:

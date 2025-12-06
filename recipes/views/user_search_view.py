@@ -73,9 +73,9 @@ def get_follower_summary(user, current_user):
 
     mutual_followers = [f.username for f in all_followers if f in current_following]
 
-    non_mutal = [f.username for f in all_followers if f not in current_following]
+    non_mutual = [f.username for f in all_followers if f not in current_following]
 
-    ordered = mutual_followers + non_mutal
+    ordered = mutual_followers + non_mutual
 
     displayed_followers = ordered[:3]
 
