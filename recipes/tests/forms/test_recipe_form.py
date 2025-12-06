@@ -36,7 +36,7 @@ class RecipeFormTestCase(TestCase):
         # self.assertTrue(isinstance(form.fields['method'], forms.CharField))
         self.assertTrue(isinstance(form.fields['public'], forms.BooleanField))
 
-    def test_valid_recipe_form(self):
+    def test_valid_recipe_form(self): 
         form = RecipeForm(data=self.form_input)
         self.assertTrue(form.is_valid())
 
