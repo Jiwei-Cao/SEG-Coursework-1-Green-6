@@ -15,10 +15,6 @@ class RecipeModelTestCase(TestCase):
     def setUp(self):
         self.recipe = Recipe.objects.get(pk=1)
         self.user = User.objects.create(username="@janedoe", email="janedoe@example.com")
-        Tag.objects.create(name="Gluten-free")
-        Tag.objects.create(name="Dairy-free")
-        Tag.objects.create(name="Nut-free")
-        Tag.objects.create(name="Vegetarian")
 
     def test_valid_recipe(self):
         self._assert_recipe_is_valid()
@@ -72,9 +68,8 @@ class RecipeModelTestCase(TestCase):
         self.assertEqual(self.recipe.average_rating,0)
 
     def test_average_calculated_correctly(self):
-        user = User.objects.create(username="@Janedoe", email="janedoe@example.com")
         user1 = User.objects.create(username="@Happy", email="happy@example.com")
-        Rating.objects.create(user=user, recipe=self.recipe, rating=4)
+        Rating.objects.create(user=self.user, recipe=self.recipe, rating=4)
         Rating.objects.create(user=user1, recipe=self.recipe, rating=2)
 
         self.assertTrue(self.recipe.rating_set.exists())

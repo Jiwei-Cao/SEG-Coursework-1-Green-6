@@ -81,7 +81,8 @@ def apply_filters(qs, search_val, tag_ids, ingredient_ids, order_by):
     if search_val:
         qs = qs.filter(title__icontains=search_val)
     if tag_ids:
-        qs = qs.filter(tags__id__in=tag_ids).distinct()
+        for tag_id in tag_ids:
+            qs = qs.filter(tags__id=tag_id)
     if ingredient_ids:
         recipe_ids = get_recipes_by_ingredients(ingredient_ids)
         qs = qs.filter(id__in=recipe_ids)
