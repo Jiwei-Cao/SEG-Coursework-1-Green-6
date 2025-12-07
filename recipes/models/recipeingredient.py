@@ -21,4 +21,4 @@ class RecipeIngredient(models.Model):
         recipe.update_tags()
 
     def __str__(self):
-        return str(self.recipe) + ": " + str(self.quantity) + " " + str(self.unit) + " of " + str(self.ingredient) 
+        return str(self.quantity) + " " + str(self.unit) + " of " + str(self.ingredient) 
