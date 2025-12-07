@@ -5,6 +5,8 @@ from .comment import Comment
 from .method_step import MethodStep
 
 class Recipe(models.Model):
+    """Model used for recipes"""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes_created')
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -17,11 +19,13 @@ class Recipe(models.Model):
     method_steps = models.ManyToManyField(MethodStep, blank=True, related_name='recipe_method_steps')
 
     def save(self, *args, **kwargs):
+        """Save recipe and then automatically update generated allergen tags."""
         super().save(*args, **kwargs)
         self.update_tags()
 
     @property
     def average_rating(self):
+        """Return the average rating for this recipe."""
         ratings = self.rating_set.all()
         if ratings.exists():
             return sum(r.rating for r in ratings) / ratings.count()
@@ -29,6 +33,7 @@ class Recipe(models.Model):
 
     @property
     def rating_count(self):
+        """Return the number of ratings for this recipe."""
         return self.rating_set.count()
     
     def update_tags(self):
@@ -63,4 +68,5 @@ class Recipe(models.Model):
 
 
     def __str__(self):
+        """Return the recipe title."""
         return self.title

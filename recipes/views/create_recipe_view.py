@@ -5,6 +5,7 @@ from recipes.forms import RecipeForm
 
 @login_required
 def create_recipe(request):
+    """Displays the recipe form when it's GET, handles recipe creation when it's POST."""
     if request.method != 'POST':
         form = RecipeForm()
         return render(request, 'create_recipe.html', {'form': form})
@@ -19,6 +20,7 @@ def create_recipe(request):
     return redirect(path)
 
 def save_recipe_from_form(request, form):
+    """Create and save a recipe instance from the form and return the redirect URL."""
     recipe = form.save(commit=False)
     recipe.user = request.user 
     recipe.save()

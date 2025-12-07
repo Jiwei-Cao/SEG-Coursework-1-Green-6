@@ -5,6 +5,8 @@ from recipes.models import User
 from recipes.views import get_follower_summary
 
 class UserSearchViewTestCase(TestCase):
+    """Tests of the user search view."""
+
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
         'recipes/tests/fixtures/other_users.json'

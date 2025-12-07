@@ -9,6 +9,7 @@ from recipes.models import MethodStep
 from recipes.forms import MethodStepForm
 
 class AddMethodViewTestCase(TestCase):
+    """Tests of the add method view."""
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 

@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 
 @login_required
 def user_search(request):
+    """Show the user search page and return results if a query is given."""
     query = request.GET.get('q', '').strip()
     users = User.objects.exclude(id=request.user.id)
 
@@ -25,6 +26,7 @@ def user_search(request):
     return render(request, 'user_search.html', context)
 
 def get_top_users_from_query(request, query, users):
+    """Filter users by the search query and return the top suggested accounts."""
     has_query = False
 
     if query:
@@ -49,6 +51,7 @@ def get_top_users_from_query(request, query, users):
 
 @login_required 
 def follow_user(request, user_id):
+    """Add the user to the current user's following list."""
     if request.method != 'POST':
         return redirect("user_search")
 
@@ -61,6 +64,7 @@ def follow_user(request, user_id):
 
 @login_required 
 def unfollow_user(request, user_id):
+    """Remove the user from the current user's following list."""
     if request.method != 'POST':
         return redirect("user_search")
 
@@ -72,6 +76,7 @@ def unfollow_user(request, user_id):
     return redirect('user_profile', username=target.username)
 
 def get_follower_summary(user, current_user):
+    """Build a summary string showing mutual and non-mutual followers."""
     all_followers = list(user.followers.all())
 
     if not all_followers:

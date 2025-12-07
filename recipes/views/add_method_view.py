@@ -10,6 +10,7 @@ from django.urls import reverse
 
 @login_required
 def add_method(request, recipe_id):
+	"""Show the method-step editor for a recipe and handle the POST actions."""
 	recipe = get_object_or_404(Recipe, id=recipe_id)
 	result = check_post_request(request, recipe)
 
@@ -25,6 +26,7 @@ def add_method(request, recipe_id):
 	return render(request, 'add_method.html', context)
 
 def check_post_request(request, recipe):
+	"""Route the POST operations to the correct method."""
 	if request.method != "POST":
 		return None
 
@@ -42,6 +44,7 @@ def check_post_request(request, recipe):
 	return None
 
 def handle_create_method_step(request, recipe):
+	"""Create a new method for the recipe."""
 	form = MethodStepForm(request.POST)
 
 	invalid_response = check_valid_form(request, form, recipe)
@@ -54,6 +57,7 @@ def handle_create_method_step(request, recipe):
 	return HttpResponseRedirect(request.path_info)
 
 def check_valid_form(request, form, recipe):
+	"""Return the form with errors if the validation fails."""
 	if not form.is_valid():
 		return render(request, 'add_method.html', {
 			'recipe': recipe,
@@ -63,12 +67,14 @@ def check_valid_form(request, form, recipe):
 	return None
 	
 def update_last_number(last_step):
+	"""Calculate the next step number after the last existing number."""
 	if last_step != None:
 		return last_step.step_number + 1
 	
 	return 1
 
 def create_step_from_form(form, recipe):
+	"""Save a new method step and attach it to the recipe."""
 	try:
 		method_step = form.save(commit=False)
 		last_step = recipe.method_steps.order_by('-step_number').first()
@@ -80,6 +86,7 @@ def create_step_from_form(form, recipe):
 		raise Http404("Couldn't create method step.")
 
 def handle_delete_method_step(request, recipe):
+	"""Delete a method step and renumber the later steps."""
 	step_id = request.POST.get('step_clicked')
 
 	try:
@@ -95,6 +102,7 @@ def handle_delete_method_step(request, recipe):
 	return HttpResponseRedirect(request.path_info)
 
 def shift_steps_after_deleting(recipe, deleted_number):
+	"""Shift later step numbers down after a number is removed."""
 	later_steps = recipe.method_steps.filter(step_number__gt=deleted_number).order_by('step_number')
 
 	for step in later_steps:
