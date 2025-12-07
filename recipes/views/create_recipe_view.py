@@ -14,9 +14,14 @@ def create_recipe(request):
     if not form.is_valid():
         return render(request, 'create_recipe.html', {'form': form})
 
+    path = save_recipe_from_form(request, form)
+
+    return redirect(path)
+
+def save_recipe_from_form(request, form):
     recipe = form.save(commit=False)
     recipe.user = request.user 
     recipe.save()
     form.save_m2m()
-    path = reverse('add_method', kwargs={"recipe_id": f"{recipe.id}"}) 
-    return redirect(path)
+    
+    return reverse('add_method', kwargs={"recipe_id": f"{recipe.id}"}) 
