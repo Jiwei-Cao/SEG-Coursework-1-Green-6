@@ -36,10 +36,10 @@ def edit_method_step(request, recipe_id, step_id):
 def handle_saving_changes_to_method_step(request, recipe, method_step, form):
 	''' Check if the edited form is valid before saving to the database'''
 	if form.is_valid():
-		save_form(recipe, form)
+		save_form(form)
 		return HttpResponseRedirect( reverse('add_method', kwargs={'recipe_id':recipe.pk}) )
 
-def save_form(recipe, form):
+def save_form(form):
 	'''Save the validated form to the method step in the database'''
 	try:
 		form.save()

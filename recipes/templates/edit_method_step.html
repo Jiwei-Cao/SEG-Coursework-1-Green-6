@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mb-3">
 <!-- Render the form to edit a method step-->
-<h2>Edit Method Step {{ method_step.step_number }}. {{ method_step.method_text }}</h2>
+<h2>Edit Method Step: {{ method_step.step_number }}. {{ method_step.method_text }}</h2>
 <form action="{% url 'edit_method_step' recipe.pk method_step.pk %}"method="post" >
     {% csrf_token %}
     {% for field in form %}
@@ -30,7 +30,8 @@
             </div>
         </div>
     {% endfor %}
-    <button type="submit" class="submit-button">Save Changes</button>
+    <button type="submit" class="submit-button ms-2">Save Changes</button>
 </form>
+<a href="{% url 'add_method' recipe.pk %}" class="link btn-sm"><button class="btn submit-button">Discard Changes and View Method</button></a>
 </div>
 {% endblock %}

@@ -43,7 +43,8 @@ class AddReplyCommentViewTestCase(TestCase):
 	def test_get_add_reply_comment_with_invalid_parent_comment_pk(self): 
 		invalid_url = reverse('add_reply_comment', kwargs= {'recipe_id' : self.recipe1.pk, 'parent_comment_id' : 6})
 		response = self.client.post(invalid_url, follow=True)
-		self.assertEqual(response.status_code, 404)
+		expected_redirect_url = reverse("get_recipe",  kwargs={"recipe_id": f"{self.recipe1.pk}"})
+		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
 	def test_create_reply_comment_with_valid_data(self):
 		before_comment_objects_count = Comment.objects.count()
@@ -62,24 +63,15 @@ class AddReplyCommentViewTestCase(TestCase):
 	
 	def test_create_reply_comment_with_blank_text(self):
 		self.form_input['comment'] = ''
-
-		before_comment_objects_count = Comment.objects.count()
-		before_comment_replies_count = self.parent_comment.replies.all().count()
-		response = self.client.post(self.url, self.form_input, follow=True)
-
-		after_comment_objects_count = Comment.objects.count()
-		after_comment_replies_count = self.parent_comment.replies.all().count()
-
-		self.assertEqual(after_comment_objects_count, before_comment_objects_count)
-		self.assertEqual(after_comment_replies_count, before_comment_replies_count)
-
-		expected_redirect_url = reverse("get_recipe",  kwargs={"recipe_id": f"{self.recipe1.pk}"})
-		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
+		self.assert_invalid_reply_comment_cannot_be_created()
 
 
 	def test_create_reply_comment_with_overly_long_text(self):
 		self.form_input['comment'] = 'x'*600
+		self.assert_invalid_reply_comment_cannot_be_created()
 
+	
+	def assert_invalid_reply_comment_cannot_be_created(self):
 		before_comment_objects_count = Comment.objects.count()
 		before_comment_replies_count = self.parent_comment.replies.all().count()
 		response = self.client.post(self.url, self.form_input, follow=True)
@@ -93,4 +85,22 @@ class AddReplyCommentViewTestCase(TestCase):
 		expected_redirect_url = reverse("get_recipe",  kwargs={"recipe_id": f"{self.recipe1.pk}"})
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
-	
+
+	def test_post_reply_comment_with_invalid_parent_comment_pk(self):
+		invalid_url = reverse('add_reply_comment', kwargs= {'recipe_id' : self.recipe1.pk, 'parent_comment_id' : 6})
+		self.assert_add_reply_comment_post_to_invalid_url_is_invalid(invalid_url)
+
+	def test_post_reply_comment_with_invalid_recipe_pk(self):
+		invalid_url = reverse('add_reply_comment', kwargs= {'recipe_id' : 9, 'parent_comment_id' : self.parent_comment.pk})
+		self.assert_add_reply_comment_post_to_invalid_url_is_invalid(invalid_url)
+
+
+	def assert_add_reply_comment_post_to_invalid_url_is_invalid(self, invalid_url):
+		before_comment_objects_count = Comment.objects.count()
+		before_comment_replies_count = self.parent_comment.replies.all().count()
+		response = self.client.post(invalid_url, self.form_input, follow=True)
+		after_comment_objects_count = Comment.objects.count()
+		after_comment_replies_count = self.parent_comment.replies.all().count()
+		self.assertEqual(after_comment_objects_count, before_comment_objects_count)
+		self.assertEqual(after_comment_replies_count, before_comment_replies_count)
+		self.assertEqual(response.status_code, 404)
