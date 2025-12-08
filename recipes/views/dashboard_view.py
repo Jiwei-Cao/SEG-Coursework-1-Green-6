@@ -16,6 +16,8 @@ def dashboard(request):
     It ensures that only logged-in users can access the page. If a user
     is not authenticated, they are automatically redirected to the login
     page.
+
+    Displays the top 4 highest rated recipes along with the website's features.
     """
     
     rated_recipes = get_top_rated_recipes(current_user)

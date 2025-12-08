@@ -14,6 +14,9 @@ def profile_page(request, username=None):
     """
     Displays either the current user's profile (if no username is provided)
     or another user's profile (if username is provided)
+    Calculates the rating of user based on the ratings of the recipes created by them.
+    Checks which recipe is the most popular, most favourited recipe created by user.
+    Displays the number of followers and the number of users that the current user is following.
     """
     current_user = request.user
 
