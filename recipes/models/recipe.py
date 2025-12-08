@@ -18,7 +18,7 @@ class Recipe(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.update_tags()
+        #self.update_tags()
 
     @property
     def average_rating(self):
