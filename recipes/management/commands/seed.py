@@ -18,7 +18,7 @@ from recipes.models import User, Tag, MethodStep, Recipe
 
 
 user_fixtures = [
-    {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
+    #{'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
     {'username': '@janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe'},
     {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
 ]
@@ -83,8 +83,14 @@ class Command(BaseCommand):
         The process is idempotent in spirit: attempts that fail (e.g., due to
         uniqueness constraints on username/email) are ignored and generation continues.
         """
+        User.objects.create_superuser('@johndoe', 'john.doe@example.org', 'Password123')
         self.generate_user_fixtures()
         self.generate_random_users()
+
+    # def make_john_doe_admin(self):
+    #     self.client.login(username='@newadmin', password='Password1234test')
+
+    
 
     def generate_user_fixtures(self):
         """Attempt to create each predefined fixture user."""

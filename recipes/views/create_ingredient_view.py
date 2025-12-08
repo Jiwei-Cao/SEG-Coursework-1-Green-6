@@ -15,4 +15,5 @@ def create_ingredient(request):
             return redirect('specify_ingredient')
     else:
         form = IngredientForm()
-    return render(request, 'specify_ingredient.html', {'form': IngredientForm})
+    context = {'form': form}    
+    return render(request, 'specify_ingredient.html', context)
