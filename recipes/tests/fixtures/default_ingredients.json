@@ -12,7 +12,7 @@
         "model":"recipes.ingredient",
         "pk":2,
         "fields":{
-            "user":2,
+            "user":1,
             "name":"Beef",
             "category":"BT"
         }   
@@ -21,7 +21,7 @@
         "model":"recipes.ingredient",
         "pk":3,
         "fields":{
-            "user":3,
+            "user":1,
             "name":"Paprika",
             "category":"SP"
         }

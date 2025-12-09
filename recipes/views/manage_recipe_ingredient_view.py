@@ -12,7 +12,7 @@ def manage_recipe_ingredient(request, recipe_id):
     if request.method == 'POST':
         recipe_ingredient_formset = RecipeIngredientFormSet(request.POST, request.FILES, prefix='recipe_ingredient')
         if recipe_ingredient_formset.is_valid():
-
+            
             recipe_ingredient_forms = recipe_ingredient_formset.save(commit=False)
             for to_delete in recipe_ingredient_formset.deleted_objects:
                 to_delete.delete()
@@ -28,5 +28,3 @@ def manage_recipe_ingredient(request, recipe_id):
         recipe_ingredient_formset = RecipeIngredientFormSet(queryset=RecipeIngredient.objects.filter(recipe=recipe), prefix='recipe_ingredient')
 
     return render(request, 'create_recipe_ingredient.html', {'recipe': recipe,'formset': recipe_ingredient_formset})
-
-
