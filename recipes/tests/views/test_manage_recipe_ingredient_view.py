@@ -63,20 +63,31 @@ class ManageRecipeIngredientFormTestCase(TestCase):
         self.assertRedirects(response, expected_url)
         self.assertRedirects(response, expected_url, status_code=302, target_status_code=200)
 
-    def test_delete_recipe_ingredient(self):
+    def test_delete_recipe_ingredient(self): #
         before_count = RecipeIngredient.objects.count()
         forms = []
+        count = 0
         for recipe_ingredient in RecipeIngredient.objects.all():
-            form = {
-                "id": recipe_ingredient.pk,
-                "quantity": str(recipe_ingredient.quantity),
-                "unit": recipe_ingredient.unit.id,
-                "ingredient": recipe_ingredient.ingredient.id,
-            }
+            if count == 0:
+                form = {
+                    "id": recipe_ingredient.pk,
+                    "quantity": str(recipe_ingredient.quantity),
+                    "unit": recipe_ingredient.unit.id,
+                    "ingredient": recipe_ingredient.ingredient.id,
+                    "DELETE": "ON"
+                }
+            else:
+                form = {
+                    "id": recipe_ingredient.pk,
+                    "quantity": str(recipe_ingredient.quantity),
+                    "unit": recipe_ingredient.unit.id,
+                    "ingredient": recipe_ingredient.ingredient.id,
+                }
+            count = count + 1
             forms.append(form)
-        del forms[0]    
-        delete_url = reverse("manage_recipe_ingredient", args=[self.recipe.id])
-        response = self.client.post(delete_url, forms, follow=True)
+
+        payload = self.build_formset_data(forms=forms)
+        response = self.client.post(self.url, payload, follow=True)
         after_count = RecipeIngredient.objects.count()
         self.assertEqual(after_count, before_count-1)
         expected_url = reverse('manage_recipe_ingredient', args=[self.recipe.id])
