@@ -15,7 +15,6 @@ class BrowseRecipesTestCase(TestCase):
 	fixtures = [
 		'recipes/tests/fixtures/default_user.json', 
 		'recipes/tests/fixtures/other_users.json',
-		'recipes/tests/fixtures/default_tags.json',
 		'recipes/tests/fixtures/default_ingredients.json'
 		]
 

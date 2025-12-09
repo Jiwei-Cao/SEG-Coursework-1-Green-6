@@ -7,7 +7,6 @@ from django.db.utils import IntegrityError
 class TagModelTestCase(TestCase):
     """Unit tests for the Tag Model"""
 
-    fixture = 'recipes/tests/fixtures/default_tags.json'
 
     def setUp(self):
         self.tag = Tag(name="UniqueTag")
