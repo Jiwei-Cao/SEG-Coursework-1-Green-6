@@ -5,6 +5,8 @@ from recipes.models import User
 from recipes.views import get_follower_summary
 
 class UserSearchViewTestCase(TestCase):
+    """Tests of the user search view."""
+
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
         'recipes/tests/fixtures/other_users.json'
@@ -109,6 +111,8 @@ class UnfollowUserViewTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.get(username="@johndoe")
         self.user1 = User.objects.get(username="@janedoe")
+        self.user.following.add(self.user1)
+
 
         self.client.login(username=self.user.username, password="Password123")
         self.url = reverse("unfollow_user", args = [self.user1.id])
@@ -125,7 +129,7 @@ class UnfollowUserViewTestCase(TestCase):
             target_status_code=200
         )
 
-    def test_infollow_need_post(self):
+    def test_unfollow_need_post(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
 

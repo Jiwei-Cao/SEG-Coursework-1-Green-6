@@ -1,8 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from recipes.models import User, Recipe, Ingredient, Unit, RecipeIngredient
+from recipes.models import User, Recipe
 
 class AllRecipesPageViewTest(TestCase):
+    """Test of all recipes view"""
+
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
         'recipes/tests/fixtures/other_users.json'

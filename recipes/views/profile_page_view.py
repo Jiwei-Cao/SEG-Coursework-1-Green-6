@@ -14,6 +14,9 @@ def profile_page(request, username=None):
     """
     Displays either the current user's profile (if no username is provided)
     or another user's profile (if username is provided)
+    Calculates the rating of user based on the ratings of the recipes created by them.
+    Checks which recipe is the most popular, most favourited recipe created by user.
+    Displays the number of followers and the number of users that the current user is following.
     """
     current_user = request.user
 
@@ -30,11 +33,6 @@ def profile_page(request, username=None):
 
     most_popular_id = get_most_popular(recipes)
     most_favourited_recipe_id = get_most_favourite(recipes)
-
-    if request.method == 'POST':
-        handle_favourites_form_requests(request)
-
-        return HttpResponseRedirect(request.path_info)
 
     following_count = profile_user.following.count()
     follower_count = profile_user.followers.count()
@@ -107,20 +105,6 @@ def get_favourite_recipes_id(user):
     return list(
         user.recipes_favourited.values_list('id', flat=True)
     )
-
-
-def handle_favourites_form_requests(request):    
-    if request.POST.get('favourite_recipe', '') == 'unfavourite_recipe':
-        unfavourite_recipe(request)
-
-def unfavourite_recipe(request):
-    recipe_id = request.POST.get("recipe_clicked")
-
-    if not recipe_id:
-        return
-
-    # Remove relationship
-    request.user.recipes_favourited.remove(recipe_id)
 
 def following(current_user, profile_user):
     return  current_user != profile_user and current_user.following.filter(id=profile_user.id).exists()

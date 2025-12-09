@@ -28,7 +28,6 @@ def cupboard(request):
             ingredients_list.append(ingredients_dict)
         form = UserIngredientForm()
 
-
     context = {
         'form': form,
         'user': current_user,

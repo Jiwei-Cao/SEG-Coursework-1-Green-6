@@ -10,11 +10,18 @@ from ..forms import CommentForm
 
 @login_required
 def get_recipe(request, recipe_id):
+    """Gets the information for recipe that user has clicked"""
+
     recipe = get_object_or_404(Recipe, id=recipe_id)
 
     multiplier = int(request.GET.get('multiplier',1))
 
     previous_url = request.META.get('HTTP_REFERER', reverse('all_recipes'))
+
+    current_url = request.build_absolute_uri()
+
+    if not previous_url or previous_url == current_url: #default goes back to all_recipes.html if no previous url
+        previous_url = '/all_recipes/'
 
     if request.method == "POST" and request.POST.get("form_type")=="rating_form":
         handle_rating_post(request, recipe)
@@ -22,23 +29,21 @@ def get_recipe(request, recipe_id):
 
 
     recipe_comments_count = count_recipe_comments(recipe)
-    form = CommentForm()
+
     ingredients = getIngredients(recipe_id=recipe_id, multiplier=multiplier)
-    context = create_recipe_context(request.user, recipe, ingredients, multiplier, previous_url)
-    context["form"] = form
-    context['recipe_comments_count'] = recipe_comments_count
-    #context["comments"] = Comment.objects.filter(recipe=recipe).order_by("-date_published")
+    context = create_recipe_context(request.user, recipe, ingredients, multiplier, previous_url, recipe_comments_count, CommentForm())
     return render(request, "specific_recipe.html", context)
 
 def getIngredients(recipe_id, multiplier):
+    """Get ingredients for specified recipe, including the amount required, units, and ingredient name"""
+
     recipe_ingredient_instances = RecipeIngredient.objects.filter(recipe__id = recipe_id)
     recipe_ingredients = recipe_ingredient_instances.annotate(scaled_quantity=F('quantity')*multiplier)
     return recipe_ingredients
 
-def is_rating_post(request):
-    return request.method == "POST" and request.POST.get("form_type") == "rating_form"
-
 def handle_rating_post(request, recipe):
+    """Checks if rating is valid, if so creates new rating entry for specified recipe"""
+
     rating_value = request.POST.get("rating")
     if not rating_value:
         return
@@ -59,12 +64,16 @@ def get_user_rating(user, recipe):
     return rating.rating if rating else None
 
 def calculate_star_distribution(average_rating):
+    """Calculates the number of full, half and empty stars for specified recipe according to average rating (rounded to nearest 0.5)"""
+
     full_stars = int(floor(average_rating))
     half_star = 1 if average_rating - full_stars >= 0.5 else 0
     empty_stars = 5 - full_stars - half_star
     return full_stars, half_star, empty_stars
 
-def create_recipe_context(user, recipe, ingredients, multiplier, previous_url):
+def create_recipe_context(user, recipe, ingredients, multiplier, previous_url, recipe_comment_count, form):
+    """Creates the context for specified recipe"""
+
     user_rating = get_user_rating(user, recipe)
     average_rating = recipe.average_rating or 0
     rating_count = recipe.rating_count or 0
@@ -80,6 +89,10 @@ def create_recipe_context(user, recipe, ingredients, multiplier, previous_url):
         "full_stars": range(full_stars),
         "half_star": half_star,
         "empty_stars": range(empty_stars),
+        "multiplier": multiplier,
+        "previous_url": previous_url,
+        "recipe_comments_count": recipe_comment_count,
+        "form": form,
         "shopping_list": shopping_list
     }
 
