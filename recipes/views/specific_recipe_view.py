@@ -16,22 +16,13 @@ def get_recipe(request, recipe_id):
 
     multiplier = int(request.GET.get('multiplier',1))
 
-    previous_url = request.META.get('HTTP_REFERER', reverse('all_recipes'))
-
-    current_url = request.build_absolute_uri()
-
-    if not previous_url or previous_url == current_url: #default goes back to all_recipes.html if no previous url
-        previous_url = '/all_recipes/'
-
     if request.method == "POST" and request.POST.get("form_type")=="rating_form":
         handle_rating_post(request, recipe)
         return HttpResponseRedirect(request.path_info)
 
 
-    recipe_comments_count = count_recipe_comments(recipe)
-
     ingredients = getIngredients(recipe_id=recipe_id, multiplier=multiplier)
-    context = create_recipe_context(request.user, recipe, ingredients, multiplier, previous_url, recipe_comments_count, CommentForm())
+    context = create_recipe_context(request.user, recipe, ingredients, multiplier, CommentForm())
     return render(request, "specific_recipe.html", context)
 
 def getIngredients(recipe_id, multiplier):
@@ -71,7 +62,7 @@ def calculate_star_distribution(average_rating):
     empty_stars = 5 - full_stars - half_star
     return full_stars, half_star, empty_stars
 
-def create_recipe_context(user, recipe, ingredients, multiplier, previous_url, recipe_comment_count, form):
+def create_recipe_context(user, recipe, ingredients, multiplier, form):
     """Creates the context for specified recipe"""
 
     user_rating = get_user_rating(user, recipe)
@@ -79,6 +70,7 @@ def create_recipe_context(user, recipe, ingredients, multiplier, previous_url, r
     rating_count = recipe.rating_count or 0
     full_stars, half_star, empty_stars = calculate_star_distribution(average_rating)
     shopping_list = create_shopping_list(user, ingredients)
+    recipe_comments_count = count_recipe_comments(recipe)
 
     return {
         "recipe": recipe,
@@ -90,11 +82,10 @@ def create_recipe_context(user, recipe, ingredients, multiplier, previous_url, r
         "half_star": half_star,
         "empty_stars": range(empty_stars),
         "multiplier": multiplier,
-        "previous_url": previous_url,
-        "recipe_comments_count": recipe_comment_count,
+        "recipe_comments_count": recipe_comments_count,
         "form": form,
-        "shopping_list": shopping_list
-    }
+        "shopping_list": shopping_list,
+     }
 
 def count_recipe_comments(recipe):
     counter = 0

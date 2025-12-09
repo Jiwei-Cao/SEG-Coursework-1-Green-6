@@ -127,26 +127,26 @@ class BrowseRecipesTestCase(TestCase):
 
 	def test_get_all_recipes_with_order_by_date_created(self):
 		self.form_input['order_by'] = "created_at"
-		self._test_get_order_by()
+		self.test_get_order_by()
 
 		self.form_input['order_by'] = "-created_at"
-		self._test_get_order_by()
+		self.test_get_order_by()
 
 	def test_get_all_recipes_with_order_by_favourites(self):
 		self.form_input['order_by'] = "favourites"
-		self._test_get_order_by()
+		self.test_get_order_by()
 
 		self.form_input['order_by'] = "-favourites"
-		self._test_get_order_by()
+		self.test_get_order_by()
 
 	def test_get_all_recipes_with_order_by_ratings(self):
 		self.form_input['order_by'] = "rating"
-		self._test_get_order_by()
+		self.test_get_order_by()
 
 		self.form_input['order_by'] = "-rating"
-		self._test_get_order_by()
+		self.test_get_order_by()
 
-	def _test_get_order_by(self):
+	def test_get_order_by(self):
 		search_query_string = f'?order_by={self.form_input['order_by']}'
 		self.url = reverse("all_recipes")  + search_query_string
 		response = self.client.get(self.url)
