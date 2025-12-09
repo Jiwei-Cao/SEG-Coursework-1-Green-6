@@ -75,14 +75,9 @@ class ManageRecipeIngredientFormTestCase(TestCase):
                 "ingredient": recipe_ingredient.ingredient.id,
             }
             forms.append(form)
-        for recipe_ingredient in RecipeIngredient.objects.all():
-            if (recipe_ingredient.pk == 1):
-                del forms[0]    
-        payload = self.build_formset_data(forms=forms)
-        # self.client.post(self.url, payload, follow=True)
-        # payload = self.build_formset_data(forms=forms)
-        # del forms[0]
-        response = self.client.post(self.url, payload, follow=True)
+        del forms[0]    
+        delete_url = reverse("manage_recipe_ingredient", args=[self.recipe.id])
+        response = self.client.post(delete_url, forms, follow=True)
         after_count = RecipeIngredient.objects.count()
         self.assertEqual(after_count, before_count-1)
         expected_url = reverse('manage_recipe_ingredient', args=[self.recipe.id])
