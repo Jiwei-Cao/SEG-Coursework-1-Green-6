@@ -98,9 +98,12 @@ class BrowseRecipesTestCase(TestCase):
 		self.assertTrue(isinstance(form, SearchRecipesForm))
 		self.assertFalse(form.is_bound)
 
-		filtered_recipes = Recipe.objects.filter(tags__id__in=tag_ids).distinct().count()
+		expected_recipe_list = Recipe.objects.all()
+		tag_ids = [tag.id for tag in self.form_input['tags']]
+		for tag_id in tag_ids:
+			expected_recipe_list = expected_recipe_list.filter(tags__id=tag_id)
 		self.assertIn('recipe_list', response.context)
-		self.assertEqual(len((response.context['recipe_list'])), filtered_recipes) 
+		self.assertQuerySetEqual((response.context['recipe_list']), expected_recipe_list)
 
 
 	def test_get_all_recipes_with_ingredient_search(self):
@@ -158,29 +161,22 @@ class BrowseRecipesTestCase(TestCase):
 		self.assertIn('recipe_list', response.context)
 		self.assertEqual(len((response.context['recipe_list'])), Recipe.objects.count())
 
-
-	#def test_all_recipes_with_all_searches(self):
-
-
-		
-
 	def test_post_with_valid_data(self):
-
 		self.form_input['search_field'] = "testing"
 		search_val = self.form_input['search_field']
 		search_query_string = f'?search_val={search_val}'
 		expected_redirect_url = reverse("all_recipes") + search_query_string
 
-		response = self.client.post(self.url, self.form_input, follow=True)
-		self.assertIn('form', response.context)
-		form = response.context['form']
-		self.assertTrue(isinstance(form, SearchRecipesForm))
+		response = self.client.post(self.url, self.form_input)
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
+		response = self.client.get(expected_redirect_url)
+		self.assertIn('form', response.context)
+		form = response.context['form']
+		self.assertIsInstance(form, SearchRecipesForm)
 		filtered_recipes = Recipe.objects.filter(title__contains=search_val).count()
 		self.assertIn('recipe_list', response.context)
 		self.assertEqual(len((response.context['recipe_list'])), filtered_recipes) 
-
 
 	def test_post_with_invalid_data(self):
 		self.form_input['search_field'] = ''

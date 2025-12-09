@@ -107,7 +107,7 @@
               </div>
               <ul class="list-group list-group-flush">
                 {% for ingredient in ingredients %}
-                <li class="list-group-item">{{ingredient}}</li>
+                <li class="list-group-item">{{ingredient.scaled_quantity}} {{ingredient.unit}} of {{ingredient.ingredient}}</li>
                 {% endfor %}
               </ul>
             </div>
@@ -144,6 +144,9 @@
               </div>
           </div>
 
+            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#shopping_list_modal">
+              Create Shopping List
+            </button>
 
           {% if recipe.user != user %}
           <div class = "mx-2 mt-4">
@@ -346,7 +349,7 @@
               </button>
 
 
-              <!-- Modal -->
+              <!-- Delete Modal -->
               <div class="modal fade" id="delete-reply-{{reply.pk}}" tabindex="-1" aria-labelledby="delete-reply-{{reply.pk}}" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -434,6 +437,28 @@
       </div>
     </div>
     {% endif %}
+  </div>
+</div>
+
+<!--  Shopping List Modal  -->
+<div class="modal fade" id="shopping_list_modal" tabindex="-1" aria-labelledby="shopping_list_modal_label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="shopping_list_modal_label">Shopping List</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% for ingredient in shopping_list %}
+          <li>{{ingredient.difference_quantity}} {{ingredient.unit}} of {{ingredient.ingredient}}</li>
+        {% empty %}
+          <li>You have all the ingredients!</li>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

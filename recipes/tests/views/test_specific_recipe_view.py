@@ -5,7 +5,7 @@ from recipes.tests.helpers import reverse_with_next
 from recipes.models import User, Recipe, Rating, Comment
 from django.utils.timezone import make_aware
 import datetime
-from recipes.models import User, Recipe, Rating, RecipeIngredient, Unit, Ingredient, Comment
+from recipes.models import User, Recipe, Rating, RecipeIngredient, Unit, Ingredient, Comment, UserIngredient
 from recipes.views import getIngredients
 
 class SpecificRecipeViewTestCase(TestCase):
@@ -138,6 +138,121 @@ class SpecificRecipeViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertIn('recipe_comments_count', response.context)
         self.assertEqual(response.context['recipe_comments_count'], 2)
+
     def test_get_ingredients_returns_correct_list(self):
         result = getIngredients(self.recipe.id, multiplier=3)
-        self.assertEqual(result,["6.00 kgs Flour"])
+        self.assertQuerySetEqual(result,self.recipe.recipeingredient_set.all())
+
+    def test_shopping_list_creation_with_empty_cupboard(self):
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        ingredient_list = self.recipe.recipeingredient_set.all()
+        self.assertQuerySetEqual(shopping_list, ingredient_list)
+        
+    def test_shopping_list_with_cupboard_containing_some_ingredients_same_mass_unit(self):
+        cupboard_ingredient = UserIngredient.objects.create(
+            name=self.ingredient.name, 
+            quantity=1,
+            unit=self.unit, 
+            user=self.user, 
+            category="GR")
+        cupboard_ingredient.save()
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        flour = shopping_list[0]
+        self.assertEqual(flour.difference_quantity, 1)
+
+    def test_shopping_list_with_cupboard_containing_some_ingredients_different_mass_unit(self):
+        grams_unit,_ = Unit.objects.get_or_create(name='grams', symbol='gs', user=self.user)
+        cupboard_ingredient = UserIngredient.objects.create(
+            name=self.ingredient.name, 
+            quantity=100,
+            unit=grams_unit, 
+            user=self.user, 
+            category="GR")
+        cupboard_ingredient.save()
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        flour = shopping_list[0]
+        self.assertEqual(float(flour.difference_quantity), 1.9)
+
+    def test_shopping_list_with_cupboard_containing_some_ingredients_different_volume_unit(self):
+        ml_unit,_ = Unit.objects.get_or_create(name='millilitre', symbol='mls', user=self.user)
+        litre_unit,_ = Unit.objects.get_or_create(name='litres', symbol='ltrs', user=self.user)
+        self.recipe_ingredient.unit = litre_unit
+        self.recipe_ingredient.save()
+        cupboard_ingredient = UserIngredient.objects.create(
+            name=self.ingredient.name, 
+            quantity=100,
+            unit=ml_unit, 
+            user=self.user, 
+            category="GR")
+        cupboard_ingredient.save()
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        flour = shopping_list[0]
+        self.assertEqual(float(flour.difference_quantity), 1.9)
+
+    def test_shopping_list_with_cupboard_containing_some_ingredients_same_volume_unit(self):
+        litre_unit,_ = Unit.objects.get_or_create(name='litres', symbol='ltrs', user=self.user)
+        self.recipe_ingredient.unit = litre_unit
+        self.recipe_ingredient.save()
+        cupboard_ingredient = UserIngredient.objects.create(
+            name=self.ingredient.name, 
+            quantity=1,
+            unit=litre_unit, 
+            user=self.user, 
+            category="GR")
+        cupboard_ingredient.save()
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        flour = shopping_list[0]
+        self.assertEqual(float(flour.difference_quantity), 1)
+
+    def test_shopping_list_with_cupboard_containing_exact_ingredients(self):
+        cupboard_ingredient = UserIngredient.objects.create(
+            name=self.ingredient.name, 
+            quantity=2,
+            unit=self.unit, 
+            user=self.user, 
+            category="GR")
+        cupboard_ingredient.save()
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        self.assertEqual(shopping_list,[])
+
+    def test_shopping_list_with_cupboard_containing_excess_ingredients(self):
+        cupboard_ingredient = UserIngredient.objects.create(
+            name=self.ingredient.name, 
+            quantity=3,
+            unit=self.unit, 
+            user=self.user, 
+            category="GR")
+        cupboard_ingredient.save()
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        self.assertEqual(shopping_list,[])
+    
+    def test_shopping_list_defaults_when_invalid_conversion_expected(self):
+        litre_unit,_ = Unit.objects.get_or_create(name='litres', symbol='ltrs', user=self.user)
+        cupboard_ingredient = UserIngredient.objects.create(
+            name=self.ingredient.name, 
+            quantity=1,
+            unit=litre_unit, 
+            user=self.user, 
+            category="GR")
+        cupboard_ingredient.save()
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        flour = shopping_list[0]
+        self.assertEqual(float(flour.difference_quantity), 2)
+    
+    

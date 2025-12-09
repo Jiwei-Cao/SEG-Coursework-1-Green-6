@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, reverse
-from ..models import Recipe, Rating, RecipeIngredient
+from django.db.models import F
+from ..models import Recipe, Rating, RecipeIngredient, UserIngredient
 from django.http import HttpResponseRedirect
 from math import floor
 
@@ -37,12 +38,7 @@ def getIngredients(recipe_id, multiplier):
     """Get ingredients for specified recipe, including the amount required, units, and ingredient name"""
 
     recipe_ingredient_instances = RecipeIngredient.objects.filter(recipe__id = recipe_id)
-    recipe_ingredients = []
-    for recipe_ingredient in recipe_ingredient_instances:
-       quantity = recipe_ingredient.quantity * multiplier #multiplier is the relative scaling that user wants (for example 1 portion, 2 portions)
-       unit = str(recipe_ingredient.unit) if recipe_ingredient.unit else ""
-       ingredient = str(recipe_ingredient.ingredient)
-       recipe_ingredients.append(f"{quantity:.2f} {unit} {ingredient}")
+    recipe_ingredients = recipe_ingredient_instances.annotate(scaled_quantity=F('quantity')*multiplier)
     return recipe_ingredients
 
 def handle_rating_post(request, recipe):
@@ -82,6 +78,7 @@ def create_recipe_context(user, recipe, ingredients, multiplier, previous_url, r
     average_rating = recipe.average_rating or 0
     rating_count = recipe.rating_count or 0
     full_stars, half_star, empty_stars = calculate_star_distribution(average_rating)
+    shopping_list = create_shopping_list(user, ingredients)
 
     return {
         "recipe": recipe,
@@ -95,7 +92,8 @@ def create_recipe_context(user, recipe, ingredients, multiplier, previous_url, r
         "multiplier": multiplier,
         "previous_url": previous_url,
         "recipe_comments_count": recipe_comment_count,
-        "form": form
+        "form": form,
+        "shopping_list": shopping_list
     }
 
 def count_recipe_comments(recipe):
@@ -106,3 +104,46 @@ def count_recipe_comments(recipe):
 
     counter = counter + recipe.comments.count()
     return counter
+
+def create_shopping_list(user, ingredients):
+    cupboard = UserIngredient.objects.filter(user = user)
+    cupboard_names = {ingredient.name for ingredient in cupboard}
+    unit_to_grams = {'gs': 1, 'lbs': 453.592, 'kgs':1000}
+    unit_to_mls = {'tsps': 5, 'tbsps': 15, 'mls': 1, 'ltrs': 1000}
+
+    shopping_list = []
+    for ingredient in ingredients:
+        if ingredient.ingredient.name not in cupboard_names:
+            ingredient.difference_quantity = ingredient.scaled_quantity
+            shopping_list.append(ingredient)
+            continue
+
+        cupboard_ingredient = cupboard.get(name=ingredient.ingredient.name)
+        try:
+            if ingredient.unit.symbol in unit_to_grams:
+                ingredient_qty = ingredient.scaled_quantity * unit_to_grams[ingredient.unit.symbol]
+                cupboard_qty = cupboard_ingredient.quantity * unit_to_grams[cupboard_ingredient.unit.symbol]
+            
+            elif ingredient.unit.symbol in unit_to_mls:
+                ingredient_qty = ingredient.scaled_quantity * unit_to_mls[ingredient.unit.symbol]
+                cupboard_qty = cupboard_ingredient.quantity * unit_to_mls[cupboard_ingredient.unit.symbol]
+
+            else:
+                ingredient_qty = ingredient.scaled_quantity
+                cupboard_qty = cupboard_ingredient.quantity
+
+        except:
+            ingredient.difference_quantity = ingredient.scaled_quantity
+            shopping_list.append(ingredient)
+            continue
+
+        if ingredient_qty > cupboard_qty:
+            difference_qty = ingredient_qty - cupboard_qty
+            if ingredient.unit.symbol in unit_to_grams:
+                ingredient.difference_quantity = difference_qty / unit_to_grams[ingredient.unit.symbol]
+            elif ingredient.unit.symbol in unit_to_mls:
+                ingredient.difference_quantity = difference_qty / unit_to_mls[ingredient.unit.symbol]
+            else:
+                ingredient.difference_quantity = difference_qty
+            shopping_list.append(ingredient)
+    return shopping_list
