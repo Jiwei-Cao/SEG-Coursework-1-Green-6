@@ -6,25 +6,11 @@ from django.shortcuts import get_object_or_404, redirect
 
 @login_required
 def user_search(request):
+    """Show the user search page and return results if a query is given."""
     query = request.GET.get('q', '').strip()
-
     users = User.objects.exclude(id=request.user.id)
 
-    has_query = False
-    if query:
-        users = users.filter(
-            Q(username__icontains=query) |
-            Q(first_name__icontains=query) |
-            Q(last_name__icontains=query)
-        )           
-        has_query = True
-    following_ids = set(request.user.following.values_list('id', flat=True))
-    
-    top_users = (
-        users
-        .exclude(id__in=request.user.following.values_list('id', flat=True))
-        .annotate(follower_count=Count("followers"))
-        .order_by("-follower_count")[:10])
+    top_users, following_ids, has_query = get_top_users_from_query(request, query, users)
     
     for user in top_users:
         user.follow_summary = get_follower_summary(user, request.user)
@@ -39,8 +25,33 @@ def user_search(request):
 
     return render(request, 'user_search.html', context)
 
+def get_top_users_from_query(request, query, users):
+    """Filter users by the search query and return the top suggested accounts."""
+    has_query = False
+
+    if query:
+        users = users.filter(
+            Q(username__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query)
+        )           
+        has_query = True
+
+    following_ids = set(request.user.following.values_list('id', flat=True))
+    
+    top_users = (
+        users
+        .exclude(id__in=request.user.following.values_list('id', flat=True))
+        .annotate(follower_count=Count("followers"))
+        .order_by("-follower_count")[:10]
+    )
+        
+    return top_users, following_ids, has_query
+
+
 @login_required 
 def follow_user(request, user_id):
+    """Add the user to the current user's following list."""
     if request.method != 'POST':
         return redirect("user_search")
 
@@ -53,6 +64,7 @@ def follow_user(request, user_id):
 
 @login_required 
 def unfollow_user(request, user_id):
+    """Remove the user from the current user's following list."""
     if request.method != 'POST':
         return redirect("user_search")
 
@@ -64,21 +76,17 @@ def unfollow_user(request, user_id):
     return redirect('user_profile', username=target.username)
 
 def get_follower_summary(user, current_user):
+    """Build a summary string showing mutual and non-mutual followers."""
     all_followers = list(user.followers.all())
 
     if not all_followers:
         return ""
 
     current_following = set(current_user.following.all())
-
     mutual_followers = [f.username for f in all_followers if f in current_following]
-
-    non_mutal = [f.username for f in all_followers if f not in current_following]
-
-    ordered = mutual_followers + non_mutal
-
+    non_mutual = [f.username for f in all_followers if f not in current_following]
+    ordered = mutual_followers + non_mutual
     displayed_followers = ordered[:3]
-
     remaining_count = len(all_followers) - len(displayed_followers)
 
     if remaining_count > 0:
