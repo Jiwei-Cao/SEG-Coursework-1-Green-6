@@ -5,12 +5,19 @@ from recipes.forms import SearchRecipesForm
 from recipes.models import Recipe, User, Ingredient, Tag, RecipeIngredient, Unit
 
 from recipes.models import Recipe
-from recipes.models import User, Ingredient, Unit, RecipeIngredient
+from recipes.models import User, Ingredient, Unit, RecipeIngredient, Tag
+
+from recipes.views import build_query_params
 
 
 class BrowseRecipesTestCase(TestCase):
 
-	fixtures = ['recipes/tests/fixtures/default_user.json']
+	fixtures = [
+		'recipes/tests/fixtures/default_user.json', 
+		'recipes/tests/fixtures/other_users.json',
+		'recipes/tests/fixtures/default_tags.json',
+		'recipes/tests/fixtures/default_ingredients.json'
+		]
 
 	def setUp(self):
 		self.user = User.objects.get(username='@johndoe')
@@ -203,3 +210,70 @@ class BrowseRecipesTestCase(TestCase):
 		recipes_count = Recipe.objects.count()
 		self.assertIn('recipe_list', response.context)
 		self.assertEqual((response.context['recipe_list']).count(), recipes_count)
+
+	def test_query_param_with_only_tags(self):
+		tags = Tag.objects.filter(pk__in=[1,2])
+		result = build_query_params(
+			search_val = None,
+			tags = list(tags),
+			order_by = None,
+			ingredients=None
+		)
+
+		self.assertEqual(result, "?tags=1,2")
+	
+	def test_params_with_order_by(self):
+		result = build_query_params(
+			search_val=None,
+			tags=None,
+			order_by='created_at',
+			ingredients=None
+		)
+
+		self.assertEqual(result, "?order_by=created_at")
+
+	def test_params_with_ingredients(self):
+		ingredients = Ingredient.objects.filter(pk__in=[1,3])
+		result = build_query_params(
+			search_val=None,
+			order_by=None,
+			tags=None,
+			ingredients= ingredients
+		)
+
+		self.assertEqual(result, "?ingredients=1,3")
+
+	def test_params_tags_and_order_by(self):
+		tags = Tag.objects.filter(pk__in=[3])
+		result = build_query_params(
+			search_val = None,
+			tags = list(tags),
+			order_by="-rating",
+			ingredients=None
+		)
+		self.assertEqual(result,"?tags=3&order_by=-rating")
+
+	def test_params_ingredients_and_order_by(self):
+		ingredients = Ingredient.objects.filter(pk__in=[1])
+		result = build_query_params(
+			search_val = None,
+			tags = None,
+			order_by="favourites",
+			ingredients=ingredients
+		)
+		self.assertEqual(result, "?order_by=favourites&ingredients=1")
+
+	def test_all_params(self):
+		tags = Tag.objects.filter(pk__in=[5])
+		ingredients=Ingredient.objects.filter(pk__in=[1,2])
+		result=build_query_params(
+			search_val="cake",
+			tags=list(tags),
+			order_by="-favourites",
+			ingredients=ingredients
+		)
+		self.assertEqual(result,"?search_val=cake&tags=5&order_by=-favourites&ingredients=1,2")
+
+	def test_empty_params(self):
+		result=build_query_params(None,None,None,None)
+		self.assertEqual(result,"")

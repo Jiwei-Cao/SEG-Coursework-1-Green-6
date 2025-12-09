@@ -114,20 +114,36 @@
           </div>    
           <div>
             <div class="card mb-3">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <b>Method </b>
-                {% if user == recipe.user %}
-                <a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm  edit-button">Edit</a>
-                {% endif %}
+              <div class="card-header d-flex justify-content-between align-items-center">
+                  <b>Method</b>
+
+                  <div class="d-flex align-items-center">
+                      {% if user == recipe.user %}
+                      <a href="{% url 'add_method' recipe.pk %}" class="btn btn-sm edit-button me-2">Edit</a>
+                      {% endif %}
+
+                      <button class="btn btn-sm btn-outline-secondary"
+                              type="button"
+                              data-bs-toggle="collapse"
+                              data-bs-target="#methodCollapse"
+                              aria-expanded="false"
+                              aria-controls="methodCollapse">
+                          Show / Hide
+                      </button>
+                  </div>
               </div>
-              <ul class="list-group list-group-flush">
-                {% for step in recipe.method_steps.all %}
-                <li class="list-group-item">
-                  <b>{{step.step_number}}</b>. {{step.method_text}}
-                </li>
-                {% endfor %}
-              </ul>
-            </div>
+
+              <div class="collapse show" id="methodCollapse">
+                  <ul class="list-group list-group-flush">
+                      {% for step in recipe.method_steps.all %}
+                      <li class="list-group-item">
+                          <b>{{ step.step_number }}</b>. {{ step.method_text }}
+                      </li>
+                      {% endfor %}
+                  </ul>
+              </div>
+          </div>
+
 
           {% if recipe.user != user %}
           <div class = "mx-2 mt-4">
