@@ -16,10 +16,6 @@ class RecipeModelTestCase(TestCase):
     def setUp(self):
         self.recipe = Recipe.objects.get(pk=1)
         self.user = User.objects.get(pk=2)
-        Tag.objects.create(name="Gluten-free")
-        Tag.objects.create(name="Dairy-free")
-        Tag.objects.create(name="Nut-free")
-        Tag.objects.create(name="Vegetarian")
 
     def test_valid_recipe(self):
         self._assert_recipe_is_valid()

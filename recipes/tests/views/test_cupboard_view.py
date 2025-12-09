@@ -10,7 +10,6 @@ class CupboardPageViewTest(TestCase):
         'recipes/tests/fixtures/other_users.json',
         'recipes/tests/fixtures/default_units.json',
         'recipes/tests/fixtures/default_user_ingredients.json',
-        'recipes/tests/fixtures/default_tags.json'
     ]
     def setUp(self):
         self.url = reverse('cupboard')
