@@ -67,7 +67,7 @@
             </div>
             {% endif %}
           
-
+            <!--Renders recipe tags-->
           <p class="card-text fst-italic">{{ recipe.description }}</p>
           <div class="d-flex flex-wrap  gap-2 mb-2">
             {% for tag in recipe.tags.all %}
@@ -77,6 +77,7 @@
               </span>
             {% endfor %}
           </div>
+          <!--Renders recipe's average rating-->
 
           <p class="card-text rating mb-3">
             <span class="fw-bold">Rating: </span>
@@ -89,6 +90,7 @@
             <i class="bi bi-star"></i>
             {%endfor %} {{ average_rating }} from {{ rating_count }} rating(s)
           </p>
+          <!--Renders recipe ingredients and scaling functionality-->
           <div class = "mb-2">
             <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -113,6 +115,7 @@
             </div>
           </div>    
           <div>
+            <!--Renders recipe method steps-->
             <div class="card mb-3">
               <div class="card-header d-flex justify-content-between align-items-center">
                   <b>Method</b>
@@ -148,6 +151,7 @@
               Create Shopping List
             </button>
 
+          <!--Renders form to allow user to submit a rating so long as they are not the recipe creator-->
           {% if recipe.user != user %}
           <div class = "mx-2 mt-4">
             <span class="fw-bold small">Your Rating:</span>
@@ -176,23 +180,20 @@
                 </div>
               </form>
             </div>
-            <div class="comment mb-4">
+
+          </div>
+          {% endif %}
+
+          <!--Renders the form for a user to create a comment-->
+          <div class="comment mb-4">
               <form
-                action="{% url 'handle_comments' recipe.id %}"
+                action="{% url 'add_comment' recipe.id %}"
                 method="post"
                 class="mt-2 gap-2"
               >
                 {% csrf_token %}
-                <input type="hidden" name="form_type" value="comment_form" />
                 <div class="d-flex gap-2">
-                  <!--input
-                    type="text"
-                    name="comment_text"
-                    class="form-control flex-grow-1"
-                    placeholder="Add a comment"
-                  
-                  /-->
-                
+   
                 {% for field in form %}
                   <div class="mb-3">
                     {% if form.is_bound %} 
@@ -212,7 +213,7 @@
                   </div>
                   {% endfor %}
 
-
+                    
 
                   <button type="submit" class="btn submit-button">
                     Submit Comment
@@ -220,12 +221,10 @@
                 </div>
               </form>
             </div>
-          </div>
-          {% endif %}
           
           <div class="d-flex justify-content-center mt-2 mb-2">
-            <a href="{{ previous_url }}" class="btn link-button mb-3"
-              >Back</a
+            <a href="{% url 'all_recipes' %}" class="btn link-button mb-3"
+              >View All Recipes</a
             >
           </div>
         </div>
@@ -234,6 +233,8 @@
   </div>
 </div>
 </div>
+
+<!--Renders the comments under a recipe-->
 <div class="container my-4 text-center mt-2">
   <button
     class="btn btn-outline-secondary mb-3"
@@ -241,7 +242,6 @@
     data-bs-toggle="collapse"
     data-bs-target="#commentCollapse"
   >
-    <!--Show Comments ({{ recipe.comments.all|length }})-->
     Show Comments ({{ recipe_comments_count }})
   </button>
   <div class="collapse" id="commentCollapse">
@@ -281,6 +281,7 @@
 
               </div>
 
+              <!--Renders only if the user is the creator of the comment-->
               {% if comment.user == user %}
               <div class="ms-2 mb-3">
               <button type="button" class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#delete-comment-{{comment.pk}}">
@@ -288,7 +289,7 @@
               </button>
             </div>
 
-              <!-- Modal -->
+              <!-- Modal to delete a normal comment-->
               <div class="modal fade" id="delete-comment-{{comment.pk}}" tabindex="-1" aria-labelledby="deleteComment" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -301,11 +302,8 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-sm btn-secondary delete-button" data-bs-dismiss="modal">Close</button>
-                      <form action="{% url 'handle_comments' recipe.pk %}"  method="post" class="ms-2">
+                      <form action="{% url 'delete_comment' recipe.pk comment.pk%}"  method="post" class="ms-2">
                         {% csrf_token %}
-                        
-                        <input type="hidden" name="form_type"  value="delete_comment_form" />
-                        <input type="hidden"  name="comment_clicked" value="{{ comment.id }}"  />
                         <button class="btn btn-sm btn-danger delete-button">
                           Delete
                         </button>
@@ -323,7 +321,7 @@
         <div class=" justify-content-end collapse" id="show-reply-box{{comment.pk}}">
 
           
-
+          <!-- Render each of a comment's replies under it-->
           <div class="row justify-content-end ">
 
               {% for reply in comment.replies.all %}
@@ -342,14 +340,17 @@
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
                   <p class="mb-0">{{ reply.comment }}</p>
-                  {% if reply.user == user %}
+              
+              <!--Renders only if the user is the creator of a reply comment-->
+              {% if reply.user == user %}
 
+              <!--Delete button to trigger deletion modal-->
               <button type="button" class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#delete-reply-{{reply.pk}}">
                 Delete
               </button>
 
 
-              <!-- Delete Modal -->
+              <!-- Modal to delete a reply comment-->
               <div class="modal fade" id="delete-reply-{{reply.pk}}" tabindex="-1" aria-labelledby="delete-reply-{{reply.pk}}" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -362,12 +363,8 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-sm btn-secondary delete-button" data-bs-dismiss="modal">Close</button>
-                      <form action="{% url 'handle_comments' recipe.pk %}" method="post" class="ms-2">
+                      <form action="{% url 'delete_reply_comment' recipe.pk comment.pk reply.pk%}" method="post" class="ms-2">
                         {% csrf_token %}
-          
-                        <input type="hidden" name="form_type" value="delete_reply_form" />
-                        <input type="hidden" name="parent_comment"value="{{ comment.id }}"/>
-                        <input type="hidden" name="reply_clicked" value="{{ reply.id }}"/>
                         <button class="btn btn-sm btn-danger delete-button">
                           Delete
                         </button>
@@ -386,23 +383,14 @@
 
             
           </div>
+          <!--Render the form to create a new reply comment-->
           <div class="row ms-2">
-              <form action="{% url 'handle_comments' recipe.pk %}"
+              <form action="{% url 'add_reply_comment' recipe.pk comment.pk %}"
                 method="post"
                 class="ms-2 " id="reply-box{{comment.pk}}" >
                   {% csrf_token %}
-                  <input
-                  type="hidden"
-                  name="form_type"
-                  value="reply_comment_form"/>
-                <input
-                  type="hidden"
-                  name="parent_comment"
-                  value="{{ comment.id }}"/>
-
+    
                   <div class="input-group input-group-sm mb-3">
-                    <!--input type="text" name="comment_text" class="form-control" placeholder="Reply to {{comment.user}}'s comment" aria-label="reply-text" aria-describedby="basic-addon2"/-->
-
                     {% for field in form %}
                       <div class="p-2 col-11">
                         {% if form.is_bound %} 

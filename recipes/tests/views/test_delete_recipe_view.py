@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from recipes.tests.helpers import reverse_with_next
-from recipes.models import User, Recipe
+from recipes.models import User, Recipe, MethodStep
 
 class DeleteRecipeViewTestCase(TestCase):
     def setUp(self):
@@ -61,3 +61,20 @@ class DeleteRecipeViewTestCase(TestCase):
         self.client.login(username="@Janedoe", password="Password123")
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 403)
+
+    def test_recipe_deletes_method_steps(self):
+        method_step = MethodStep.objects.create(step_number="1", method_text="test_method")
+        self.recipe.method_steps.add(method_step)
+
+        before_method_steps_objects_count = MethodStep.objects.count()
+        recipe_method_step_count = self.recipe.method_steps.count()
+        response = self.client.post(self.url, follow=True)
+        after_method_steps_objects_count = MethodStep.objects.count()
+        self.assertEqual(after_method_steps_objects_count, before_method_steps_objects_count - recipe_method_step_count)
+        
+        try:
+                deleted_method_step = MethodStep.objects.get(pk=method_step.pk)
+        except MethodStep.DoesNotExist:
+            pass
+        else:
+            self.fail("Method step should've been removed after deletion")

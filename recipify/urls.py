@@ -46,10 +46,14 @@ urlpatterns = [
     path('users/<str:username>/', views.profile_page, name='user_profile'),
     path('users/<str:username>/following/', views.following_list, name="following_list"),
     path('users/<str:username>/followers/', views.followers_list, name="followers_list"),
-    path('recipe/<int:recipe_id>/comment', views.handle_comments, name='handle_comments'),
+    path('recipe/<int:recipe_id>/comment', views.handle_add_comment, name='add_comment'),
+    path('recipe/<int:recipe_id>/comment/<comment_id>/delete_comment', views.handle_delete_comment, name='delete_comment'),
+    path('recipe/<int:recipe_id>/comment/<parent_comment_id>/reply', views.handle_add_reply_comment, name='add_reply_comment'),
+    path('recipe/<int:recipe_id>/comment/<parent_comment_id>/delete_reply_comment/<reply_comment_id>', views.handle_delete_reply_comment, name='delete_reply_comment'),
     path('create_recipe/<int:recipe_id>/add_method/', views.add_method, name='add_method'),
     path('create_recipe/<int:recipe_id>/add_method/<int:step_id>/edit_method_step', views.edit_method_step, name='edit_method_step'),
     path('manage_recipe_ingredient/specify_ingredient/', views.create_ingredient, name='specify_ingredient'),
+    path('create_recipe/<int:recipe_id>/add_method/<int:step_id>/delete_method_step', views.delete_method_step, name='delete_method_step'),
     path('manage_recipe_ingredient/<int:recipe_id>/', views.manage_recipe_ingredient, name='manage_recipe_ingredient'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
