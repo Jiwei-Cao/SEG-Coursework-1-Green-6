@@ -102,6 +102,14 @@ class FollowUserViewTestCase(TestCase):
 
         self.assertEqual(response.url, reverse("user_profile", args=[self.user1.username]))
 
+    def test_cant_follow_self(self):
+        url = reverse("follow_user", args=[self.user.id])
+
+        response = self.client.post(url)
+
+        self.assertNotIn(self.user, self.user.following.all())
+        self.assertEqual(response.url, reverse("user_profile", args=[self.user.username]))
+
 class UnfollowUserViewTestCase(TestCase):
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
@@ -138,6 +146,17 @@ class UnfollowUserViewTestCase(TestCase):
         self.assertNotIn(self.user1, self.user.following.all())
 
         self.assertEqual(response.url, reverse("user_profile", args=[self.user1.username]))
+
+    def test_cant_unfollow(self):
+        self.user.following.add(self.user)
+        before = set(self.user.following.all())
+
+        url = reverse("unfollow_user", args=[self.user.id])
+        response = self.client.post(url)
+
+        after = set(self.user.following.all())
+        self.assertEqual(before, after)
+        self.assertEqual(response.url, reverse("user_profile", args=[self.user.username]))
 
 class GetFollowerSummaryTestCase(TestCase):
     fixtures = [
