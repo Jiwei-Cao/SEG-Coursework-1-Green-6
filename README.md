@@ -12,7 +12,7 @@ The members of the team are:
 The project is called `recipify`.  It currently consists of a single app `recipes`.
 
 ## Deployed version of the application
-The deployed version of the application can be found at [*enter url here*](*enter_url_here*).
+The deployed version of the application can be found at [*https://k23150615.pythonanywhere.com*](https://k23150615.pythonanywhere.com).
 
 ## Installation instructions
 To install the software and use it in your local development environment, you must first set up and activate a local development environment.  The project source code has been developed using Python 3.12, so you are recommended to use the same version.  From the root of the project:

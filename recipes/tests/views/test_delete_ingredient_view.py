@@ -10,7 +10,6 @@ class DeleteIngredientViewTestCase(TestCase):
             'recipes/tests/fixtures/default_units.json',
             'recipes/tests/fixtures/default_user_ingredients.json',
             'recipes/tests/fixtures/default_ingredients.json',
-            'recipes/tests/fixtures/default_tags.json'
               ]
     
     def setUp(self):

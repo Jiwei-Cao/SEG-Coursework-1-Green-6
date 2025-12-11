@@ -27,7 +27,7 @@ class IngredientFormTestCase(TestCase):
         self.assertIn('category', form.fields)
 
         self.assertTrue(isinstance(form.fields['name'], forms.CharField))
-        self.assertTrue(isinstance(form.fields['category'], forms.CharField))
+        self.assertTrue(isinstance(form.fields['category'], forms.TypedChoiceField)) #
 
     def test_valid_ingredient_form(self):
             form = IngredientForm(data=self.form_input)

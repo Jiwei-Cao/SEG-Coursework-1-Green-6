@@ -9,7 +9,6 @@ class CreateIngredientViewTest(TestCase):
         'recipes/tests/fixtures/default_user.json',
         'recipes/tests/fixtures/other_users.json',
         'recipes/tests/fixtures/default_ingredients.json',
-        'recipes/tests/fixtures/default_tags.json'
     ]
     def setUp(self):
         self.url = reverse('specify_ingredient')

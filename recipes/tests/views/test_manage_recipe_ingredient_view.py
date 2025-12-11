@@ -11,7 +11,6 @@ class ManageRecipeIngredientFormTestCase(TestCase):
               'recipes/tests/fixtures/default_units.json',
               'recipes/tests/fixtures/default_recipe.json',
               'recipes/tests/fixtures/default_ingredients.json',
-              'recipes/tests/fixtures/default_tags.json'
               ]
     
     def setUp(self):
@@ -64,20 +63,51 @@ class ManageRecipeIngredientFormTestCase(TestCase):
         self.assertRedirects(response, expected_url)
         self.assertRedirects(response, expected_url, status_code=302, target_status_code=200)
 
-    def test_delete_recipe_ingredient(self):
+    def test_invalid_formset_post(self):
         before_count = RecipeIngredient.objects.count()
         forms = []
         for recipe_ingredient in RecipeIngredient.objects.all():
             form = {
-                "id": recipe_ingredient.pk,
+                "id": '',
                 "quantity": str(recipe_ingredient.quantity),
                 "unit": recipe_ingredient.unit.id,
                 "ingredient": recipe_ingredient.ingredient.id,
             }
             forms.append(form)
-        del forms[0]    
-        delete_url = reverse("manage_recipe_ingredient", args=[self.recipe.id])
-        response = self.client.post(delete_url, forms, follow=True)
+        additional_form = {"id": "", "ingredient": 3, "quantity": 0.10, "unit": 1}
+        forms.append(additional_form)
+        payload = self.build_formset_data(forms=forms)
+        response = self.client.post(self.url, payload, follow=True)
+        after_count = RecipeIngredient.objects.count()
+        self.assertEqual(after_count, before_count)
+        self.assertTemplateUsed(response, 'create_recipe_ingredient.html')
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_recipe_ingredient(self):
+        before_count = RecipeIngredient.objects.count()
+        forms = []
+        count = 0
+        for recipe_ingredient in RecipeIngredient.objects.all():
+            if count == 0:
+                form = {
+                    "id": recipe_ingredient.pk,
+                    "quantity": str(recipe_ingredient.quantity),
+                    "unit": recipe_ingredient.unit.id,
+                    "ingredient": recipe_ingredient.ingredient.id,
+                    "DELETE": "ON"
+                }
+            else:
+                form = {
+                    "id": recipe_ingredient.pk,
+                    "quantity": str(recipe_ingredient.quantity),
+                    "unit": recipe_ingredient.unit.id,
+                    "ingredient": recipe_ingredient.ingredient.id,
+                }
+            count = count + 1
+            forms.append(form)
+
+        payload = self.build_formset_data(forms=forms)
+        response = self.client.post(self.url, payload, follow=True)
         after_count = RecipeIngredient.objects.count()
         self.assertEqual(after_count, before_count-1)
         expected_url = reverse('manage_recipe_ingredient', args=[self.recipe.id])
