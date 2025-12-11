@@ -12,14 +12,14 @@
         <div class = "d-flex gap-3 mb-1">
           <span> <span class = "fw-bold">{{recipes|length}} </span>recipes</span>
           {% if follower_count != 0 %}
-          <a href="{% url 'followers_list' user.username %}" class="inherit-color" style="color: inherit !important">
+          <a href="{% url 'followers_list' user.username %}" class="inherit-color">
             <span class = "fw-bold"> {{ follower_count }}</span> followers
           </a>
           {% else %}
           <span><span class = "fw-bold"> {{ follower_count }}</span> followers</span>
           {% endif %}
           {% if following_count != 0 %}
-          <a href="{% url 'following_list' user.username %}" class="inherit-color" style="color: inherit !important">
+          <a href="{% url 'following_list' user.username %}" class="inherit-color"
             <span class = "fw-bold">{{ following_count }}</span> following
           </a>
           {% else %}
