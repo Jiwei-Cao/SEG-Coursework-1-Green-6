@@ -53,7 +53,7 @@ urlpatterns = [
     path('create_recipe/<int:recipe_id>/add_method/', views.add_method, name='add_method'),
     path('create_recipe/<int:recipe_id>/add_method/<int:step_id>/edit_method_step', views.edit_method_step, name='edit_method_step'),
     path('manage_recipe_ingredient/specify_ingredient/', views.create_ingredient, name='specify_ingredient'),
-    path('create_recipe/<int:recipe_id>/add_method/<int:step_id>/delete_method_step', views.delete_method_step, name='delete_method_step'),
+    path('create_recipe/<int:recipe_id>/add_method/<int:step_id>/delete_method_step', views.handle_delete_method_step, name='delete_method_step'),
     path('manage_recipe_ingredient/<int:recipe_id>/', views.manage_recipe_ingredient, name='manage_recipe_ingredient'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

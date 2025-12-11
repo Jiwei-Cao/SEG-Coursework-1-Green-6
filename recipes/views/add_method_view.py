@@ -4,8 +4,9 @@ from django.contrib.auth.decorators import login_required
 from recipes.forms import MethodStepForm
 from recipes.models import Recipe
 
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden
 from django.urls import reverse
+from django.core.exceptions import ValidationError 
 
 
 @login_required
@@ -13,6 +14,9 @@ def add_method(request, recipe_id):
 	"""Show the method-step editor for a recipe and handle the POST actions."""
 
 	recipe = get_object_or_404(Recipe, id=recipe_id)
+
+	if request.user != recipe.user:
+		return HttpResponseForbidden("You are not authorised to view this method")
 
 	if request.method == "POST":
 		return handle_create_method_step(request, recipe)
@@ -35,7 +39,10 @@ def handle_create_method_step(request, recipe):
 	if invalid_response is not None:
 		return invalid_response
 
-	create_step_from_form(form, recipe)
+	response = create_step_from_form(request, form, recipe) 
+	if response:
+		return response
+
 		
 	return HttpResponseRedirect(request.path_info)
 
@@ -56,16 +63,32 @@ def update_last_number(last_step):
 	
 	return 1
 
-def create_step_from_form(form, recipe):
+#def create_step_from_form(form, recipe):
 	"""Save a new method step and attach it to the recipe."""
-	try:
+	'''try:
 		method_step = form.save(commit=False)
 		last_step = recipe.method_steps.order_by('-step_number').first()
 		next_number = update_last_number(last_step)	
 		method_step.step_number = next_number
+
 		method_step.save()
 		recipe.method_steps.add(method_step)
 	except Exception:
-		raise Http404("Couldn't create method step.")
+		raise Http404("Couldn't create method step.")'''
+
+def create_step_from_form(request, form, recipe):
+	"""Save a new method step and attach it to the recipe."""
+	try: 
+		method_step = form.save(commit=False)
+		last_step = recipe.method_steps.order_by('-step_number').first()
+		next_number = update_last_number(last_step)	
+		method_step.step_number = next_number
+		method_step.full_clean()
+		method_step.save()
+		recipe.method_steps.add(method_step)
+	except ValidationError:
+		return HttpResponseForbidden("Maximum number of steps exceeded. Methods can only have up to 20 steps.")
+	#except Exception:
+		#raise Http404("Couldn't create method step.")
 
 
