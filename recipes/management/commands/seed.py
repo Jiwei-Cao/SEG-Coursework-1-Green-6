@@ -7,14 +7,13 @@ are left untouched—if a create fails (e.g., due to duplicates), the error
 is swallowed and generation continues.
 """
 
-
-
 from faker import Faker
 from faker.providers import company
 from faker_food import FoodProvider
 from random import randint, random
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User, Tag, MethodStep, Recipe
+from recipes.models import User, Tag, MethodStep, Recipe, RecipeIngredient, Ingredient, Unit
+from recipes.logic.classification import classify_recipe
 
 
 user_fixtures = [
@@ -74,7 +73,12 @@ class Command(BaseCommand):
         self.users = User.objects.all()
         self.create_tags()
         self.create_recipes()
+        self.create_units()
+        self.create_ingredients()
+        self.create_recipeingredients()
 
+    def add_arguments(self, parser):
+        parser.add_argument('flag', type=str, nargs='?', default='retain')
 
     def create_users(self):
         """
@@ -87,10 +91,6 @@ class Command(BaseCommand):
         self.generate_user_fixtures()
         self.generate_random_users()
 
-    # def make_john_doe_admin(self):
-    #     self.client.login(username='@newadmin', password='Password1234test')
-
-    
 
     def generate_user_fixtures(self):
         """Attempt to create each predefined fixture user."""
@@ -191,7 +191,102 @@ class Command(BaseCommand):
             method_text = f"Add {self.faker.measurement()} {self.faker.ingredient()}."
             method_steps.append(MethodStep.objects.create(method_text=method_text, step_number=i))
         return method_steps
+    
+    def create_units(self):
+        # users = self.users
+        # for end_user in users:
+        end_user = User.objects.get(username='@johndoe')
+        Unit.objects.create(name='kilograms', symbol='kgs', user=end_user)
+        Unit.objects.create(name='pounds', symbol='lbs', user=end_user)
+        Unit.objects.create(name='teaspoons', symbol='tsps', user=end_user)
+        Unit.objects.create(name='tablespoons', symbol='tbsps', user=end_user)
+        Unit.objects.create(name='litres', symbol='ltrs', user=end_user)
+        Unit.objects.create(name='millilitres', symbol='mls', user=end_user)
+        Unit.objects.create(name='grams', symbol='gs', user=end_user)
+        Unit.objects.create(name='units', symbol='units', user=end_user)
+
+    def create_ingredients(self):
+        # users = self.users
+        # for end_user in users:
+        end_user = User.objects.get(username='@johndoe')
+        # Ingredients
+        Ingredient.objects.create(name='beef', category=Ingredient.BUTCHERY, user=end_user)
+        Ingredient.objects.create(name='potato', category=Ingredient.VEGETABLE, user=end_user)
+        Ingredient.objects.create(name='rice', category=Ingredient.GRAINS, user=end_user)
+        Ingredient.objects.create(name='chicken', category=Ingredient.BUTCHERY, user=end_user)
+        Ingredient.objects.create(name='pork', category=Ingredient.BUTCHERY, user=end_user)
+        Ingredient.objects.create(name='lamb', category=Ingredient.BUTCHERY, user=end_user)
+        Ingredient.objects.create(name='onions', category=Ingredient.ALLUM, user=end_user)
+        Ingredient.objects.create(name='garlic', category=Ingredient.ALLUM, user=end_user)
+        Ingredient.objects.create(name='flour',category=Ingredient.MINERALS, user=end_user)
+        Ingredient.objects.create(name='salt', category=Ingredient.MINERALS, user=end_user)
+        Ingredient.objects.create(name='sugar', category=Ingredient.MINERALS, user=end_user)
+        Ingredient.objects.create(name='pepper', category=Ingredient.SPICE, user=end_user)
+        Ingredient.objects.create(name='cinnamon', category=Ingredient.SPICE, user=end_user)
+        Ingredient.objects.create(name='pistachio', category=Ingredient.NUT, user=end_user)
+        Ingredient.objects.create(name='almond', category=Ingredient.NUT, user=end_user)
+        Ingredient.objects.create(name='lentil', category=Ingredient.PULSES, user=end_user)
+        Ingredient.objects.create(name='water', category=Ingredient.WATER, user=end_user)
+        Ingredient.objects.create(name='milk', category=Ingredient.DAIRY, user=end_user)
+        Ingredient.objects.create(name='tomato', category=Ingredient.VEGETABLE, user=end_user)
+        Ingredient.objects.create(name='carrot', category=Ingredient.VEGETABLE, user=end_user)
+        Ingredient.objects.create(name='celery', category=Ingredient.VEGETABLE, user=end_user) 
+        Ingredient.objects.create(name='bell pepper', category=Ingredient.VEGETABLE, user=end_user) 
+        Ingredient.objects.create(name='mushroom', category=Ingredient.VEGETABLE, user=end_user)
+        Ingredient.objects.create(name='spinach', category=Ingredient.VEGETABLE, user=end_user) 
+        Ingredient.objects.create(name='courgette', category=Ingredient.VEGETABLE, user=end_user) 
+        Ingredient.objects.create(name='aubergine', category=Ingredient.VEGETABLE, user=end_user) 
+        Ingredient.objects.create(name='shallot', category=Ingredient.ALLUM, user=end_user)
+        Ingredient.objects.create(name='leek', category=Ingredient.ALLUM, user=end_user) 
+        Ingredient.objects.create(name='basil', category=Ingredient.HERBS, user=end_user) 
+        Ingredient.objects.create(name='parsley', category=Ingredient.HERBS, user=end_user)
+        Ingredient.objects.create(name='coriander', category=Ingredient.HERBS, user=end_user)
+        Ingredient.objects.create(name='thyme', category=Ingredient.HERBS, user=end_user)
+        Ingredient.objects.create(name='rosemary', category=Ingredient.HERBS, user=end_user)
+        Ingredient.objects.create(name='dill', category=Ingredient.HERBS, user=end_user) 
+        Ingredient.objects.create(name='cumin', category=Ingredient.SPICE, user=end_user) 
+        Ingredient.objects.create(name='turmeric', category=Ingredient.SPICE, user=end_user) 
+        Ingredient.objects.create(name='paprika', category=Ingredient.SPICE, user=end_user) 
+        Ingredient.objects.create(name='chili powder', category=Ingredient.SPICE, user=end_user) 
+        Ingredient.objects.create(name='nutmeg', category=Ingredient.SPICE, user=end_user) 
+        Ingredient.objects.create(name='cardamom', category=Ingredient.SPICE, user=end_user) 
+        Ingredient.objects.create(name='salmon', category=Ingredient.SEAFOOD, user=end_user) 
+        Ingredient.objects.create(name='shrimp', category=Ingredient.SEAFOOD, user=end_user) 
+        Ingredient.objects.create(name='tuna', category=Ingredient.SEAFOOD, user=end_user) 
+        Ingredient.objects.create(name='egg', category=Ingredient.EGG, user=end_user) 
+        Ingredient.objects.create(name='butter', category=Ingredient.DAIRY, user=end_user) 
+        Ingredient.objects.create(name='cream', category=Ingredient.DAIRY, user=end_user) 
+        Ingredient.objects.create(name='yogurt', category=Ingredient.DAIRY, user=end_user) 
+        Ingredient.objects.create(name='cheese', category=Ingredient.DAIRY, user=end_user) 
+        Ingredient.objects.create(name='pasta', category=Ingredient.GLUTEN, user=end_user) 
+        Ingredient.objects.create(name='bread', category=Ingredient.GLUTEN, user=end_user) 
+        Ingredient.objects.create(name='quinoa', category=Ingredient.GRAINS, user=end_user) 
+        Ingredient.objects.create(name='chickpeas', category=Ingredient.PULSES, user=end_user) 
+        Ingredient.objects.create(name='beans', category=Ingredient.PULSES, user=end_user) 
+        Ingredient.objects.create(name='baking powder', category=Ingredient.MINERALS, user=end_user) 
+        Ingredient.objects.create(name='baking soda', category=Ingredient.MINERALS, user=end_user) 
+        Ingredient.objects.create(name='strawberry', category=Ingredient.FRUIT, user=end_user) 
+        Ingredient.objects.create(name='banana', category=Ingredient.FRUIT, user=end_user) 
+        Ingredient.objects.create(name='lemon', category=Ingredient.FRUIT, user=end_user) 
+        Ingredient.objects.create(name='orange', category=Ingredient.FRUIT, user=end_user) 
+        Ingredient.objects.create(name='apple', category=Ingredient.FRUIT, user=end_user) 
+        Ingredient.objects.create(name='blueberry', category=Ingredient.FRUIT, user=end_user) 
+        Ingredient.objects.create(name='honey', category=Ingredient.MINERALS, user=end_user) 
+        Ingredient.objects.create(name='maple syrup', category=Ingredient.MINERALS, user=end_user) 
+        Ingredient.objects.create(name='chocolate', category=Ingredient.MINERALS, user=end_user) 
+        Ingredient.objects.create(name='cocoa powder', category=Ingredient.SPICE, user=end_user) 
+        Ingredient.objects.create(name='vanilla', category=Ingredient.SPICE, user=end_user) 
                 
+    def create_recipeingredients(self):
+        for recipe in Recipe.objects.all():
+            end_user = User.objects.get(username='@johndoe')
+            data={}
+            data["user"] = end_user
+            data["recipe"] = recipe
+            data["quantity"] = 3
+            data["unit"] = Unit.objects.get(pk=1)
+            data["ingredient"] = Ingredient.objects.get(pk=2)
+            create_recipeingredient(data)
 
 def create_username(first_name, last_name):
     """
@@ -227,3 +322,12 @@ def create_recipe(data):
         )
     recipe.tags.set(data["tags"])
     recipe.method_steps.set(data["method"])
+
+def create_recipeingredient(data):
+    RecipeIngredient.objects.create(
+        user = data["user"],
+        recipe = data["recipe"],
+        quantity = data["quantity"],
+        unit = data["unit"],
+        ingredient = data["ingredient"]
+    )    
