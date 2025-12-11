@@ -76,20 +76,6 @@
     This user hasn't added any recipes yet.</p>
     {% endif %}
   {% else %}
-  <section class="mb-5">
-    <div
-      class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
-      ref="recipeGrid"
-    >
-      {% for recipe in recipes %}
-      <div class="col-md-4">
-        {% include "partials/recipe_card.html" with recipe=recipe showBadge=True%}
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </section>
-
   {% if user == request.user %}
   <section class="mb-5">
     <h2>
@@ -120,5 +106,18 @@
     </div>
   </section>
   {% endif %}
+  <section class="mb-5">
+    <div
+      class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
+      ref="recipeGrid"
+    >
+      {% for recipe in recipes %}
+      <div class="col-md-4">
+        {% include "partials/recipe_card.html" with recipe=recipe showBadge=True%}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
 </div>
 {% endblock %}
