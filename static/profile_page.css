@@ -1,0 +1,58 @@
+.follow-button, .unfollow-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.follow-button{
+    background-color: #dae5ebf2;
+}
+
+.unfollow-button{
+  background-color: #cccccce1;
+}
+
+.follow-button:hover, .unfollow-button:hover{
+    transform: scale(1.05);
+}
+
+.pfp {
+   border-radius: 50%;
+   width: 150px;
+   height: 150px;
+}
+
+.inherit-color{
+  color:inherit !important;
+}
+
+.icon-tabs .nav-link {
+  padding: 12px 20px;
+  border: none;
+  color: #777;
+  font-size: 1.4rem; 
+}
+
+.icon-tabs .nav-link.active {
+  color: #444444;
+  position: relative;
+}
+
+.icon-tabs .nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #444444;
+  margin: 0 auto;
+  width: 50%;
+}
+
+.icon-tabs .nav-item {
+  margin: 0 20px; 
+}

@@ -2,16 +2,7 @@
 {% block content %}
 {% load widget_tweaks %}
 {{ form.media.css }}
-<style>
-  @media screen and (max-width: 768px) {
-    .container{
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-}
-
-</style>
-<div class="container px-3 px-md-0">
+<div class="container all_recipe_container px-3 px-md-0">
   <div class="row mb-3">
     <h1>Recipes</h1>
     <div class="row">
@@ -31,13 +22,13 @@
         </div>
 
         <div class="row mb-3">
-          <div class="col-md-3">
+          <div class="col-md-3 me-sm-2 mb-2 mb-sm-0">
             {% render_field form.tags class="form-control" %}
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 me-sm-2 mb-2 mb-sm-0">
             {% render_field form.ingredients class="form-control" %}
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 me-sm-2 mb-2 mb-sm-0">
             {% render_field form.order_by class="form-control" %}
           </div>
         </div>

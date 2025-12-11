@@ -1,10 +1,5 @@
 {% extends 'base_content.html' %} 
 {% block content %}
-<style>
-  .followers-exclusive-badge {
-  background: linear-gradient(145deg, #fad59d, #f1c5d7);
-}
-</style>
 <div class="container py-5">
   <div class="row text-center mb-3">
     <div class="rounded-4 mb-4 text-center hero-section">
@@ -34,7 +29,7 @@
               alt="{{recipe.title}}"
             />
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title" style="text-transform: uppercase">
+              <h5 class="card-title recipe_title_dashboard">
                 {{recipe.title}}
               </h5>
               <div class="d-flex flex-wrap gap-2 justify-content-center px-2 mb-3">

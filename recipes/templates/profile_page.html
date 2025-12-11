@@ -1,12 +1,5 @@
 {% extends 'base_content.html' %} 
 {% block content %}
-<style>
-  .pfp {
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-  }
-</style>
 <div class="container">
   <section class="mb-4 border-bottom border-1 border-dark">
     <div class="row align-items-center">
@@ -19,14 +12,14 @@
         <div class = "d-flex gap-3 mb-1">
           <span> <span class = "fw-bold">{{recipes|length}} </span>recipes</span>
           {% if follower_count != 0 %}
-          <a href="{% url 'followers_list' user.username %}" style="color: inherit;">
+          <a href="{% url 'followers_list' user.username %}" class="inherit-color" style="color: inherit !important">
             <span class = "fw-bold"> {{ follower_count }}</span> followers
           </a>
           {% else %}
           <span><span class = "fw-bold"> {{ follower_count }}</span> followers</span>
           {% endif %}
           {% if following_count != 0 %}
-          <a href="{% url 'following_list' user.username %}" style="color: inherit;">
+          <a href="{% url 'following_list' user.username %}" class="inherit-color" style="color: inherit !important">
             <span class = "fw-bold">{{ following_count }}</span> following
           </a>
           {% else %}
@@ -69,56 +62,47 @@
       <p>{{ user.bio }}</p>
     </div>
   </section>
-  {%if recipes|length == 0 %}
-  <p class="text-muted">
-    {% if user == request.user %} You haven't created any recipes yet. 
-    {% else %}
-    This user hasn't added any recipes yet.</p>
-    {% endif %}
-  {% else %}
-  <section class="mb-5">
-    <div
-      class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
-      ref="recipeGrid"
-    >
-      {% for recipe in recipes %}
-      <div class="col-md-4">
-        {% include "partials/recipe_card.html" with recipe=recipe showBadge=True%}
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </section>
+  <ul class="nav nav-tabs justify-content-center border-0 icon-tabs" id="profileTabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#created">
+        <i class="bi bi-grid-fill"></i>
+      </a>
+    </li>
 
-  {% if user == request.user %}
-  <section class="mb-5">
-    <h2>
-      <button
-        class="btn btn-secondary"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#favouritesCollapse"
-        aria-expanded="false"
-        aria-controls="favouritesCollapse"
-      >
-        Show Favourites
-      </button>
-    </h2>
-
-    <div class="collapse mt-3" id="favouritesCollapse">
-      {% if user.recipes_favourited.all %}
-      <div class="row g-3">
-        {% for recipe in user.recipes_favourited.all %}
-        <div class="col-4">
-          {% include "partials/recipe_card.html" with recipe=recipe showBadge=False%}
-        </div>
+    {% if user == request.user %}
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#favourites">
+        <i class="bi bi-heart"></i>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+  <div class="tab-content mt-3 mb-3">
+    <div class="tab-pane fade show active" id="created">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
+        {% for recipe in recipes %}
+          <div class="col">
+            {% include "partials/recipe_card.html" with recipe=recipe showBadge=True %}
+          </div>
+        {% empty %}
+          <p class="text-muted text-center mt-4 justify-content-center">No recipes yet.</p>
         {% endfor %}
       </div>
-      {% else %}
-      <p class="text-muted">You haven’t favourited any recipes yet.</p>
-      {% endif %}
     </div>
-  </section>
-  {% endif %}
+
+    {% if user == request.user %}
+    <div class="tab-pane fade" id="favourites">
+      <div class="row row-cols-2 row-cols-md-4 g-1 justify-content-center">
+        {% for recipe in user.recipes_favourited.all %}
+          <div class="col">
+            {% include "partials/recipe_card.html" with recipe=recipe showBadge=False %}
+          </div>
+        {% empty %}
+          <p class="text-muted text-center mt-4 justify-content-center">You haven’t favourited anything yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
