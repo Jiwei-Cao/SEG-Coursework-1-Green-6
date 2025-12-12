@@ -17,7 +17,7 @@ from recipes.logic.classification import classify_recipe
 
 
 user_fixtures = [
-    #{'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
+    {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
     {'username': '@janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe'},
     {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
 ]
@@ -193,8 +193,6 @@ class Command(BaseCommand):
         return method_steps
     
     def create_units(self):
-        # users = self.users
-        # for end_user in users:
         end_user = User.objects.get(username='@johndoe')
         Unit.objects.create(name='kilograms', symbol='kgs', user=end_user)
         Unit.objects.create(name='pounds', symbol='lbs', user=end_user)
@@ -206,8 +204,6 @@ class Command(BaseCommand):
         Unit.objects.create(name='units', symbol='units', user=end_user)
 
     def create_ingredients(self):
-        # users = self.users
-        # for end_user in users:
         end_user = User.objects.get(username='@johndoe')
         # Ingredients
         Ingredient.objects.create(name='beef', category=Ingredient.BUTCHERY, user=end_user)
