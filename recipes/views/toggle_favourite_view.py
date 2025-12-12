@@ -1,9 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 
 from django.http import HttpResponseRedirect
-from django.urls import reverse
 from recipes.models import Recipe
 
 @login_required

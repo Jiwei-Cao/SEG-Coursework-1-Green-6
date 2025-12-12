@@ -16,8 +16,6 @@ class RecipeFormTestCase(TestCase):
         self.form_input = {
             'title': 'Pasta Bolognese',
             'description': 'A simple pasta recipe',
-            # 'ingredients': 'Pasta\nTomato sauce\nBeef mince',
-            # 'method': 'Boil pasta.\nCook beef.\nMix with sauce.'
             'public': True
             
         }
@@ -26,14 +24,10 @@ class RecipeFormTestCase(TestCase):
         form = RecipeForm()
         self.assertIn('title', form.fields)
         self.assertIn('description', form.fields)
-        # self.assertIn('ingredients', form.fields)
-        # self.assertIn('method', form.fields)
         self.assertIn('public', form.fields)
 
         self.assertTrue(isinstance(form.fields['title'], forms.CharField))
         self.assertTrue(isinstance(form.fields['description'], forms.CharField))
-        # self.assertTrue(isinstance(form.fields['ingredients'], forms.CharField))
-        # self.assertTrue(isinstance(form.fields['method'], forms.CharField))
         self.assertTrue(isinstance(form.fields['public'], forms.BooleanField))
 
     def test_valid_recipe_form(self): 
@@ -59,12 +53,4 @@ class RecipeFormTestCase(TestCase):
         recipe.refresh_from_db()
         self.assertEqual(recipe.title, 'Pasta Bolognese')
         self.assertEqual(recipe.description, 'A simple pasta recipe')
-        # self.assertEqual(
-        #     recipe.ingredients,
-        #     'Pasta\nTomato sauce\nBeef mince'
-        # )
-        # self.assertEqual(
-        #     recipe.method,
-        #     'Boil pasta.\nCook beef.\nMix with sauce.'
-        # )
         self.assertTrue(recipe.public)

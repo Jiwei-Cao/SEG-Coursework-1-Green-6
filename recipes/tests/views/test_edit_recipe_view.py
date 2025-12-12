@@ -1,5 +1,4 @@
 """Tests for the edit_recipe view."""
-from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
 from django.urls import reverse

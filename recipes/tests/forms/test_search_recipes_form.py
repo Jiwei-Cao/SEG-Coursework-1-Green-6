@@ -16,14 +16,12 @@ class SearchRecipesFormTestCase(TestCase):
                 "search_field" : "test_search",
                 "tags" : self.tag1,
                 "order_by" : ("-created_at", "Newest"),
-                # "ingredients" : "test_ingredient",
         }
 
     def test_form_has_necessary_fields(self):
         form = SearchRecipesForm()
         self.assertIn('search_field', form.fields)
         self.assertIn('tags', form.fields)
-        # self.assertIn('ingredients', form.fields)
         self.assertIn('order_by', form.fields)
 
         self.assertTrue(isinstance(form.fields['search_field'], forms.CharField))
@@ -45,12 +43,6 @@ class SearchRecipesFormTestCase(TestCase):
         form = SearchRecipesForm(data=self.form_input)
         self.assertFalse(form.is_valid())
 
-    # def test_overly_long_ingredients_field_is_invalid(self):
-    #     self.form_input['ingredients'] = 'x'*100
-    #     form = SearchRecipesForm(data=self.form_input)
-    #     self.assertFalse(form.is_valid())
-
-
     def test_blank_search_field_is_valid(self):
         self.form_input['search_field'] = ''
         form = SearchRecipesForm(data=self.form_input)
@@ -60,11 +52,6 @@ class SearchRecipesFormTestCase(TestCase):
         self.form_input['tags'] = None
         form = SearchRecipesForm(data=self.form_input)
         self.assertFalse(form.is_valid())
-
-    # def test_blank_ingredients_field_is_valid(self):
-    #     self.form_input['ingredients'] = ''
-    #     form = SearchRecipesForm(data=self.form_input)
-    #     self.assertFalse(form.is_valid())
 
     def test_blank_order_by_field_is_valid(self):
         self.form_input['order_by'] = ''

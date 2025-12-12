@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from recipes.models import Recipe, User, RecipeIngredient, Unit, Ingredient
-from recipes.forms import RecipeIngredientFormSet
 
 class ManageRecipeIngredientFormTestCase(TestCase):
 
