@@ -2,12 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from ..models import Recipe, Comment
 from ..forms import CommentForm
-
-from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
-
+from django.http import HttpResponseRedirect, Http404
 import datetime
 from django.utils.timezone import make_aware
-
 from django.urls import reverse
 
 @login_required
@@ -33,7 +30,6 @@ def create_comment(request, recipe_id, form):
 		recipe.comments.add(comment)
 	except:
 		raise Http404("Could not create comment")
-
 
 @login_required
 def handle_delete_comment(request, recipe_id, comment_id):
@@ -69,7 +65,6 @@ def handle_add_reply_comment(request, recipe_id, parent_comment_id):
 	recipe = get_object_or_404(Recipe, id=recipe_id)
 	if request.method == "POST":
 		handle_create_reply_post(request, parent_comment_id)
-
 	return redirect_to_specific_recipe_page(recipe.pk)
 
 
@@ -86,7 +81,6 @@ def create_reply_comment(request, parent_comment_id, form):
 		reply = Comment(user=request.user, comment=form.cleaned_data['comment'], date_published=make_aware(datetime.datetime.now()))
 		reply.save()
 		parent_comment.replies.add(reply)
-		
 	except:
 		raise Http404(f"Could not create reply comment")
 
@@ -97,7 +91,6 @@ def handle_delete_reply_comment(request, recipe_id, parent_comment_id, reply_com
 	''' Call method to delete a reply comment '''
 	if request.method == "POST":
 		delete_reply_comment(request, recipe_id, parent_comment_id, reply_comment_id)
-
 	return redirect_to_specific_recipe_page(recipe_id)
 	
 
@@ -111,7 +104,6 @@ def delete_reply_comment(request, recipe_id, parent_comment_id, reply_comment_id
 		parent_comment.replies.remove(reply)
 	except:
 		raise Http404(f"Could not delete reply comment")
-
 	else:
 		reply.delete()
 

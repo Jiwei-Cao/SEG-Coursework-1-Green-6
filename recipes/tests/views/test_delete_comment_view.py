@@ -17,11 +17,9 @@ class DeleteCommentViewTestCase(TestCase):
 	def setUp(self):
 		self.user = User.objects.get(username='@johndoe')
 		self.client.login(username=self.user.username, password='Password123')
-		
 		self.recipe1 =  Recipe.objects.create(user=self.user, title="123",description="123")
 		self.test_comment = Comment.objects.create(user=self.user, comment="test comment", date_published=make_aware(datetime.datetime(2025,4,1)))
 		self.recipe1.comments.add(self.test_comment)
-
 		self.url = reverse("delete_comment", kwargs={'recipe_id': self.recipe1.pk, 'comment_id': self.test_comment.pk})
 
 
@@ -50,22 +48,14 @@ class DeleteCommentViewTestCase(TestCase):
 		response = self.client.post(self.url, follow=True)
 		after_comment_objects_count = Comment.objects.count()
 		after_recipe_comments_count = self.recipe1.comments.all().count()
-
 		self.assertEqual(after_comment_objects_count, before_comment_objects_count-1)
 		self.assertEqual(after_recipe_comments_count, before_recipe_comments_count-1)
-
 		expected_redirect_url = reverse("get_recipe",  kwargs={"recipe_id": f"{self.recipe1.pk}"})
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
 		try:
 				deleted_comment = Comment.objects.get(pk=self.test_comment.pk)
-		except Comment.DoesNotExist:
-			pass
-		else:
-			self.fail("Comment should've been removed after deletion")
-
-		try:
-			deleted_recipe_comment = self.recipe1.comments.get(pk=self.test_comment.pk)
+				deleted_recipe_comment = self.recipe1.comments.get(pk=self.test_comment.pk)
 		except Comment.DoesNotExist:
 			pass
 		else:
@@ -76,15 +66,11 @@ class DeleteCommentViewTestCase(TestCase):
 		invalid_url = reverse('delete_comment', kwargs= {'recipe_id' : self.recipe1.pk, 'comment_id': 5})
 		before_comment_objects_count = Comment.objects.count()
 		before_recipe_comments_count = self.recipe1.comments.all().count()
-
 		response = self.client.post(invalid_url, follow=True)
-
 		after_comment_objects_count = Comment.objects.count()
 		after_recipe_comments_count = self.recipe1.comments.all().count()
-
 		self.assertEqual(after_comment_objects_count, before_comment_objects_count)
 		self.assertEqual(after_recipe_comments_count, before_recipe_comments_count)
-
 		self.assertEqual(response.status_code, 404)
 
 	def test_delete_comment_with_invalid_recipe_pk(self):
@@ -92,15 +78,11 @@ class DeleteCommentViewTestCase(TestCase):
 		invalid_url = reverse('delete_comment', kwargs= {'recipe_id' : 9, 'comment_id': self.test_comment.pk})
 		before_comment_objects_count = Comment.objects.count()
 		before_recipe_comments_count = self.recipe1.comments.all().count()
-
 		response = self.client.post(invalid_url, follow=True)
-
 		after_comment_objects_count = Comment.objects.count()
 		after_recipe_comments_count = self.recipe1.comments.all().count()
-
 		self.assertEqual(after_comment_objects_count, before_comment_objects_count)
 		self.assertEqual(after_recipe_comments_count, before_recipe_comments_count)
-
 		self.assertEqual(response.status_code, 404)
 
 	def test_delete_comment_deletes_replies(self):
@@ -116,17 +98,9 @@ class DeleteCommentViewTestCase(TestCase):
 
 		try:
 				deleted_comment = Comment.objects.get(pk=self.test_comment.pk)
-		except Comment.DoesNotExist:
-			pass
-		else:
-			self.fail("Comment should've been removed after deletion")
-
-		try:
 				deleted_reply = Comment.objects.get(pk=reply.pk)
 		except Comment.DoesNotExist:
 			pass
 		else:
-			self.fail("Reply should've been removed after deletion")
-
-
+			self.fail("Comment should've been removed after deletion")
 
