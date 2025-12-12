@@ -12,7 +12,6 @@ from django.core.exceptions import ValidationError
 @login_required
 def add_method(request, recipe_id):
 	"""Show the method-step editor for a recipe and handle the POST actions."""
-
 	recipe = get_object_or_404(Recipe, id=recipe_id)
 
 	if request.user != recipe.user:
@@ -43,7 +42,6 @@ def handle_create_method_step(request, recipe):
 	if response:
 		return response
 
-		
 	return HttpResponseRedirect(request.path_info)
 
 def check_valid_form(request, form, recipe):
@@ -63,18 +61,6 @@ def update_last_number(last_step):
 	
 	return 1
 
-#def create_step_from_form(form, recipe):
-	"""Save a new method step and attach it to the recipe."""
-	'''try:
-		method_step = form.save(commit=False)
-		last_step = recipe.method_steps.order_by('-step_number').first()
-		next_number = update_last_number(last_step)	
-		method_step.step_number = next_number
-
-		method_step.save()
-		recipe.method_steps.add(method_step)
-	except Exception:
-		raise Http404("Couldn't create method step.")'''
 
 def create_step_from_form(request, form, recipe):
 	"""Save a new method step and attach it to the recipe."""
@@ -88,7 +74,3 @@ def create_step_from_form(request, form, recipe):
 		recipe.method_steps.add(method_step)
 	except ValidationError:
 		return HttpResponseForbidden("Maximum number of steps exceeded. Methods can only have up to 20 steps.")
-	#except Exception:
-		#raise Http404("Couldn't create method step.")
-
-

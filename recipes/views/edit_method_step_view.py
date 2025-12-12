@@ -48,13 +48,7 @@ def validate_request(request, recipe, method_step):
 def handle_saving_changes_to_method_step(request, recipe, method_step, form):
 	''' Check if the edited form is valid before saving to the database'''
 	if form.is_valid():
-		#save_form(form)
 		form.save()
 		return HttpResponseRedirect( reverse('add_method', kwargs={'recipe_id':recipe.pk}) )
 
-#def save_form(form):
-	'''Save the validated form to the method step in the database'''
-#	try:
-#		form.save()
-#	except Exception:
-#		raise Http404("It wasn't possible to save this step to the database")		
+	

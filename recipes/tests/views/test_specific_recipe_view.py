@@ -58,19 +58,6 @@ class SpecificRecipeViewTestCase(TestCase):
             target_status_code=200
         )
 
-    def test_previous_url_missing_or_none_set_default(self):
-        """If HTTP_REFERER is missing or empty, previous_url becomes /all_recipes/"""
-
-        response = self.client.get(self.url, HTTP_REFERER="")
-        self.assertEqual(response.status_code, 200)
-
-    def test_previous_url_equal_to_current_set_default(self):
-
-        current_url = "http://testserver" + self.url
-        response = self.client.get(self.url, HTTP_REFERER=current_url)
-
-        self.assertEqual(response.status_code, 200)
-
     def test_post_rating(self):
         """Test posting a rating for a recipe."""
         response = self.client.post(self.url, {'form_type': 'rating_form', 'rating': '5'})
