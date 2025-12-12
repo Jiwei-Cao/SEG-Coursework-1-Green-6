@@ -46,6 +46,38 @@ class DashBoardViewTestCase(TestCase):
         self.assertRedirects(response, login_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'log_in.html')
 
+    def test_dashboard_with_no_recipes(self):
+        Recipe.objects.all().delete()
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["rated_recipes"]),0)
+
+    def test_no_unrated_recipes_displayed(self):
+        response = self.client.get(self.url)
+
+        rated_recipes = response.context["rated_recipes"]
+
+        self.assertNotIn(self.recipe5, rated_recipes)
+
+    def test_sort_tie_by_id(self):
+        """If average rating and rating count matches, lower ID should be ranked higher"""
+
+        Recipe.objects.all().delete()
+
+        recipe1 = Recipe.objects.create(title="recipe1", user=self.user)
+        recipe2 = Recipe.objects.create(title="recipe2", user=self.user)
+
+        Rating.objects.create(user=self.user2, recipe=recipe1, rating=4)
+        Rating.objects.create(user=self.user2, recipe=recipe2, rating=4)
+
+        response = self.client.get(self.url)
+        rated_recipes = response.context["rated_recipes"]
+
+        self.assertGreater(recipe2.id, recipe1.id)
+        self.assertLess(rated_recipes.index(recipe1), rated_recipes.index(recipe2))
+
     def test_average_rating_and_sorting(self):
         recipes = Recipe.objects.all()
 
@@ -122,5 +154,11 @@ class DashBoardViewTestCase(TestCase):
         self.assertEqual(len(self.recipe5.full_stars),4)
         self.assertEqual(self.recipe5.half_stars, 0)
         self.assertEqual(len(self.recipe5.empty_stars),1)
+    
+    def test_dashboard_only_4_recipes(self):
+        response = self.client.get(self.url)
+        rated_recipes = response.context["rated_recipes"]
+
+        self.assertLessEqual(len(rated_recipes),4)
 
     

@@ -1,3 +1,9 @@
+<style>
+.tag-badge {
+  background-color: var(--tag-colour);
+  color: white;
+}
+</style>
 <div class="card shadow text-center individual_recipe_card align-items-center">
   {% if recipe.img %}
   <img
@@ -28,7 +34,7 @@
     <p class="card-text">{{ recipe.description }}</p>
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-2">
       {% for tag in recipe.tags.all %}
-        <span class="badge" style="background-color: {{tag.colour}};">
+        <span class="badge tag-badge" style="--tag-colour: {{ tag.colour }};">
           {{tag.name}}
         </span>
       {% endfor %}

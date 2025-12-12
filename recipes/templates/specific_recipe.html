@@ -1,4 +1,10 @@
 {% extends 'base_content.html' %} {% load widget_tweaks %} {% block content %}
+<style>
+.tag-badge {
+  background-color: var(--tag-colour);
+  color: white;
+}
+</style>
 <div class="container my- d-flex justify-content-center">
   <div class="card mb-3 specific_recipe_card">
     <div class="row g-0">
@@ -12,13 +18,13 @@
       <div class="col-md-8">
         <div class="card-body d-flex flex-column pb-3">
           <div
-            class="d-flex justify-content-between align-items-start mb-0"
+            class="d-flex flex-column flex-sm-row justify-content-between align-items-start mb-0"
           >
             <h4 class="mb-0">{{ recipe.title }}</h4>
             {% if recipe.user != user %}
             <a
               href="{% url 'user_profile' recipe.user.username %}"
-              style="text-decoration: none; color: inherit"
+              class = "username"
             >
               {% endif %}
               <span
@@ -27,15 +33,14 @@
                 <small>Author:</small>
                 <img
                   src="{{ recipe.user.gravatar }}"
-                  class="rounded-circle"
-                  style="width: 24px; height: 24px"
+                  class="rounded-circle user-gravatar"
                 />
                 {{ recipe.user }}{% if recipe.user == user %} (YOU){% endif %}
               </span>
               {% if recipe.user != user %}</a>{% endif %} 
               </div>
               {% if user == recipe.user %}
-            <div class="d-flex gap-2 ms-auto mt-3 mb-2 align-items-center">
+            <div class="d-flex gap-2 ms-sm-auto mt-3 mb-2 align-items-center">
               <a
                 href="{% url 'edit_recipe' recipe.id %}"
                 class="btn edit-button btn-sm"
@@ -71,8 +76,7 @@
           <p class="card-text fst-italic">{{ recipe.description }}</p>
           <div class="d-flex flex-wrap  gap-2 mb-2">
             {% for tag in recipe.tags.all %}
-              <span class="badge" style="background-color: {{ tag.colour }};"
->
+              <span class="badge tag-badge" style="--tag-colour: {{ tag.colour }};">
                 {{tag.name}}
               </span>
             {% endfor %}
@@ -109,7 +113,7 @@
               </div>
               <ul class="list-group list-group-flush">
                 {% for ingredient in ingredients %}
-                <li class="list-group-item">{{ingredient.scaled_quantity}} {{ingredient.unit}} of {{ingredient.ingredient}}</li>
+                <li class="list-group-item">{{ingredient.scaled_quantity|floatformat:"-3" }} {{ingredient.unit}} of {{ingredient.ingredient}}</li>
                 {% endfor %}
               </ul>
             </div>
@@ -147,7 +151,7 @@
               </div>
           </div>
 
-            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#shopping_list_modal">
+            <button class="btn btn-secondary mb-2" data-bs-toggle="modal" data-bs-target="#shopping_list_modal">
               Create Shopping List
             </button>
 
@@ -252,7 +256,7 @@
     </p>
     {% else %}
     <div class="d-flex justify-content-center mt-3">
-      <div class="card p-3" style="width: 80%">
+      <div class="card p-3 comment-card">
         {% for comment in recipe.comments.all %}
         <div class="border-bottom py-2">
           <div class="d-flex justify-content-between align-items-center mb-1">
@@ -261,8 +265,7 @@
             >
               <img
                 src="{{ comment.user.gravatar }}"
-                class="rounded-circle"
-                style="width: 24px; height: 24px"
+                class="rounded-circle user-gravatar"
               />
               {{ comment.user }} {% if comment.user == user %}(YOU){% endif %}
             </span>
@@ -331,8 +334,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-1">
                   <span class="d-flex align-items-center gap-2 badge bg-light text-dark recipe-author">
                     <img src="{{ comment.user.gravatar }}"
-                      class="rounded-circle"
-                      style="width: 24px; height: 24px" />
+                      class="rounded-circle user-gravatar"/>
                     {{ reply.user }} {% if reply.user == user %}(YOU){% endif %}
                   </span>
                   <small class="text-body-secondary"
@@ -438,7 +440,7 @@
       </div>
       <div class="modal-body">
         {% for ingredient in shopping_list %}
-          <li>{{ingredient.difference_quantity}} {{ingredient.unit}} of {{ingredient.ingredient}}</li>
+          <li>{{ingredient.difference_quantity|floatformat:"-3" }} {{ingredient.unit}} of {{ingredient.ingredient}}</li>
         {% empty %}
           <li>You have all the ingredients!</li>
         {% endfor %}

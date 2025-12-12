@@ -1,0 +1,23 @@
+.search-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  color: rgb(240, 234, 234);
+  background-color: darkolivegreen;
+  align-self: center;
+}
+
+.search-button:hover {
+  transform: scale(1.05);
+  color: rgb(240, 234, 234);
+}
+
+@media screen and (max-width: 768px) {
+  .all_recipe_container{
+      padding-left: 1rem;
+      padding-right: 1rem;
+  }
+}

@@ -73,6 +73,9 @@ a.link-button:hover {
   color: orange;
 }
 
+.recipe_title_dashboard{
+  text-transform: uppercase;
+}
 
 @media (max-width: 576px) {
   .recipe-card{

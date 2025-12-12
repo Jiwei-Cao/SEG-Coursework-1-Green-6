@@ -61,60 +61,6 @@
   color: #ec466d;
 }
 
-.specific_recipe_card {
-  width: 80%;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  border: none;
-}
-
-.star-rating {
-  display: flex;
-  justify-content: flex-start;
-  font-size: 2rem;
-}
-
-.star-rating div {
-  display: flex;
-  flex-direction: row-reverse;
-  gap: 0.2rem;
-}
-
-.star-rating input {
-  display: none;
-}
-
-.star-rating label {
-  color: #ccc;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.star-rating input:checked ~ label i, .star-rating label i {
-  color: #ccc;
-}
-.star-rating input:checked + label i,
-.star-rating input:checked + label ~ label i {
-  color: gold;
-}
-
-.star-rating label:hover i,
-.star-rating label:hover ~ label i {
-  color: gold;
-}
-
-.rating i {
-  color: #ccc;
-}
-
-.rating .full {
-  color: gold;
-}
-
-.rating .half {
-  color: gold;
-}
-
 .recipe-image {
   aspect-ratio: 4 / 3;
   width: 100%;
@@ -145,45 +91,6 @@ a.submit-button:hover, .submit-button:hover {
   background-color: #9ecee9f6;
 }
 
-.recipe-author{
-  transition: transform 0.2s ease;
-}
-
-.recipe-author img {
-  width: 28px;
-  height: 28px;
-  object-fit: cover;
-}
-
-.recipe-author .delete-button {
-  transition: transform 0.2s ease;
-}
-
-.recipe-author:hover {
-  background-color: #cccccce1 !important;
-  transform: scale(1.05);
-}
-
-.search-button {
-  border: none;
-  border-radius: 20px;
-  padding: 0.5rem 1.2rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  color: rgb(240, 234, 234);
-  background-color: darkolivegreen;
-  align-self: center;
-}
-
-.search-button:hover {
-  transform: scale(1.05);
-  color: rgb(240, 234, 234);
-}
-
-.delete-button:hover {
-  transform: scale(1.05);
-}
 .followers-exclusive-badge,
 .favourite-badge,
 .popular-badge,
@@ -191,71 +98,28 @@ a.submit-button:hover, .submit-button:hover {
   color: rgb(149, 148, 148) !important;
   transition: transform 0.2s ease;
 }
+
 .favourite-badge {
   background: linear-gradient(145deg, #f0d6e6, #f0abc9);
 }
+
 .popular-badge {
   background: linear-gradient(145deg, #d3f4ef, #95eaed);
 }
+
 .public-badge {
   background: linear-gradient(145deg, #b4edc3, #79bd93);
 }
-  .followers-exclusive-badge {
+
+.followers-exclusive-badge {
   background: linear-gradient(145deg, #fad59d, #f1c5d7);
 }
+
 .followers-exclusive-badge:hover,
 .favourite-badge:hover,
 .popular-badge:hover,
 .public-badge:hover {
   transform: scale(1.1);
-}
-
-a.quantity-button{
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  color: rgb(240, 234, 234) !important;
-  background-color: darkolivegreen;
-  align-self: center;
-  transition: transform 0.2s ease;
-}
-.quantity-button.active{
-  transform: scale(1.05);
-  background-color: rgb(129, 161, 75);
-}
-
-a.quantity-button:hover{
-    transform: scale(1.05)
-}
-
-
-.edit-button{
-  background-color: rgb(42, 163, 249);
-  color: white !important;
-  text-decoration: none;
-}
-.edit-button:hover{
-  text-decoration: none;
-  background-color: rgb(28, 116, 205);
-}
-
-
-.follow-button, .unfollow-button {
-  border: none;
-  border-radius: 20px;
-  padding: 0.3rem 0.9rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-}
-.follow-button{
-background-color: #dae5ebf2;
-}
-.unfollow-button{
-  background-color: #cccccce1;
-}
-.follow-button:hover, .unfollow-button:hover{
-  transform: scale(1.05);
 }
 
 @media (max-width: 576px) {
@@ -282,6 +146,7 @@ background-color: #dae5ebf2;
     font-size: 13px;
   }
 }
+
 /* Make main columns stack vertically */
 @media (max-width: 768px) {
   .specific_recipe_card .row {
@@ -294,32 +159,11 @@ background-color: #dae5ebf2;
   }
 }
 
-@media (max-width: 576px) {
-  .container, .card {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  input.form-control {
-    width: 100% !important;
-  }
-
-  .comment .d-flex {
-    flex-direction: column !important;
-  }
-
-  .star-rating {
-    flex-direction: column !important;
-    align-items: flex-start;
-  }
-
-  .star-rating .d-flex {
-    flex-wrap: wrap;
-  }
-
-  .badge {
-    font-size: 0.8rem;
-    padding: 4px 6px;
-  }
+.public_badge{
+  font-size:17px !important;
 }
 
+.tag-badge {
+  background-color: var(--tag-colour) !important;
+  color: white;
+}
