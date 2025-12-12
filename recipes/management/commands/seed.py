@@ -16,7 +16,6 @@ from recipes.models import User, Tag, MethodStep, Recipe, RecipeIngredient, Ingr
 
 
 user_fixtures = [
-    {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
     {'username': '@janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe'},
     {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
 ]
@@ -279,8 +278,8 @@ class Command(BaseCommand):
             data["user"] = end_user
             data["recipe"] = recipe
             data["quantity"] = 3
-            data["unit"] = Unit.objects.get(pk=1)
-            data["ingredient"] = Ingredient.objects.get(pk=2)
+            data["unit"] = Unit.objects.get(name="kilograms")
+            data["ingredient"] = Ingredient.objects.get(name="potato")
             create_recipeingredient(data)
 
 def create_username(first_name, last_name):
