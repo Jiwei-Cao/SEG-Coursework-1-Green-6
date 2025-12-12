@@ -14,8 +14,6 @@ from random import randint, random
 from django.core.management.base import BaseCommand
 from recipes.models import User, Tag, MethodStep, Recipe, RecipeIngredient, Ingredient, Unit, Comment
 from django.utils.timezone import make_aware
-import datetime
-
 
 user_fixtures = [
     {'username': '@janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe'},
@@ -199,7 +197,7 @@ class Command(BaseCommand):
         for i in range(1, num_comments):
             username = User.objects.get(username=user_fixtures[self.faker.random_int(0, len(user_fixtures)-1)]["username"])
             comment =  self.faker.sentence(nb_words=5)
-            date_published = self.faker.date_time_between_dates(datetime_start="-5y", datetime_end="now")
+            date_published = make_aware(self.faker.date_time_between_dates(datetime_start="-5y", datetime_end="now"))
             comment_object = Comment.objects.create(user=username, comment=comment, date_published=date_published)
             replies = self.create_replies(comment_object)
             comment_object.replies.set(replies)
@@ -212,7 +210,7 @@ class Command(BaseCommand):
         for i in range(1, num_replies):
             username = User.objects.get(username=user_fixtures[self.faker.random_int(0, len(user_fixtures)-1)]["username"])
             comment =  self.faker.sentence(nb_words=5)
-            date_published = self.faker.date_time_between_dates(datetime_start=comment_object.date_published, datetime_end="now")
+            date_published = make_aware(self.faker.date_time_between_dates(datetime_start=comment_object.date_published, datetime_end="now"))
             replies.append(Comment.objects.create(user=username, comment=comment, date_published=date_published))
         return replies
 
