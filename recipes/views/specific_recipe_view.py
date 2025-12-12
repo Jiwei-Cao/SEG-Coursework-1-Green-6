@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404
 from django.db.models import F
 from ..models import Recipe, Rating, RecipeIngredient, UserIngredient
 from django.http import HttpResponseRedirect

@@ -1,10 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-<<<<<<< HEAD
-from recipes.forms import MethodStepForm
-=======
-
->>>>>>> ec63d1d11d43fdff1154614546dec0351aa86198
 from recipes.models import Recipe, MethodStep
 from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden
 from django.urls import reverse

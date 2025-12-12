@@ -11,9 +11,8 @@ from faker import Faker
 from faker.providers import company
 from faker_food import FoodProvider
 from random import randint, random
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from recipes.models import User, Tag, MethodStep, Recipe, RecipeIngredient, Ingredient, Unit
-from recipes.logic.classification import classify_recipe
 
 
 user_fixtures = [
