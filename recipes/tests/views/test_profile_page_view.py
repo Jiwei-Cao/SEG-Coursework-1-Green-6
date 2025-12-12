@@ -152,6 +152,7 @@ class ProfilePageViewTest(TestCase):
         recipe2.favourites.add(self.user3)
 
         recipe1.save()
+        recipe2.save()
 
         response = self.client.get(self.url)
         self.assertEqual(response.context["most_favourite"], recipe2.id)

@@ -1,0 +1,32 @@
+<div class="modal fade" id="{{prefix}}-{{item.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content"> 
+    <div class="modal-header">
+        <h6 class="modal-title fs-5" id="staticBackdropLabel">Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        {{ text }}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        {% if reply and recipe %}
+        <form method="post" action="{% url url_name recipe.pk comment.pk item.pk %}">
+            {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm</button>
+        </form>
+        {% elif recipeComment %}
+        <form method="post" action="{% url url_name recipe.pk item.pk %}">
+            {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm</button>
+        </form>
+        {% else %}
+        <form method="post" action="{% url url_name item.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm</button>
+        </form>
+        {% endif %}
+    </div>
+    </div>
+</div>
+</div>
