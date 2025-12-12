@@ -55,7 +55,7 @@ class ManageRecipeIngredientFormTestCase(TestCase):
             forms.append(form)
         additional_form = {"id": "", "ingredient": 3, "quantity": 0.10, "unit": 1}
         forms.append(additional_form)
-        payload = self.build_formset_data(forms=forms)
+        payload = self.build_formset_data(forms=forms)         # citations below
         response = self.client.post(self.url, payload, follow=True)
         after_count = RecipeIngredient.objects.count()
         self.assertEqual(after_count, before_count +1)
@@ -113,6 +113,10 @@ class ManageRecipeIngredientFormTestCase(TestCase):
         expected_url = reverse('manage_recipe_ingredient', args=[self.recipe.id])
         self.assertRedirects(response, expected_url)
         self.assertRedirects(response, expected_url, status_code=302, target_status_code=200)
+
+    # code to prepare formset with data as shown in Django documentation for Formset
+    # function layout from stackoverflow forum, post from user 'pymen' on 5th July 2020
+    # pymen. (2022). Stackoverflow - Django formset unit test. Retrieved December 5, 2025, from https://stackoverflow.com/questions/1630754/django-formset-unit-test 
 
     def build_formset_form_data(self, form_number, **data):
         form = {}

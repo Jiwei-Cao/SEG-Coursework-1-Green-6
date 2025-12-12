@@ -5,8 +5,8 @@
 <h1 class = "text center mb-4">User search</h1>
 
 <form method="get" class = "d-flex flex-column flex-sm-row mb-4">
-    <input type="text" name="q" value="{{ query }}" placeholder="Search users" class = "form-control me-2">
-    <button type="submit" class ='search-button mt-md-2'>Search</button>
+    <input type="text" name="q" value="{{ query }}" placeholder="Search users" class = "form-control me-sm-2 mb-2 mb-sm-0">
+    <button type="submit" class ='search-button '>Search</button>
 </form>
 
 {% if has_query %}
@@ -19,9 +19,7 @@
     {% for user in top_users %}
         <li class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div class = "d-flex align-items-center mb-2 mb-md-0">
-            <img src="{{ user.gravatar }}" class="pfp rounded-circle me-2" style="
-                width: 30px;
-                height: 30px;" />
+            <img src="{{ user.gravatar }}" class="rounded-circle me-2 bigger-user-gravatar"/>
             <a href="{% url 'user_profile' user.username %}" class = "fw-medium">
                 {{ user.username }}
             </a>

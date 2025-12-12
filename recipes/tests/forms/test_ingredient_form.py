@@ -22,7 +22,6 @@ class IngredientFormTestCase(TestCase):
     
     def test_form_has_necessary_fields(self):
         form = IngredientForm()
-        #self.assertIn('user', form.fields)
         self.assertIn('name', form.fields)
         self.assertIn('category', form.fields)
 

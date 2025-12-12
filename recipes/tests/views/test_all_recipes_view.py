@@ -65,3 +65,40 @@ class AllRecipesPageViewTest(TestCase):
         url = reverse('get_recipe',args=[9999])
         response = self.client.get(url)
         assert response.status_code == 404
+
+    def test_pagination_first_page(self):
+        self.client.login(username=self.user.username, password='Password123')
+        Recipe.objects.all().delete()
+        for i in range(0,15):
+            Recipe.objects.create(user=self.user, title=f"r{i}")
+
+        response = self.client.get(self.url+"?page=1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["page_obj"].object_list),12)
+
+    def test_pagination_second_page(self):
+        self.client.login(username=self.user.username, password='Password123')
+        Recipe.objects.all().delete()
+        for i in range(0,15):
+            Recipe.objects.create(user=self.user, title=f"r{i}")
+
+        response = self.client.get(self.url+"?page=2")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["page_obj"].object_list),3)
+
+    def test_user_sees_public_and_own_and_followed_recipes(self):
+        self.client.login(username=self.user.username, password='Password123')
+
+        user2 = User.objects.get(username="@janedoe")
+        user2.followers.add(self.user)
+
+        public_recipes = Recipe.objects.create(user=user2, title="Public", public = True)
+        followed_recipes = Recipe.objects.create(user=user2, title="Followed", public=False)
+        own_recipes = Recipe.objects.create(user=self.user, title="Own", public=False)
+
+        response = self.client.get(self.url)
+        recipe_list = response.context["recipe_list"]
+
+        self.assertIn(public_recipes, recipe_list)
+        self.assertIn(followed_recipes, recipe_list)
+        self.assertIn(own_recipes, recipe_list)

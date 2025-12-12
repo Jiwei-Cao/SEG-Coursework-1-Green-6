@@ -143,6 +143,25 @@ class SpecificRecipeViewTestCase(TestCase):
         result = getIngredients(self.recipe.id, multiplier=3)
         self.assertQuerySetEqual(result,self.recipe.recipeingredient_set.all())
 
+    def test_multiplier_scales_ingredients(self):
+        response = self.client.get(self.url + "?multiplier=4")
+        ingredients = response.context['ingredients']
+        self.assertEqual(ingredients[0].scaled_quantity,8)
+
+    def test_star_distribution_values(self):
+        response = self.client.get(self.url)
+        self.assertEqual(len(list(response.context["full_stars"])),4)
+        self.assertEqual(response.context["half_star"],1)
+        self.assertEqual(len(list(response.context["empty_stars"])),0)
+
+    def test_multiplier_in_context(self):
+        response = self.client.get(self.url + "?multiplier=4")
+        self.assertEqual(response.context["multiplier"],4)
+
+    def test_zero_multiplier(self):
+        response = self.client.get(self.url + "?multiplier=0")
+        self.assertEqual(response.status_code, 200)
+
     def test_shopping_list_creation_with_empty_cupboard(self):
         response = self.client.get(self.url)
         self.assertIn('shopping_list', response.context)
