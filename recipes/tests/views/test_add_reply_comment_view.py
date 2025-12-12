@@ -17,15 +17,10 @@ class AddReplyCommentViewTestCase(TestCase):
 	def setUp(self):
 		self.user = User.objects.get(username='@johndoe')
 		self.client.login(username=self.user.username, password='Password123')
-		
 		self.recipe1 =  Recipe.objects.create(user=self.user, title="123",description="123")
 		self.parent_comment = Comment.objects.create(user=self.user, comment="test comment", date_published=make_aware(datetime.datetime(2025,4,1)))
-
 		self.url = reverse("add_reply_comment", kwargs={'recipe_id': self.recipe1.pk, 'parent_comment_id' : self.parent_comment.pk})
-
-		self.form_input = {
-				'comment': 'testing',
-		}
+		self.form_input = {'comment': 'testing'}
 
 	def test_add_reply_comment_url(self):
 		self.assertEqual(self.url, f"/recipe/{self.recipe1.pk}/comment/{self.parent_comment.pk}/reply")
@@ -50,13 +45,10 @@ class AddReplyCommentViewTestCase(TestCase):
 		before_comment_objects_count = Comment.objects.count()
 		before_comment_replies_count = self.parent_comment.replies.all().count()
 		response = self.client.post(self.url, self.form_input, follow=True)
-
 		after_comment_objects_count = Comment.objects.count()
 		after_comment_replies_count = self.parent_comment.replies.all().count()
-
 		self.assertEqual(after_comment_objects_count, before_comment_objects_count + 1)
 		self.assertEqual(after_comment_replies_count, before_comment_replies_count + 1)
-
 		expected_redirect_url = reverse("get_recipe",  kwargs={"recipe_id": f"{self.recipe1.pk}"})
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 
@@ -75,13 +67,10 @@ class AddReplyCommentViewTestCase(TestCase):
 		before_comment_objects_count = Comment.objects.count()
 		before_comment_replies_count = self.parent_comment.replies.all().count()
 		response = self.client.post(self.url, self.form_input, follow=True)
-
 		after_comment_objects_count = Comment.objects.count()
 		after_comment_replies_count = self.parent_comment.replies.all().count()
-
 		self.assertEqual(after_comment_objects_count, before_comment_objects_count)
 		self.assertEqual(after_comment_replies_count, before_comment_replies_count)
-
 		expected_redirect_url = reverse("get_recipe",  kwargs={"recipe_id": f"{self.recipe1.pk}"})
 		self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
 

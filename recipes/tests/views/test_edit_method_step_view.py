@@ -8,42 +8,40 @@ from recipes.models import MethodStep
 from recipes.forms import MethodStepForm
 
 from django.db import transaction
+from recipes.tests.helpers import reverse_with_next
+
 
 class EditMethodStepViewTestCase(TestCase):
     '''Tests for the edit_method_step view '''
 
-    fixtures = ['recipes/tests/fixtures/default_user.json']
+    fixtures = ['recipes/tests/fixtures/default_user.json','recipes/tests/fixtures/other_users.json',]
 
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
         self.client.login(username=self.user.username, password='Password123')
-        
         self.recipe1 =  Recipe.objects.create(user=self.user, title="123",description="123")
         self.method_step1 = MethodStep.objects.create(step_number="1", method_text="testing")
-
         self.recipe1.method_steps.add(self.method_step1)
-
         self.url = reverse("edit_method_step", kwargs={'recipe_id': f"{self.recipe1.pk}", 'step_id' : f"{self.method_step1.pk}"})
-
-        self.form_input = {
-                'method_text' : "test1",
-        }
-
+        self.form_input = {'method_text' : "test1"}
 
     def test_edit_method_step_url(self):
         self.assertEqual(self.url, f"/create_recipe/{self.recipe1.pk}/add_method/{self.method_step1.pk}/edit_method_step")
+
+    def test_get_edit_method_step_when_logged_out_redirects_user(self):
+        self.client.logout()
+        response = self.client.post(self.url, follow=True)
+        expected_redirect_url  = reverse_with_next('log_in',self.url)
+        self.assertRedirects(response, expected_redirect_url , status_code=302, target_status_code=200)
 
     def test_get_edit_method_step(self):
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'edit_method_step.html')
-
         self.assertIn('form', response.context)
         self.assertTrue(isinstance(response.context['form'], MethodStepForm))
-
         self.assertIn('recipe', response.context)
         self.assertEqual(response.context['recipe'], self.recipe1)
-
         self.assertIn('method_step', response.context)
         self.assertEqual(response.context['method_step'], self.method_step1)
 
@@ -53,21 +51,16 @@ class EditMethodStepViewTestCase(TestCase):
         response = self.client.get(invalid_url, follow=True)
         self.assertEqual(response.status_code, 404)
         
-
     def test_save_valid_changes_post(self):
         before_method_step_objects_count = MethodStep.objects.count()
         before_recipe_method_steps_count = self.recipe1.method_steps.all().count()
-
         response = self.client.post(self.url, self.form_input, follow=True)
-
         after_method_step_objects_count = MethodStep.objects.count()
         after_recipe_method_steps_count = self.recipe1.method_steps.all().count()
         self.assertEqual(after_method_step_objects_count, before_method_step_objects_count)
         self.assertEqual(after_recipe_method_steps_count, before_recipe_method_steps_count)
-
         expected_redirect_url = reverse("add_method", kwargs={'recipe_id': f"{self.recipe1.pk}"})
         self.assertRedirects(response, expected_redirect_url, status_code=302, target_status_code=200)
-        
         method_step = MethodStep.objects.get(pk = self.method_step1.pk)
         self.assertEqual(self.form_input['method_text'], method_step.method_text)
     
@@ -75,16 +68,12 @@ class EditMethodStepViewTestCase(TestCase):
         invalid_url = reverse("edit_method_step", kwargs={'recipe_id': f"{self.recipe1.pk}", 'step_id' : 8})
         before_method_step_objects_count = MethodStep.objects.count()
         before_recipe_method_steps_count = self.recipe1.method_steps.all().count()
-
         response = self.client.post(invalid_url, self.form_input, follow=True)
-
         after_method_step_objects_count = MethodStep.objects.count()
         after_recipe_method_steps_count = self.recipe1.method_steps.all().count()
         self.assertEqual(after_method_step_objects_count, before_method_step_objects_count)
         self.assertEqual(after_recipe_method_steps_count, before_recipe_method_steps_count)
-
         self.assertEqual(response.status_code, 404)
-
 
     def test_save_method_with_blank_method_text_is_invalid(self):
         self.form_input['method_text'] = ""
@@ -93,27 +82,49 @@ class EditMethodStepViewTestCase(TestCase):
     def test_save_changes_with_overly_long_method_text_is_invalid(self):
         self.form_input['method_text'] = "x" * 300
         self.assert_changes_are_invalid()
-
-        
+     
     def assert_changes_are_invalid(self):
         before_method_step_objects_count = MethodStep.objects.count()
         before_recipe_method_steps_count = self.recipe1.method_steps.all().count()
-
         with transaction.atomic():
             response = self.client.post(self.url, self.form_input, follow=True)
-
         after_method_step_objects_count = MethodStep.objects.count()
         after_recipe_method_steps_count = self.recipe1.method_steps.all().count()
-
         self.assertEqual(after_method_step_objects_count, before_method_step_objects_count)
         self.assertEqual(after_recipe_method_steps_count, before_recipe_method_steps_count)
-
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'edit_method_step.html')
-
         self.assertIn('form', response.context)
         self.assertTrue(isinstance(response.context['form'], MethodStepForm))
         self.assertIn('method_step', response.context)
         self.assertEqual(response.context['method_step'].method_text, self.method_step1.method_text)
         self.assertIn('recipe', response.context)
         self.assertEqual(response.context['recipe'], self.recipe1)
+
+    def test_edit_method_step_of_recipe_made_by_another_user_is_invalid(self):
+        self.client.logout()
+        self.user = User.objects.get(username='@janedoe')
+        self.client.login(username=self.user.username, password='Password123')
+        before_method_step_objects_count = MethodStep.objects.count()
+        before_recipe_method_steps_count = self.recipe1.method_steps.all().count()
+        response = self.client.post(self.url, follow=True)
+        self.assertEqual(response.status_code, 403)
+        after_method_steps_objects_count = MethodStep.objects.count()
+        after_recipe_method_steps_count = self.recipe1.method_steps.all().count()
+        self.assertEqual(after_method_steps_objects_count, before_method_step_objects_count)
+        self.assertEqual(after_recipe_method_steps_count, before_recipe_method_steps_count)
+
+    def test_edit_method_step_outside_of_recipe_is_invalid(self):
+        method_step2 = MethodStep.objects.create(step_number=2, method_text="test method 2")
+        recipe2 = Recipe.objects.create(user=self.user, title="456", description="456")
+        recipe2.method_steps.add(method_step2)
+        invalid_url = reverse("edit_method_step", kwargs={'recipe_id': self.recipe1.pk, 'step_id':method_step2.pk})
+        before_method_step_objects_count = MethodStep.objects.count()
+        before_recipe_method_steps_count = self.recipe1.method_steps.all().count()
+        response = self.client.post(invalid_url, follow=True)
+        after_method_steps_objects_count = MethodStep.objects.count()
+        after_recipe_method_steps_count = self.recipe1.method_steps.all().count()
+        self.assertEqual(after_method_steps_objects_count, before_method_step_objects_count)
+        self.assertEqual(after_recipe_method_steps_count, before_recipe_method_steps_count)
+        self.assertEqual(response.status_code, 404)
+

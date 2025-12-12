@@ -71,7 +71,7 @@ def create_recipe_context(user, recipe, ingredients, multiplier, form):
     full_stars, half_star, empty_stars = calculate_star_distribution(average_rating)
     shopping_list = create_shopping_list(user, ingredients)
     recipe_comments_count = count_recipe_comments(recipe)
-
+    
     return {
         "recipe": recipe,
         "ingredients": ingredients,
