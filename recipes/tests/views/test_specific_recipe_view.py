@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 from recipes.tests.helpers import reverse_with_next
 from recipes.models import User, Recipe, Rating, Comment
 from django.utils.timezone import make_aware

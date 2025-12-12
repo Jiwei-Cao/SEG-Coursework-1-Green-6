@@ -10,8 +10,6 @@ from recipes.models import MethodStep
 
 from recipes.forms import MethodStepForm
 
-from django.db.utils import IntegrityError
-from django.core.exceptions import ValidationError
 from django.db import transaction
 
 class AddMethodViewTestCase(TestCase):
