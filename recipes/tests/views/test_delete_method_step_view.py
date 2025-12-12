@@ -7,10 +7,6 @@ from recipes.models import Recipe
 from recipes.models import User
 from recipes.models import MethodStep
 
-from recipes.forms import MethodStepForm
-
-
-
 class DeleteMethodStepViewTestCase(TestCase):
     '''Tests for the delete_method_step view '''
 

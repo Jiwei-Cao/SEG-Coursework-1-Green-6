@@ -3,7 +3,6 @@ from django.urls import reverse
 from recipes.models import User, Recipe, Rating
 from recipes.tests.helpers import reverse_with_next
 from math import floor
-from django.http import Http404
 
 class ProfilePageViewTest(TestCase):
     """Test suite for the profile page View"""

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from recipes.tests.helpers import reverse_with_next
-from recipes.models import User, Recipe, Rating
+from recipes.models import User, Recipe
 
 class ToggleFavouriteViewTestCase(TestCase):
     """Tests of the toggle_favourite view"""

@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 from recipes.tests.helpers import reverse_with_next
 from recipes.models import User, Recipe, Rating, Comment
 from django.utils.timezone import make_aware
@@ -155,6 +154,24 @@ class SpecificRecipeViewTestCase(TestCase):
         shopping_list = response.context['shopping_list']
         ingredient_list = self.recipe.recipeingredient_set.all()
         self.assertQuerySetEqual(shopping_list, ingredient_list)
+
+    def test_shopping_list_with_cupboard_containing_some_ingredients_with_discrete_units(self):
+        discrete_unit,_ = Unit.objects.get_or_create(name="units", symbol="units", user=self.user)
+        self.recipe_ingredient.unit = discrete_unit
+        self.recipe_ingredient.save()
+        cupboard_ingredient = UserIngredient.objects.create(
+            name=self.ingredient.name, 
+            quantity=1,
+            unit=discrete_unit, 
+            user=self.user, 
+            category="GR")
+        cupboard_ingredient.save()
+        response = self.client.get(self.url)
+        self.assertIn('shopping_list', response.context)
+        shopping_list = response.context['shopping_list']
+        flour = shopping_list[0]
+        self.assertEqual(float(flour.difference_quantity), 1)
+
         
     def test_shopping_list_with_cupboard_containing_some_ingredients_same_mass_unit(self):
         cupboard_ingredient = UserIngredient.objects.create(

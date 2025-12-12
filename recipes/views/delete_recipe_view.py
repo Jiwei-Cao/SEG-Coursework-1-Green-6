@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 
-from recipes.models import Recipe, MethodStep
+from recipes.models import Recipe
 
 @login_required
 @require_POST

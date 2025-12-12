@@ -19,7 +19,7 @@
           <span><span class = "fw-bold"> {{ follower_count }}</span> followers</span>
           {% endif %}
           {% if following_count != 0 %}
-          <a href="{% url 'following_list' user.username %}" class="inherit-color"
+          <a href="{% url 'following_list' user.username %}" class="inherit-color">
             <span class = "fw-bold">{{ following_count }}</span> following
           </a>
           {% else %}

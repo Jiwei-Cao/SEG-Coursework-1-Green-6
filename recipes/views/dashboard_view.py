@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Q
 
-from ..models import Recipe, Rating
+from ..models import Recipe
 
 from math import floor
 
