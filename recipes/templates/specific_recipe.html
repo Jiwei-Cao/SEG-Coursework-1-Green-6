@@ -46,30 +46,11 @@
                 class="btn edit-button btn-sm"
                 >Edit Recipe</a
               >
-              <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+              <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-recipe-{{recipe.pk}}">
                   Delete Recipe
               </button>
             </div>
-            <div class="modal fade" id="deleteModal" tabindex="-1">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-                  <div class="modal-body">
-                    Are you sure you want to delete this recipe?
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form method="post" action="{% url 'delete_recipe' recipe.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {% include "partials/delete_modal.html" with prefix="delete-recipe" item=recipe text="Are you sure you want to delete this recipe?" url_name='delete_recipe' %}
             {% endif %}
           
             <!--Renders recipe tags-->
@@ -294,28 +275,7 @@
             </div>
 
               <!-- Modal to delete a normal comment-->
-              <div class="modal fade" id="delete-comment-{{comment.pk}}" tabindex="-1" aria-labelledby="deleteComment" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Comment: {{comment.comment}}</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      Are you sure you'd like to permanently delete this comment?
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-sm btn-secondary delete-button" data-bs-dismiss="modal">Close</button>
-                      <form action="{% url 'delete_comment' recipe.pk comment.pk%}"  method="post" class="ms-2">
-                        {% csrf_token %}
-                        <button class="btn btn-sm btn-danger delete-button">
-                          Delete
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                {% include "partials/delete_modal.html" with prefix="delete-comment" item=comment recipeComment=recipe text="Are you sure you'd like to permanently delete this comment?" url_name='delete_comment' %}
               {% endif %}
           </div>
           </div>
@@ -354,28 +314,7 @@
 
 
               <!-- Modal to delete a reply comment-->
-              <div class="modal fade" id="delete-reply-{{reply.pk}}" tabindex="-1" aria-labelledby="delete-reply-{{reply.pk}}" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Comment: {{reply.comment}}</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      Are you sure you'd like to permanently delete this comment?
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-sm btn-secondary delete-button" data-bs-dismiss="modal">Close</button>
-                      <form action="{% url 'delete_reply_comment' recipe.pk comment.pk reply.pk%}" method="post" class="ms-2">
-                        {% csrf_token %}
-                        <button class="btn btn-sm btn-danger delete-button">
-                          Delete
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                {% include "partials/delete_modal.html" with prefix="delete-reply" item=reply recipeComment=recipe reply=comment text="Are you sure you'd like to permanently delete this comment?" url_name='delete_reply_comment' %}
 
 
               {% endif %}
