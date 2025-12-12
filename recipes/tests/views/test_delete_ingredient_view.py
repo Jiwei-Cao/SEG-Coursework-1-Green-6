@@ -65,19 +65,3 @@ class DeleteIngredientViewTestCase(TestCase):
         self.client.login(username="@Janedoe", password="Password123")
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 403)
-
-
-        #         self.ingredient_data = {
-        #     "user": self.user,
-        #     "name": "Hemlock",
-        #     "category": UserIngredient.SPICE,
-        #     "quantity": 7,
-        #     'unit' : Unit.objects.get(name='tablespoon').pk
-        # }
-        # self.ingredient = UserIngredient.objects.create(
-        #     user = self.ingredient_data['user'],
-        #     name = self.ingredient_data['name'],
-        #     category = self.ingredient_data['category'],
-        #     quantity = self.ingredient_data['quantity'],
-        #     unit = self.ingredient_data['unit']
-        # )

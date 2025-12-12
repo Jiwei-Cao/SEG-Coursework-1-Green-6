@@ -30,15 +30,8 @@ class RecipeIngredientFormTestCase(TestCase):
     
     def test_form_has_necessary_fields(self):
         form = RecipeIngredientForm()
-        #self.assertIn('user', form.fields)
-        #self.assertIn('recipe', form.fields)
         self.assertIn('quantity', form.fields)
-        #self.assertIn('unit', form.fields)
-        #self.assertIn('ingredient', form.fields)
-
-        #self.assertTrue(isinstance(form.fields['user'], forms.CharField))
         self.assertTrue(isinstance(form.fields['quantity'], forms.DecimalField))
-        #self.assertTrue(isinstance(form.fields['unit'], forms.CharField))
 
     def test_valid_ingredient_form(self):
             form = RecipeIngredientForm(data=self.form_input)
