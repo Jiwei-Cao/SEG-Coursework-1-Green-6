@@ -12,7 +12,9 @@ from faker.providers import company
 from faker_food import FoodProvider
 from random import randint, random
 from django.core.management.base import BaseCommand
-from recipes.models import User, Tag, MethodStep, Recipe, RecipeIngredient, Ingredient, Unit
+from recipes.models import User, Tag, MethodStep, Recipe, RecipeIngredient, Ingredient, Unit, Comment
+from django.utils.timezone import make_aware
+import datetime
 
 
 user_fixtures = [
@@ -173,6 +175,7 @@ class Command(BaseCommand):
                 data["description"] = self.faker.dish_description()
                 data["tags"] = self.create_tag_list()
                 data["method"] = self.create_method()
+                data["comments"] = self.create_comments(user)
                 create_recipe(data)
 
     def create_tag_list(self):
@@ -190,6 +193,30 @@ class Command(BaseCommand):
             method_text = f"Add {self.faker.measurement()} {self.faker.ingredient()}."
             method_steps.append(MethodStep.objects.create(method_text=method_text, step_number=i))
         return method_steps
+
+    def create_comments(self, user):
+        num_comments = self.faker.random_int(1, 20)
+        comments = []
+        for i in range(1, num_comments):
+            username = User.objects.get(username=user_fixtures[self.faker.random_int(0, len(user_fixtures)-1)]["username"])
+            comment =  self.faker.sentence(nb_words=5)
+            date_published = self.faker.date_time_between_dates(datetime_start="-5y", datetime_end="now")
+            comment_object = Comment.objects.create(user=username, comment=comment, date_published=date_published)
+            replies = self.create_replies(comment_object)
+            comment_object.replies.set(replies)
+            comments.append(comment_object)
+        return comments
+
+    def create_replies(self, comment_object):
+        num_replies = self.faker.random_int(1, 10)
+        replies = []
+        for i in range(1, num_replies):
+            username = User.objects.get(username=user_fixtures[self.faker.random_int(0, len(user_fixtures)-1)]["username"])
+            comment =  self.faker.sentence(nb_words=5)
+            date_published = self.faker.date_time_between_dates(datetime_start=comment_object.date_published, datetime_end="now")
+            replies.append(Comment.objects.create(user=username, comment=comment, date_published=date_published))
+        return replies
+
     
     def create_units(self):
         end_user = User.objects.get(username='@johndoe')
@@ -317,6 +344,7 @@ def create_recipe(data):
         )
     recipe.tags.set(data["tags"])
     recipe.method_steps.set(data["method"])
+    recipe.comments.set(data["comments"])
 
 def create_recipeingredient(data):
     RecipeIngredient.objects.create(
@@ -326,3 +354,4 @@ def create_recipeingredient(data):
         unit = data["unit"],
         ingredient = data["ingredient"]
     )    
+
