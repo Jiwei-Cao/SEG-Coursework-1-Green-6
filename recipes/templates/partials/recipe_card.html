@@ -1,13 +1,14 @@
 <style>
-.tag-badge {
-  background-color: var(--tag-colour);
-  color: white;
+{% for tag in recipe.tags.all %}
+.tag-{{ tag.id }} {
+  background-color: {{ tag.colour}} !important;
 }
+{% endfor %}
 </style>
 <div class="card shadow text-center individual_recipe_card align-items-center">
   {% if recipe.img %}
   <img
-    src="{% if recipe.img %}{{ recipe.img.url }}{% else %}https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS10b9Qpi-UdObaCziWGF5IuvZFF8bKuQ6bow&s{% endif %}"
+    src="{{ recipe.img.url }}"
     alt="{{ recipe.title }}"
     class="recipe-image"
   />
@@ -34,7 +35,7 @@
     <p class="card-text">{{ recipe.description }}</p>
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-2">
       {% for tag in recipe.tags.all %}
-        <span class="badge tag-badge" style="--tag-colour: {{ tag.colour }};">
+        <span class="badge tag-badge tag-{{ tag.id }}" >
           {{tag.name}}
         </span>
       {% endfor %}
