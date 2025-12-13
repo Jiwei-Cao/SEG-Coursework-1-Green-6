@@ -3,6 +3,8 @@ from django.urls import reverse
 from recipes.models import User, Recipe, Rating
 from recipes.tests.helpers import reverse_with_next
 from math import floor
+from django.utils.timezone import make_aware
+import datetime
 
 class ProfilePageViewTest(TestCase):
     """Test suite for the profile page View"""
@@ -145,8 +147,8 @@ class ProfilePageViewTest(TestCase):
         """When have two most favourited recipes, the newest recipe should be the most favourited one"""
         self.client.login(username=self.user.username, password='Password123')
 
-        recipe1 = Recipe.objects.create(title="Old", description= "smth",user=self.user, created_at="2020-11-21T12:00:00Z")
-        recipe2 = Recipe.objects.create(title="New",description= "smth", user=self.user, created_at="2025-11-21T12:00:00Z")
+        recipe1 = Recipe.objects.create(title="Old", description= "smth",user=self.user, created_at=make_aware(datetime.datetime(2020,4,1)))
+        recipe2 = Recipe.objects.create(title="New",description= "smth", user=self.user, created_at=make_aware(datetime.datetime(2025,4,1)))
 
         recipe1.favourites.add(self.user2)
         recipe2.favourites.add(self.user3)
