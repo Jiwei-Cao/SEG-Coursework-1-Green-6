@@ -44,7 +44,7 @@
       class="row row-cols-sm-1 row-cols-md-4 g-3 recipe-list mt-0"
       ref="recipeGrid"
     >
-      {% for recipe in recipe_list %}
+      {% for recipe in page_obj %}
       <div class="col-md-4 mb-2">
         {% include "partials/recipe_card.html" with recipe=recipe showBadge=False %}
       </div>
